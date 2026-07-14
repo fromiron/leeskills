@@ -150,6 +150,18 @@
       "owner": "Content owner"
     },
     {
+      "id": "nested-radius-contours",
+      "test": "nested-radius-coherence",
+      "required": true,
+      "status": "pass",
+      "evidence_state": "measured",
+      "evidence": "The shared project-card and image contours use a 20px outer radius and 12px inner radius across an 8px inset.",
+      "impact": "The simplified surfaces retain a coherent nested contour without adding radius variants.",
+      "remediation": "None.",
+      "verification": "Recompute the concentric offset and compare rendered corners at supported viewports.",
+      "owner": "Design systems engineer"
+    },
+    {
       "id": "screen-reader-sample",
       "test": "assistive-technology",
       "required": false,

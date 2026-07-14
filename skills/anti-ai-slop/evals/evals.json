@@ -30,6 +30,16 @@
         "The output does not introduce a page redesign.",
         "The rewrite is tied to supplied evidence."
       ]
+    },
+    {
+      "id": "nested-radius-handoff",
+      "prompt": "Run an end-to-end audit of this dashboard. Its rounded cards contain inset surfaces, and I supplied screenshots plus computed radius and padding values.",
+      "expected_output": "The workflow audits the observable signal, evaluates shared nested contours with the visual budget, and repeats the relationship check during final verification.",
+      "assertions": [
+        "Radius-token count alone is not treated as proof of coherence.",
+        "Computed values are distinguished from screenshot observations.",
+        "The output does not infer AI authorship from the rounded-card pattern."
+      ]
     }
   ]
 }

@@ -52,6 +52,18 @@ and excessive storytelling and summarize the editorial direction as doing less
 but doing it better. The prior visual study of the linked corpus informed the
 structural categories used by `structure-selector`.
 
+## Radius systems
+
+- Codeit Design System — Radius  
+  https://design.codeit.com/foundations/radius
+
+Codeit's semantic-radius guidance uses relative size tokens and recommends a
+smaller inner token when boxes are nested. This repository generalizes that
+relationship without adopting Codeit's project-specific pixel values as
+universal defaults. It adds separate handling for shared contours, independent
+components, pills and circles, plus an optional measured concentric-offset
+check when the curves are intended to remain parallel.
+
 ## Accessibility
 
 - WCAG 2.2 Quick Reference  

@@ -28,6 +28,16 @@
         "The unsupported metric is not preserved as verified copy.",
         "The growth test evaluates the dominant structure rather than adding decorative card variants."
       ]
+    },
+    {
+      "id": "verify-nested-radius-repair",
+      "prompt": "The redesign changed nested card radii from one repeated token to an outer 20px and inner 12px radius with an 8px inset. Verify the repair before release.",
+      "expected_output": "A nested-radius-coherence check that validates the declared contour relationship, compares rendered results, and keeps accessibility clipping checks separate.",
+      "assertions": [
+        "The output verifies the radius relationship rather than counting tokens only.",
+        "The result records measured evidence and a repeatable method.",
+        "The check does not claim that the prior design was AI-generated."
+      ]
     }
   ]
 }

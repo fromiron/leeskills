@@ -28,6 +28,16 @@
         "Status colors are not collapsed merely to meet the accent budget.",
         "Accessibility remains a higher-priority constraint."
       ]
+    },
+    {
+      "id": "nested-radius-coherence",
+      "prompt": "The outer card and inset panel both use a 20px radius. The inset is 8px. Audit the nested corners without forcing pill buttons or independent controls into the same rule.",
+      "expected_output": "A classified radius-relationship report that flags the shared-contour mismatch, preserves independent shapes, and proposes a semantic-step or measured concentric correction.",
+      "assertions": [
+        "The output does not treat a low radius-token count as sufficient.",
+        "Shared contours are distinguished from independent components and pills.",
+        "The correction includes evidence state and repeatable verification."
+      ]
     }
   ]
 }

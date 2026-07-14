@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.1.0"
+  version: "0.2.0"
   languages: "en, ko, ja"
 ---
 
@@ -75,6 +75,11 @@ When critical evidence is absent, record it as unknown. Do not invent it.
 2. `accessibility-simplicity-guard`
 3. `prune-and-verify`
 
+### Radius or visual-token request
+
+1. `visual-entropy-budget`
+2. `prune-and-verify`
+
 ### Accessibility-focused simplification
 
 1. `accessibility-simplicity-guard`
@@ -125,7 +130,7 @@ Include:
 3. observed signals;
 4. selected structure;
 5. content gaps and prohibited inventions;
-6. visual budget and justified exceptions;
+6. visual budget, nested-radius relationships, and justified exceptions;
 7. copy changes;
 8. motion decisions;
 9. accessibility findings;

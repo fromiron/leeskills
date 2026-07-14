@@ -16,6 +16,22 @@ PYTHON = sys.executable
 
 
 class CommandTests(unittest.TestCase):
+    @staticmethod
+    def visual_limits() -> dict[str, int]:
+        return {
+            "layout_grammars": 1,
+            "typeface_families": 1,
+            "type_roles": 6,
+            "accent_colors": 1,
+            "radius_tokens": 2,
+            "shadow_levels": 1,
+            "surface_styles": 3,
+            "primary_cta_styles": 1,
+            "secondary_cta_styles": 1,
+            "motion_patterns": 2,
+            "decorative_image_families": 0,
+        }
+
     def run_command(
         self,
         *args: str,
@@ -71,8 +87,13 @@ class CommandTests(unittest.TestCase):
     def test_project_package_name_is_leeskills(self) -> None:
         manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["name"], "leeskills")
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        self.assertEqual(manifest["version"], version)
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         self.assertRegex(pyproject, r'(?m)^name = "leeskills"$')
+        self.assertIn(f'version = "{version}"', pyproject)
+        for skill_md in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            self.assertIn(f'version: "{version}"', skill_md.read_text(encoding="utf-8"))
 
     def test_audit_example_scores_as_redesign(self) -> None:
         result = self.run_json(
@@ -142,6 +163,7 @@ class CommandTests(unittest.TestCase):
         )
         self.assertFalse(result["pass"])
         self.assertEqual(result["unresolved_overages"], 10)
+        self.assertEqual(result["unresolved_radius_relationships"], 1)
         self.assertEqual(result["documented_exceptions"], 1)
 
     def test_visual_budget_rejects_empty_metric_maps(self) -> None:
@@ -159,19 +181,7 @@ class CommandTests(unittest.TestCase):
         self.assertIn("limits missing core metrics", completed.stderr)
 
     def test_visual_budget_exception_requires_human_review(self) -> None:
-        limits = {
-            "layout_grammars": 1,
-            "typeface_families": 1,
-            "type_roles": 6,
-            "accent_colors": 1,
-            "radius_tokens": 2,
-            "shadow_levels": 1,
-            "surface_styles": 3,
-            "primary_cta_styles": 1,
-            "secondary_cta_styles": 1,
-            "motion_patterns": 2,
-            "decorative_image_families": 0,
-        }
+        limits = self.visual_limits()
         observed = dict(limits)
         observed["typeface_families"] = 2
         result = self.run_json_document(
@@ -180,6 +190,9 @@ class CommandTests(unittest.TestCase):
                 "artifact": "Editorial site",
                 "observed": observed,
                 "limits": limits,
+                "radius_scope": "none",
+                "radius_scope_evidence": "The inspected article layout has no nested rounded surfaces.",
+                "radius_relationships": [],
                 "exceptions": [
                     {
                         "metric": "typeface_families",
@@ -193,6 +206,122 @@ class CommandTests(unittest.TestCase):
         self.assertFalse(result["pass"])
         self.assertTrue(result["review_required"])
         self.assertEqual(result["budget_status"], "review-required")
+
+    def test_visual_budget_rejects_same_radius_on_shared_nested_contour(self) -> None:
+        limits = self.visual_limits()
+        result = self.run_json_document(
+            "skills/visual-entropy-budget/scripts/check_budget.py",
+            {
+                "artifact": "Nested card",
+                "observed": dict(limits),
+                "limits": limits,
+                "radius_scope": "evaluated",
+                "radius_scope_evidence": "Computed radius tokens were inspected.",
+                "radius_relationships": [
+                    {
+                        "id": "card-panel",
+                        "location": "Card > inset panel",
+                        "kind": "shared-contour",
+                        "rule": "semantic-step",
+                        "outer_token": "radius-20",
+                        "inner_token": "radius-20",
+                        "token_steps_inward": 0,
+                        "evidence_state": "measured",
+                        "evidence": "Both computed radii are 20px.",
+                    }
+                ],
+                "exceptions": [],
+            },
+            expected=1,
+        )
+        self.assertFalse(result["pass"])
+        self.assertEqual(result["unresolved_radius_relationships"], 1)
+        self.assertEqual(result["radius"]["relationships"][0]["status"], "mismatch")
+
+    def test_visual_budget_accepts_measured_concentric_radius(self) -> None:
+        limits = self.visual_limits()
+        result = self.run_json_document(
+            "skills/visual-entropy-budget/scripts/check_budget.py",
+            {
+                "artifact": "Nested card",
+                "observed": dict(limits),
+                "limits": limits,
+                "radius_scope": "evaluated",
+                "radius_scope_evidence": "Computed contour values were measured.",
+                "radius_relationships": [
+                    {
+                        "id": "card-image",
+                        "location": "Card > inset image",
+                        "kind": "shared-contour",
+                        "rule": "concentric-offset",
+                        "outer_radius": 20,
+                        "inner_radius": 12,
+                        "inset": 8,
+                        "tolerance": 1,
+                        "evidence_state": "measured",
+                        "evidence": "Computed values match the declared 8px contour inset.",
+                    }
+                ],
+                "exceptions": [],
+            },
+        )
+        self.assertTrue(result["pass"])
+        relationship = result["radius"]["relationships"][0]
+        self.assertEqual(relationship["status"], "conforming")
+        self.assertEqual(relationship["expected_inner_radius"], 12.0)
+
+    def test_visual_budget_unknown_radius_scope_requires_review(self) -> None:
+        limits = self.visual_limits()
+        result = self.run_json_document(
+            "skills/visual-entropy-budget/scripts/check_budget.py",
+            {
+                "artifact": "Uninspected interface",
+                "observed": dict(limits),
+                "limits": limits,
+                "exceptions": [],
+            },
+            expected=1,
+        )
+        self.assertFalse(result["pass"])
+        self.assertTrue(result["review_required"])
+        self.assertEqual(result["budget_status"], "review-required")
+        self.assertEqual(result["radius"]["scope"], "unknown")
+
+    def test_visual_budget_radius_exception_requires_human_review(self) -> None:
+        limits = self.visual_limits()
+        result = self.run_json_document(
+            "skills/visual-entropy-budget/scripts/check_budget.py",
+            {
+                "artifact": "Branded nested card",
+                "observed": dict(limits),
+                "limits": limits,
+                "radius_scope": "evaluated",
+                "radius_scope_evidence": "Computed tokens were inspected.",
+                "radius_relationships": [
+                    {
+                        "id": "brand-frame",
+                        "location": "Brand frame > media panel",
+                        "kind": "shared-contour",
+                        "rule": "semantic-step",
+                        "outer_token": "brand-radius",
+                        "inner_token": "brand-radius",
+                        "token_steps_inward": 0,
+                        "evidence_state": "measured",
+                        "evidence": "Both contours use the approved brand token.",
+                        "exception": {
+                            "reason": "The repeated superellipse is a documented brand signature.",
+                            "evidence": "The approved brand specification requires the shared shape.",
+                        },
+                    }
+                ],
+                "exceptions": [],
+            },
+            expected=1,
+        )
+        self.assertFalse(result["pass"])
+        self.assertTrue(result["review_required"])
+        self.assertEqual(result["unresolved_radius_relationships"], 0)
+        self.assertEqual(result["documented_radius_exceptions"], 1)
 
     def test_motion_example_has_no_hard_failure(self) -> None:
         result = self.run_json(
@@ -256,7 +385,7 @@ class CommandTests(unittest.TestCase):
         )
         self.assertTrue(result["valid_report"])
         self.assertTrue(result["release_ready"])
-        self.assertEqual(result["status_counts"]["pass"], 10)
+        self.assertEqual(result["status_counts"]["pass"], 11)
         self.assertEqual(result["status_counts"]["unknown"], 1)
 
     def test_prune_baseline_failure_cannot_be_marked_optional(self) -> None:

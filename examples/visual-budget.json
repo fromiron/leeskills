@@ -26,6 +26,44 @@
     "motion_patterns": 2,
     "decorative_image_families": 0
   },
+  "radius_scope": "evaluated",
+  "radius_scope_evidence": "Rendered nested surfaces and computed radius tokens were inspected.",
+  "radius_relationships": [
+    {
+      "id": "hero-card-panel",
+      "location": "Hero card > product preview panel",
+      "kind": "shared-contour",
+      "rule": "semantic-step",
+      "outer_token": "radius-20",
+      "inner_token": "radius-20",
+      "token_steps_inward": 0,
+      "evidence_state": "measured",
+      "evidence": "Computed styles use the same 20px radius on both nested contours."
+    },
+    {
+      "id": "dialog-content",
+      "location": "Dialog shell > dialog content surface",
+      "kind": "shared-contour",
+      "rule": "semantic-step",
+      "outer_token": "radius-28",
+      "inner_token": "radius-20",
+      "token_steps_inward": 1,
+      "evidence_state": "measured",
+      "evidence": "The declared semantic scale places radius-20 one step inside radius-28."
+    },
+    {
+      "id": "project-card-image",
+      "location": "Project card > inset image",
+      "kind": "shared-contour",
+      "rule": "concentric-offset",
+      "outer_radius": 20,
+      "inner_radius": 12,
+      "inset": 8,
+      "tolerance": 1,
+      "evidence_state": "measured",
+      "evidence": "Computed pixels show a 20px outer radius and 12px inner radius across an 8px inset."
+    }
+  ],
   "exceptions": [
     {
       "metric": "typeface_families",

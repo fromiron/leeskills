@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.1.0"
+  version: "0.2.0"
   languages: "en, ko, ja"
 ---
 
@@ -65,15 +65,17 @@ For test status, use:
 6. Check semantic resilience: confirm the reading order, headings, labels,
    links, and controls remain understandable without decorative styling.
 7. Check visual hierarchy at a glance without using style as proof of meaning.
-8. Check growth: model substantially more records, projects, posts, or states
+8. When nested rounded surfaces exist or changed, repeat the declared semantic
+   step or concentric-offset check and compare before and after contours.
+9. Check growth: model substantially more records, projects, posts, or states
    without adding an unrelated layout grammar.
-9. Check reflow and input paths at the declared accessibility baseline.
-10. Check reduced-motion behavior for retained nonessential motion.
-11. Check provenance for claims, images, metrics, quotes, and product evidence.
-12. Classify each check as pass, fail, unknown, or not applicable.
-13. Block release for required failures or unknowns unless the exact risk is
+10. Check reflow and input paths at the declared accessibility baseline.
+11. Check reduced-motion behavior for retained nonessential motion.
+12. Check provenance for claims, images, metrics, quotes, and product evidence.
+13. Classify each check as pass, fail, unknown, or not applicable.
+14. Block release for required failures or unknowns unless the exact risk is
     documented and explicitly accepted by an accountable owner.
-14. Produce the smallest reversible change plan and a repeatable verification
+15. Produce the smallest reversible change plan and a repeatable verification
     plan.
 
 Use [references/verification-tests.md](references/verification-tests.md) for
@@ -93,6 +95,10 @@ Unless the artifact makes a check genuinely irrelevant, include:
 - keyboard and visible focus;
 - reduced motion;
 - provenance.
+
+Also include `nested-radius-coherence` when nested rounded surfaces exist or a
+radius, padding, border, or surface relationship changed. Mark it genuinely
+not applicable when the artifact has no such relationship.
 
 A screenshot can support visual observations but cannot pass keyboard,
 semantics, runtime behavior, reflow, assistive-technology, or reduced-motion
@@ -132,7 +138,8 @@ python scripts/validate_verification.py path/to/verification.json
 ```
 
 The script validates the report contract and required-check gates. It does not
-perform browser, accessibility, or usability testing.
+inspect CSS, render contours, or perform browser, accessibility, or usability
+testing.
 
 ## Recommendation order
 

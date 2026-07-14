@@ -44,52 +44,60 @@ Use headings, lists, tables, alignment, spacing, and rules before wrapping
 every item in a rounded card. A container should communicate a real boundary,
 state, or interaction.
 
-### 4. Typography carries hierarchy
+### 4. Nested curves preserve relationships
+
+Count radius tokens, but also inspect how rounded surfaces relate. When an
+inner surface visually follows an outer contour, move inward through the
+project's semantic radius scale or verify the intended concentric offset.
+Classify independent controls, pills, and circles separately instead of forcing
+all nested shapes into one arithmetic rule.
+
+### 5. Typography carries hierarchy
 
 Use a small number of type roles. Do not compensate for weak information
 architecture with gradient text, excessive scale jumps, or many unrelated
 weights.
 
-### 5. Color has a job
+### 6. Color has a job
 
 Each color should support identification, state, category, selection, data, or
 brand recognition. Decorative color systems require an explicit reason.
 
-### 6. Whitespace communicates relationships
+### 7. Whitespace communicates relationships
 
 Spacing should indicate grouping and hierarchy, not merely create a sparse
 look. Large empty areas are not automatically minimal.
 
-### 7. Images are evidence
+### 8. Images are evidence
 
 Prefer real work, products, people, places, processes, or data. Decorative
 generative imagery is not automatically prohibited, but it must have a stated
 communication role and must not impersonate product evidence.
 
-### 8. Copy is specific and attributable
+### 9. Copy is specific and attributable
 
 Use names, dates, prices, actions, constraints, outcomes, and source-backed
 claims. Reject copy that remains equally plausible after swapping in an
 unrelated company name.
 
-### 9. Motion must explain something
+### 10. Motion must explain something
 
 Keep motion when it conveys feedback, state change, causality, spatial
 continuity, errors, success, or a user-requested transition. Remove motion that
 exists only to make a page feel active.
 
-### 10. Accessibility is not decoration
+### 11. Accessibility is not decoration
 
 Do not remove focus indicators, labels, headings, errors, alternatives,
 contrast, or keyboard behavior to achieve a cleaner surface.
 
-### 11. Complexity can remain
+### 12. Complexity can remain
 
 Minimal design does not require little content. Large archives and catalogs can
 remain simple when their records use one stable schema and scale without
 introducing new visual grammars.
 
-### 12. Prune after grounding
+### 13. Prune after grounding
 
 Deletion before grounding can remove necessary information. Establish the user
 task and evidence first, then remove elements that do not serve them.

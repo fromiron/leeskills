@@ -24,6 +24,7 @@ TESTS = {
     "reduced-motion",
     "provenance",
     "assistive-technology",
+    "nested-radius-coherence",
     "custom",
 }
 BASELINE_TESTS = {

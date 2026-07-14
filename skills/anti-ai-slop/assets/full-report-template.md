@@ -39,6 +39,14 @@
 | Metric | Observed | Limit | Status | Exception |
 |---|---:|---:|---|---|
 
+### Nested-radius relationships
+
+- Scope: none / evaluated / unknown
+- Scope evidence:
+
+| Location | Kind | Rule | Outer | Inner | Evidence state | Status | Exception |
+|---|---|---|---|---|---|---|---|
+
 ## Copy
 
 | Original | Issue | Supported rewrite | Evidence |
@@ -73,6 +81,7 @@
 - Keyboard/focus test:
 - Reduced-motion test:
 - Provenance test:
+- Nested-radius coherence test, when applicable:
 
 ## Unknowns
 

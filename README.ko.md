@@ -4,8 +4,8 @@
 디자인 시스템에서 근거 없는 내용과 불필요한 시각 요소를 탐지·제거하기 위한
 범용 Agent Skills 모음입니다.
 
-버전: **0.1.0**  
-상태: **Beta / 초기 연구 기반 릴리스**  
+버전: **0.2.0**  
+상태: **Beta / 연구 기반 릴리스**  
 라이선스: **MIT**
 
 ## 핵심 원칙
@@ -25,7 +25,7 @@
 | `slop-signal-audit` | 관찰 가능한 slop 신호를 찾고 점수화하며 제거 순서를 제안 |
 | `content-grounding` | 출처가 있는 콘텐츠 인벤토리를 만들고 조작·날조를 차단 |
 | `structure-selector` | 사용자의 작업에 맞는 지배적 정보 구조 하나를 선택 |
-| `visual-entropy-budget` | 레이아웃·서체·색·표면·CTA·이미지·모션 변형 수를 제한 |
+| `visual-entropy-budget` | 시각 변형 수를 제한하고 중첩 Radius 관계를 검증 |
 | `specificity-editor` | 교체 가능한 마케팅 문구를 구체적이고 검증 가능한 문구로 수정 |
 | `motion-necessity-gate` | 피드백·상태·인과·공간 관계를 전달하는 모션만 유지 |
 | `accessibility-simplicity-guard` | 심플화를 이유로 접근성 단서나 기능을 제거하지 못하게 함 |

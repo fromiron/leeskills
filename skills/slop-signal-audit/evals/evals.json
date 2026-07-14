@@ -28,6 +28,16 @@
         "Both artifacts use the same category maxima.",
         "The recommendation discusses task completion rather than emptiness alone."
       ]
+    },
+    {
+      "id": "nested-radius-signal",
+      "prompt": "Audit this dashboard for visual slop. Several cards contain inset panels that repeat the same 20px radius even though the contours are nested.",
+      "expected_output": "An evidence-labeled finding that distinguishes radius-token count from nested contour coherence and requests semantic-step or measured-offset verification.",
+      "assertions": [
+        "The output identifies the repeated nested radius as an observable design issue, not proof of AI authorship.",
+        "The output distinguishes shared contours from independent components and pills.",
+        "The recommendation includes a repeatable verification method."
+      ]
     }
   ]
 }

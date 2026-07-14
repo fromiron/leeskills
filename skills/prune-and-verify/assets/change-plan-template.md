@@ -39,6 +39,7 @@
 |  | keyboard-focus | yes |  |  |  |  |  |  |  |
 |  | reduced-motion | yes |  |  |  |  |  |  |  |
 |  | provenance | yes |  |  |  |  |  |  |  |
+|  | nested-radius-coherence | when applicable |  |  |  |  |  |  |  |
 
 ## What changed
 

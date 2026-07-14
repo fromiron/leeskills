@@ -2,6 +2,23 @@
 
 All notable changes are documented here.
 
+## [0.2.0] - 2026-07-14
+
+### Added
+
+- Added nested-radius scope and relationship records to visual budgets.
+- Added deterministic semantic-step and concentric-offset checks for shared
+  nested contours, with evidence labels and review-gated exceptions.
+- Added English, Korean, and Japanese nested-radius trigger fixtures and output
+  evals.
+
+### Changed
+
+- Distinguished radius-token count from nested-contour coherence across the
+  visual budget, slop audit, orchestration, and final verification workflows.
+- Added Codeit Design System radius guidance to the normalized source notes
+  without adopting project-specific pixel tokens as universal defaults.
+
 ## [0.1.0] - 2026-07-14
 
 ### Added

@@ -51,8 +51,24 @@ Produce:
 
 ### Visual budget
 
-Produce observed counts, default or project limits, exceptions, and unresolved
-overages. Do not treat default limits as universal laws.
+Produce:
+
+```json
+{
+  "observed": {},
+  "limits": {},
+  "radius_scope": "none | evaluated | unknown",
+  "radius_scope_evidence": "",
+  "radius_relationships": [],
+  "exceptions": []
+}
+```
+
+For shared nested contours, record either the inward semantic token step or a
+measured concentric offset. Classify independent components and pills instead
+of forcing them into the shared-contour rule. Produce unresolved overages and
+radius mismatches. Do not treat default limits or another system's pixel values
+as universal laws.
 
 ### Specificity edit
 
@@ -89,13 +105,16 @@ For each check, record:
 ### Prune and verify
 
 Run the deletion, substitution, semantic, five-second, growth, reflow,
-keyboard, reduced-motion, and provenance tests. Unknown results remain unknown.
+keyboard, reduced-motion, and provenance tests. When nested rounded surfaces
+exist or changed, also run nested-radius coherence verification. Unknown
+results remain unknown.
 
 ## Dependency rules
 
 - Structure depends on grounded user needs and content.
 - Copy cannot add facts absent from grounding.
 - Visual budgets cannot override accessibility.
+- A low radius-token count cannot override a measured nested-contour mismatch.
 - Motion cannot carry information without a static equivalent.
 - Pruning cannot delete evidence required for trust or task completion.
 - A score cannot override a hard failure.

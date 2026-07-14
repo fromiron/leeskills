@@ -12,6 +12,12 @@
     "should_trigger": true
   },
   {
+    "id": "en-positive-3",
+    "language": "en",
+    "query": "Audit these nested cards: the inner panel repeats the outer corner radius even though it is inset.",
+    "should_trigger": true
+  },
+  {
     "id": "en-negative-1",
     "language": "en",
     "query": "Rewrite this pricing paragraph to make the offer more concrete.",
@@ -21,6 +27,12 @@
     "id": "en-negative-2",
     "language": "en",
     "query": "Check this form for keyboard traps and missing labels.",
+    "should_trigger": false
+  },
+  {
+    "id": "en-negative-3",
+    "language": "en",
+    "query": "Calculate the radius of a circle with a 20-pixel diameter.",
     "should_trigger": false
   },
   {
@@ -36,6 +48,12 @@
     "should_trigger": true
   },
   {
+    "id": "ko-positive-3",
+    "language": "ko",
+    "query": "안쪽으로 들어간 패널이 바깥 카드와 같은 모서리 반경을 반복하는 중첩 구조를 검사해줘.",
+    "should_trigger": true
+  },
+  {
     "id": "ko-negative-1",
     "language": "ko",
     "query": "이 가격 문단의 제안을 더 구체적인 카피로 고쳐줘.",
@@ -45,6 +63,12 @@
     "id": "ko-negative-2",
     "language": "ko",
     "query": "이 폼의 키보드 트랩과 누락된 레이블만 확인해줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-3",
+    "language": "ko",
+    "query": "지름이 20픽셀인 원의 반지름을 계산해줘.",
     "should_trigger": false
   },
   {
@@ -60,6 +84,12 @@
     "should_trigger": true
   },
   {
+    "id": "ja-positive-3",
+    "language": "ja",
+    "query": "内側に入ったパネルが外側カードと同じ角丸を繰り返す入れ子構造を監査してください。",
+    "should_trigger": true
+  },
+  {
     "id": "ja-negative-1",
     "language": "ja",
     "query": "この料金説明を、内容が具体的に伝わるコピーに書き直してください。",
@@ -69,6 +99,12 @@
     "id": "ja-negative-2",
     "language": "ja",
     "query": "このフォームのキーボードトラップと不足ラベルだけを確認してください。",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-3",
+    "language": "ja",
+    "query": "直径20ピクセルの円の半径を計算してください。",
     "should_trigger": false
   }
 ]

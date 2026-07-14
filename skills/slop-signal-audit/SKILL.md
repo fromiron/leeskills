@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.1.0"
+  version: "0.2.0"
   languages: "en, ko, ja"
 ---
 
@@ -56,12 +56,14 @@ no passing credit merely because it was not visible.
 3. Mark unsupported claims and absent evidence before judging aesthetics.
 4. Find repetition that adds no new decision-relevant information.
 5. Identify visual variants that do not communicate state, hierarchy, or brand.
-6. Check whether images demonstrate real work or merely occupy space.
-7. Check motion for a functional purpose and reduced-motion behavior.
-8. Run the accessibility guard or mark untested items as unknown.
-9. Score every category using [references/rubric.md](references/rubric.md).
-10. List project hard failures independently of the score.
-11. Order recommendations by user impact, confidence, and reversibility.
+6. Inspect nested rounded surfaces for repeated tokens, inward semantic steps,
+   or measured contour offsets; do not treat token count alone as coherence.
+7. Check whether images demonstrate real work or merely occupy space.
+8. Check motion for a functional purpose and reduced-motion behavior.
+9. Run the accessibility guard or mark untested items as unknown.
+10. Score every category using [references/rubric.md](references/rubric.md).
+11. List project hard failures independently of the score.
+12. Order recommendations by user impact, confidence, and reversibility.
 
 ## Scoring
 
@@ -111,6 +113,8 @@ For every recommendation include:
 - confidence.
 
 Prefer removal or consolidation before adding new components.
+Route detailed nested-radius measurement to `visual-entropy-budget` and verify
+the repaired relationship with `prune-and-verify`.
 
 ## Completion
 

@@ -32,10 +32,13 @@ Full credit requires:
 
 - visual variants have jobs;
 - type, color, surfaces, radii, shadows, and motion form a small system;
+- shared nested contours use a coherent inward radius relationship;
 - exceptions are intentional and documented.
 
 Deduct for gratuitous variants or default card, gradient, glow, and bento
-patterns.
+patterns. Also deduct when nested rounded surfaces repeat the same token or
+produce a directly observed or measured contour mismatch without a documented
+communication reason.
 
 ## 4. Typography, spacing, and alignment — 15
 
@@ -57,8 +60,9 @@ Full credit requires:
 - identical meanings use identical components;
 - CTAs are consolidated.
 
-Deduct for card-everything, pill-everything, duplicate CTA treatments, or
-components that disappear without information loss.
+Deduct for card-everything, pill-everything, duplicate CTA treatments,
+unnecessary layers of rounded containers, or components that disappear without
+information loss.
 
 ## 6. Image relevance and authenticity — 10
 

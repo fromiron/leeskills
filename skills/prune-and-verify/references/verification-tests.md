@@ -110,3 +110,19 @@ Compare task steps, required information, failure recovery, accessibility
 signals, visual variants, content volume, and page weight when those metrics
 are available. Prefer measurable differences, but preserve qualitative
 observations with clear evidence labels.
+
+## 13. Nested-radius coherence test
+
+When rounded surfaces are nested or their radius, padding, gap, border, or
+surface treatment changed:
+
+1. classify each pair as a shared contour, independent component, or pill or
+   circle;
+2. for a shared contour, repeat the declared one-step semantic-token check or
+   measured concentric-offset calculation;
+3. compare before and after screenshots at representative viewports;
+4. confirm that the change did not clip focus, content, targets, or states;
+5. record exceptions and their communication evidence.
+
+Do not pass this check from a token count alone. Mark it not applicable only
+when no nested rounded relationship exists in scope.
