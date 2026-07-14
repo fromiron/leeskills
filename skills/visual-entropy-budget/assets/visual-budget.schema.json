@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Visual entropy budget",
+  "type": "object",
+  "required": [
+    "artifact",
+    "observed",
+    "limits",
+    "exceptions"
+  ],
+  "properties": {
+    "artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed": {
+      "type": "object",
+      "required": [
+        "layout_grammars",
+        "typeface_families",
+        "type_roles",
+        "accent_colors",
+        "radius_tokens",
+        "shadow_levels",
+        "surface_styles",
+        "primary_cta_styles",
+        "secondary_cta_styles",
+        "motion_patterns",
+        "decorative_image_families"
+      ],
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "layout_grammars",
+        "typeface_families",
+        "type_roles",
+        "accent_colors",
+        "radius_tokens",
+        "shadow_levels",
+        "surface_styles",
+        "primary_cta_styles",
+        "secondary_cta_styles",
+        "motion_patterns",
+        "decorative_image_families"
+      ],
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "metric",
+          "reason",
+          "evidence"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

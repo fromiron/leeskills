@@ -1,0 +1,33 @@
+{
+  "skill_name": "structure-selector",
+  "evals": [
+    {
+      "id": "writer-archive",
+      "prompt": "I have 120 essays with titles, dates, and topics. Choose a simple structure that will still work at 500 essays.",
+      "expected_output": "A writing-index decision with title/date/topic records, filtering only if useful, and a growth test.",
+      "assertions": [
+        "The dominant grammar is writing-index.",
+        "The output does not require unique thumbnails for every essay.",
+        "The growth test uses the same record schema."
+      ]
+    },
+    {
+      "id": "career-ledger",
+      "prompt": "My main content is a 12-year work history with organizations, roles, and dates. I need a concise personal site.",
+      "expected_output": "A chronological-ledger or a clearly justified alternative based on the primary task.",
+      "assertions": [
+        "Time is considered as the natural organizing key.",
+        "At least two alternatives are rejected with reasons."
+      ]
+    },
+    {
+      "id": "hybrid-temptation",
+      "prompt": "Make a profile with a hero, bento features, timeline, carousel, testimonials, and blog cards because that feels modern.",
+      "expected_output": "The agent rejects motif mixing unless user tasks justify it and selects a coherent dominant grammar.",
+      "assertions": [
+        "Visual trend requests do not override user-task structure.",
+        "A justified-hybrid is not used without distinct tasks."
+      ]
+    }
+  ]
+}

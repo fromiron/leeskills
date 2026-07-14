@@ -1,0 +1,33 @@
+{
+  "skill_name": "slop-signal-audit",
+  "evals": [
+    {
+      "id": "screenshot-only",
+      "prompt": "Audit this landing-page screenshot for AI-slop signals. I have not supplied the DOM or analytics.",
+      "expected_output": "A scoped audit that labels visual findings as observed and accessibility, behavior, and performance claims as unknown unless measured.",
+      "assertions": [
+        "The output does not claim AI authorship.",
+        "The output lists what was not inspected.",
+        "Unknown accessibility checks do not receive full credit."
+      ]
+    },
+    {
+      "id": "unsupported-proof",
+      "prompt": "Review this page copy and design. The customer logos and 40% productivity claim are placeholders, not real.",
+      "expected_output": "The placeholders are identified as project hard failures or prohibited release content, regardless of visual score.",
+      "assertions": [
+        "Placeholder social proof is not treated as verified evidence.",
+        "The passing verdict is blocked while fabricated proof remains."
+      ]
+    },
+    {
+      "id": "before-after",
+      "prompt": "Compare these before and after screens and tell me whether the simplification actually improved the design.",
+      "expected_output": "A comparable scored audit using the same rubric and evidence limits for both versions.",
+      "assertions": [
+        "Both artifacts use the same category maxima.",
+        "The recommendation discusses task completion rather than emptiness alone."
+      ]
+    }
+  ]
+}

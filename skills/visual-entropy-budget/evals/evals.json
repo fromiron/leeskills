@@ -1,0 +1,33 @@
+{
+  "skill_name": "visual-entropy-budget",
+  "evals": [
+    {
+      "id": "token-audit",
+      "prompt": "These design tokens contain five radii, four shadows, three button treatments, and six surface styles. Define a minimal consolidation plan.",
+      "expected_output": "An inventory compared with explicit limits, preserving semantic states and documenting any justified exception.",
+      "assertions": [
+        "The output distinguishes semantic states from decorative variants.",
+        "Focus and error states are not removed to meet the budget.",
+        "Duplicate candidates are prioritized for consolidation."
+      ]
+    },
+    {
+      "id": "editorial-exception",
+      "prompt": "This editorial site uses two typefaces: one for reading and one for data and code. Does that automatically fail?",
+      "expected_output": "No automatic failure; the second typeface is evaluated as a documented communication role.",
+      "assertions": [
+        "The limits are treated as defaults rather than laws.",
+        "The exception explains what would be lost by merging."
+      ]
+    },
+    {
+      "id": "status-colors",
+      "prompt": "Our app has green, amber, red, and blue status colors plus one brand accent. Reduce visual entropy without making states ambiguous.",
+      "expected_output": "Status colors are inventoried separately and preserved where they encode meaning.",
+      "assertions": [
+        "Status colors are not collapsed merely to meet the accent budget.",
+        "Accessibility remains a higher-priority constraint."
+      ]
+    }
+  ]
+}

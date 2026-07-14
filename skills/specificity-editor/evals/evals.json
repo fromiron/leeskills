@@ -1,0 +1,33 @@
+{
+  "skill_name": "specificity-editor",
+  "evals": [
+    {
+      "id": "generic-saas-hero",
+      "prompt": "Rewrite 'Unlock seamless collaboration and supercharge your team's future' using these facts: the app lets architecture teams annotate PDFs and assign comments.",
+      "expected_output": "A concise rewrite grounded in PDF annotation and comment assignment, with no invented result.",
+      "assertions": [
+        "The rewrite names the actual task.",
+        "The rewrite removes unsupported future and performance claims.",
+        "No metric is invented."
+      ]
+    },
+    {
+      "id": "unsupported-superlative",
+      "prompt": "Our draft says 'the fastest design review platform' but we have no benchmark. Make it specific.",
+      "expected_output": "The superlative is removed or marked unresolved; the rewrite uses known mechanics.",
+      "assertions": [
+        "The output does not retain the unsupported 'fastest' claim as fact.",
+        "The issue and evidence status are explicit."
+      ]
+    },
+    {
+      "id": "preserve-voice",
+      "prompt": "This is a playful personal site. Remove generic marketing filler but keep the author's dry humor.",
+      "expected_output": "Specificity improves without flattening distinctive voice.",
+      "assertions": [
+        "The output does not equate minimal copy with corporate tone.",
+        "Authorial phrases are retained when they convey identity."
+      ]
+    }
+  ]
+}

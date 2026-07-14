@@ -1,0 +1,76 @@
+{
+  "name": "leeskills",
+  "version": "0.1.0",
+  "format": "Agent Skills",
+  "license": "MIT",
+  "maturity": "beta",
+  "default_language": "en",
+  "supported_content_languages": [
+    "en",
+    "ko",
+    "ja"
+  ],
+  "entrypoint": "skills/anti-ai-slop/SKILL.md",
+  "skills": [
+    {
+      "name": "anti-ai-slop",
+      "path": "skills/anti-ai-slop",
+      "role": "orchestrator"
+    },
+    {
+      "name": "slop-signal-audit",
+      "path": "skills/slop-signal-audit",
+      "role": "focused"
+    },
+    {
+      "name": "content-grounding",
+      "path": "skills/content-grounding",
+      "role": "focused"
+    },
+    {
+      "name": "structure-selector",
+      "path": "skills/structure-selector",
+      "role": "focused"
+    },
+    {
+      "name": "visual-entropy-budget",
+      "path": "skills/visual-entropy-budget",
+      "role": "focused"
+    },
+    {
+      "name": "specificity-editor",
+      "path": "skills/specificity-editor",
+      "role": "focused"
+    },
+    {
+      "name": "motion-necessity-gate",
+      "path": "skills/motion-necessity-gate",
+      "role": "focused"
+    },
+    {
+      "name": "accessibility-simplicity-guard",
+      "path": "skills/accessibility-simplicity-guard",
+      "role": "focused"
+    },
+    {
+      "name": "prune-and-verify",
+      "path": "skills/prune-and-verify",
+      "role": "focused"
+    }
+  ],
+  "runtime": {
+    "core": "instruction-only",
+    "optional_scripts": "Python 3.9+ standard library",
+    "network_required": false
+  },
+  "evidence_policy": {
+    "authorship_inference": "prohibited_without_direct_evidence",
+    "unsupported_claim_generation": "prohibited",
+    "uncertainty_labels": [
+      "observed",
+      "measured",
+      "inferred",
+      "unknown"
+    ]
+  }
+}

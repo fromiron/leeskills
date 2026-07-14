@@ -1,0 +1,35 @@
+{
+  "skill_name": "anti-ai-slop",
+  "evals": [
+    {
+      "id": "existing-landing-page",
+      "prompt": "Audit this generated SaaS landing page. Remove generic sections and copy, keep the actual product information, and give me an accessible simplification plan.",
+      "expected_output": "An evidence-labeled end-to-end report that uses the existing-artifact workflow, identifies unsupported claims, selects a dominant structure, applies visual and motion gates, and finishes with verification.",
+      "assertions": [
+        "The output does not claim the page was AI-generated solely from style.",
+        "The output separates observed facts from unknowns.",
+        "The output includes accessibility and reduced-motion checks.",
+        "The output orders removals by priority."
+      ]
+    },
+    {
+      "id": "new-portfolio",
+      "prompt": "Use these verified project notes to define a very simple portfolio. Do not invent clients, outcomes, or testimonials.",
+      "expected_output": "A new-artifact workflow beginning with grounded content, followed by structure and visual budgets, with no invented proof.",
+      "assertions": [
+        "The output begins from supplied project facts.",
+        "The output selects one dominant portfolio structure.",
+        "Missing outcomes remain missing rather than being fabricated."
+      ]
+    },
+    {
+      "id": "narrow-copy-boundary",
+      "prompt": "Use the anti-ai-slop orchestrator explicitly, but only rewrite the hero sentence to be more concrete. Do not redesign the page.",
+      "expected_output": "The orchestrator narrows the workflow to content grounding, specificity editing, and a light verification rather than running a full visual audit.",
+      "assertions": [
+        "The output does not introduce a page redesign.",
+        "The rewrite is tied to supplied evidence."
+      ]
+    }
+  ]
+}

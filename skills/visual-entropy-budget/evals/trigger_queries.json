@@ -1,0 +1,74 @@
+[
+  {
+    "id": "en-positive-1",
+    "language": "en",
+    "query": "Count and consolidate the type, radius, shadow, surface, CTA, image, and motion variants in this design system.",
+    "should_trigger": true
+  },
+  {
+    "id": "en-positive-2",
+    "language": "en",
+    "query": "Decide whether the second typeface and extra colors have documented communication roles or are unnecessary variants.",
+    "should_trigger": true
+  },
+  {
+    "id": "en-negative-1",
+    "language": "en",
+    "query": "Rewrite this pricing paragraph to make the offer more concrete.",
+    "should_trigger": false
+  },
+  {
+    "id": "en-negative-2",
+    "language": "en",
+    "query": "Check this form for keyboard traps and missing labels.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-positive-1",
+    "language": "ko",
+    "query": "이 디자인 시스템의 글꼴·반경·그림자·표면·CTA·이미지·모션 변형을 세고 통합해줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-positive-2",
+    "language": "ko",
+    "query": "두 번째 글꼴과 추가 색상이 실제 전달 역할을 갖는지 불필요한 변형인지 판단해줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-negative-1",
+    "language": "ko",
+    "query": "이 가격 문단의 제안을 더 구체적인 카피로 고쳐줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-2",
+    "language": "ko",
+    "query": "이 폼의 키보드 트랩과 누락된 레이블만 확인해줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-positive-1",
+    "language": "ja",
+    "query": "このデザインシステムの書体・角丸・影・面・CTA・画像・動きのバリエーションを数えて統合してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-2",
+    "language": "ja",
+    "query": "二つ目の書体と追加色に伝達上の役割があるか、不要なバリエーションかを判断してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-negative-1",
+    "language": "ja",
+    "query": "この料金説明を、内容が具体的に伝わるコピーに書き直してください。",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-2",
+    "language": "ja",
+    "query": "このフォームのキーボードトラップと不足ラベルだけを確認してください。",
+    "should_trigger": false
+  }
+]

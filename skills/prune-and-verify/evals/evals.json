@@ -1,0 +1,33 @@
+{
+  "skill_name": "prune-and-verify",
+  "evals": [
+    {
+      "id": "delete-without-harming-task",
+      "prompt": "The redesign is finished. Remove anything unnecessary, but verify that hiring managers can still identify my role, project evidence, and contact path.",
+      "expected_output": "The agent runs deletion and primary-task tests, distinguishes unique evidence from repetition, and produces a reversible change ledger.",
+      "assertions": [
+        "The output does not equate empty space or fewer elements with success by itself.",
+        "Each deletion has an evidence state and verification method.",
+        "The task and contact path are explicitly rechecked."
+      ]
+    },
+    {
+      "id": "screenshot-limit",
+      "prompt": "Here is one desktop screenshot. Confirm that keyboard, reflow, semantics, and reduced-motion behavior all pass after simplification.",
+      "expected_output": "The agent marks runtime checks unknown and does not infer passes from the screenshot.",
+      "assertions": [
+        "Keyboard, semantic, reflow, and motion behavior are not marked pass without runtime evidence.",
+        "The output specifies repeatable tests."
+      ]
+    },
+    {
+      "id": "growth-and-provenance",
+      "prompt": "QA this minimal product archive before release. It currently has six records but will have hundreds, and a marketing metric has no source yet.",
+      "expected_output": "The agent checks growth using the stable schema and blocks or removes the unsupported metric until evidence is supplied.",
+      "assertions": [
+        "The unsupported metric is not preserved as verified copy.",
+        "The growth test evaluates the dominant structure rather than adding decorative card variants."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "en-positive-1",
+    "language": "en",
+    "query": "Audit this landing page as a whole and remove generic structure, copy, and motion without losing real product evidence or accessibility.",
+    "should_trigger": true
+  },
+  {
+    "id": "en-positive-2",
+    "language": "en",
+    "query": "Turn these verified product notes into a minimal, evidence-grounded, accessible site and finish with release verification.",
+    "should_trigger": true
+  },
+  {
+    "id": "en-negative-1",
+    "language": "en",
+    "query": "Rewrite this one hero sentence in plain English without reviewing the rest of the page.",
+    "should_trigger": false
+  },
+  {
+    "id": "en-negative-2",
+    "language": "en",
+    "query": "Check only whether this button meets the required contrast ratio.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-positive-1",
+    "language": "ko",
+    "query": "이 랜딩 페이지 전체를 감사해서 실제 제품 근거와 접근성은 보존하고, 범용적인 구조·카피·모션을 정리해줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-positive-2",
+    "language": "ko",
+    "query": "검증된 제품 자료로 간결하고 접근 가능한 사이트를 설계하고 마지막 릴리스 검증까지 진행해줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-negative-1",
+    "language": "ko",
+    "query": "페이지의 나머지는 검토하지 말고 이 히어로 문장 하나만 쉬운 말로 고쳐줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-2",
+    "language": "ko",
+    "query": "이 버튼 하나의 명도 대비만 확인해줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-positive-1",
+    "language": "ja",
+    "query": "このランディングページ全体を監査し、実在する製品の根拠とアクセシビリティを保ったまま、汎用的な構成・コピー・動きを整理してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-2",
+    "language": "ja",
+    "query": "検証済みの製品資料から、簡潔でアクセシブルなサイトを設計し、最後のリリース検証まで行ってください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-negative-1",
+    "language": "ja",
+    "query": "ページ全体は見直さず、このヒーロー文一つだけを分かりやすく書き直してください。",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-2",
+    "language": "ja",
+    "query": "このボタン一つのコントラスト比だけを確認してください。",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "artifact": "Example product page",
+  "observed": {
+    "layout_grammars": 3,
+    "typeface_families": 2,
+    "type_roles": 8,
+    "accent_colors": 4,
+    "radius_tokens": 5,
+    "shadow_levels": 3,
+    "surface_styles": 6,
+    "primary_cta_styles": 2,
+    "secondary_cta_styles": 3,
+    "motion_patterns": 5,
+    "decorative_image_families": 2
+  },
+  "limits": {
+    "layout_grammars": 1,
+    "typeface_families": 1,
+    "type_roles": 6,
+    "accent_colors": 1,
+    "radius_tokens": 2,
+    "shadow_levels": 1,
+    "surface_styles": 3,
+    "primary_cta_styles": 1,
+    "secondary_cta_styles": 1,
+    "motion_patterns": 2,
+    "decorative_image_families": 0
+  },
+  "exceptions": [
+    {
+      "metric": "typeface_families",
+      "reason": "The second family is a monospaced face for code examples.",
+      "evidence": "Code blocks are a primary product-use artifact."
+    }
+  ],
+  "notes": [
+    "Status colors were inventoried separately and are not counted as accents."
+  ]
+}
