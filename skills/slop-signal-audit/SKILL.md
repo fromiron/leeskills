@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.2.0"
+  version: "0.3.0"
   languages: "en, ko, ja"
 ---
 
@@ -53,17 +53,20 @@ no passing credit merely because it was not visible.
 1. Define the artifact, intended user, primary task, and success condition.
 2. Inventory all visible sections, component families, CTAs, claims, images,
    motion patterns, and navigation structures.
-3. Mark unsupported claims and absent evidence before judging aesthetics.
-4. Find repetition that adds no new decision-relevant information.
-5. Identify visual variants that do not communicate state, hierarchy, or brand.
-6. Inspect nested rounded surfaces for repeated tokens, inward semantic steps,
+3. Compare the inventory against
+   [references/generic-default-catalog.md](references/generic-default-catalog.md)
+   and record each match as an observed signal with its location.
+4. Mark unsupported claims and absent evidence before judging aesthetics.
+5. Find repetition that adds no new decision-relevant information.
+6. Identify visual variants that do not communicate state, hierarchy, or brand.
+7. Inspect nested rounded surfaces for repeated tokens, inward semantic steps,
    or measured contour offsets; do not treat token count alone as coherence.
-7. Check whether images demonstrate real work or merely occupy space.
-8. Check motion for a functional purpose and reduced-motion behavior.
-9. Run the accessibility guard or mark untested items as unknown.
-10. Score every category using [references/rubric.md](references/rubric.md).
-11. List project hard failures independently of the score.
-12. Order recommendations by user impact, confidence, and reversibility.
+8. Check whether images demonstrate real work or merely occupy space.
+9. Check motion for a functional purpose and reduced-motion behavior.
+10. Run the accessibility guard or mark untested items as unknown.
+11. Score every category using [references/rubric.md](references/rubric.md).
+12. List project hard failures independently of the score.
+13. Order recommendations by user impact, confidence, and reversibility.
 
 ## Scoring
 

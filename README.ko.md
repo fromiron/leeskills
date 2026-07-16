@@ -4,7 +4,7 @@
 디자인 시스템에서 근거 없는 내용과 불필요한 시각 요소를 탐지·제거하기 위한
 범용 Agent Skills 모음입니다.
 
-버전: **0.2.0**  
+버전: **0.3.0**  
 상태: **Beta / 연구 기반 릴리스**  
 라이선스: **MIT**
 
@@ -107,6 +107,12 @@ slop-signal-audit
 
 ```text
 content-grounding → specificity-editor → prune-and-verify
+```
+
+### 빠른 검토 (소규모 산출물·초안)
+
+```text
+slop-signal-audit (1회 실행, 상위 5개 수정, 생략한 검증 항목 명시)
 ```
 
 ## 근거 상태

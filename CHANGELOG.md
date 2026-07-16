@@ -2,6 +2,32 @@
 
 All notable changes are documented here.
 
+## [0.3.0] - 2026-07-16
+
+### Added
+
+- Added a generic-default pattern catalog to `slop-signal-audit` covering
+  layout, visual-system, copy-shape, imagery, and motion defaults, each
+  contrasted with recurring choices in the curated minimal corpus and routed
+  to the matching focused skill.
+- Added a quick-pass workflow to the orchestrator for small artifacts and
+  early drafts, with explicit skipped-check disclosure and unchanged decision
+  gates.
+- Added output evals for the catalog-driven audit and the quick-pass scope.
+
+### Changed
+
+- Expanded the specificity phrase watchlist from 46 to 102 entries across
+  English, Korean, and Japanese, adding `generic-context` and
+  `contrast-framing` categories. Matches remain review prompts, not automatic
+  failures.
+- Recorded the corpus-contrast derivation of the catalog in the source notes.
+
+### Fixed
+
+- Reconfigured script output streams to UTF-8 so non-ASCII findings no longer
+  crash on Windows consoles with legacy code pages.
+
 ## [0.2.0] - 2026-07-14
 
 ### Added

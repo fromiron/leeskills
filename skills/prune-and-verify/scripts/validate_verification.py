@@ -9,6 +9,11 @@ import sys
 from pathlib import Path
 from typing import Any, NoReturn
 
+# Keep UTF-8 output stable on Windows consoles with legacy code pages.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 STATUSES = {"pass", "fail", "unknown", "not-applicable"}
 EVIDENCE_STATES = {"observed", "measured", "inferred", "unknown"}
 ACTIONS = {"delete", "consolidate", "rewrite", "replace", "retain", "restore"}
