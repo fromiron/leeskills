@@ -9,6 +9,11 @@ import sys
 from pathlib import Path
 from typing import Any, NoReturn
 
+# Keep UTF-8 output stable on Windows consoles with legacy code pages.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 LANGUAGES = ("en", "ko", "ja")
 MIN_POSITIVE_RATE = 2 / 3
 MAX_NEGATIVE_RATE = 1 / 3

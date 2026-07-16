@@ -52,6 +52,20 @@ and excessive storytelling and summarize the editorial direction as doing less
 but doing it better. The prior visual study of the linked corpus informed the
 structural categories used by `structure-selector`.
 
+The generic-default pattern catalog in `slop-signal-audit` was derived by
+contrasting common template and generated-page defaults with recurring choices
+observed across this curated corpus: text-led single-column structures,
+typography-carried identity, restrained accents, evidence images, native link
+affordances, and little nonessential motion. These observations are inferences
+from a curated sample and are recorded as contrasts, not universal laws or
+authorship evidence.
+
+The corpus side of each contrast traces to the curated sample above. The
+template-and-generated-defaults side is a maintainer heuristic drawn from
+recurring template output the maintainers have reviewed; it was not derived
+from a systematically sampled corpus. Treat the catalog as a reviewable
+heuristic, not a research-backed finding.
+
 ## Radius systems
 
 - Codeit Design System — Radius  

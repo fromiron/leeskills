@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.2.0"
+  version: "0.3.0"
   languages: "en, ko, ja"
 ---
 
@@ -85,6 +85,25 @@ When critical evidence is absent, record it as unknown. Do not invent it.
 1. `accessibility-simplicity-guard`
 2. `visual-entropy-budget`
 3. `prune-and-verify`
+
+### Quick pass
+
+Use for a small artifact, an early draft, or an explicit request for a fast
+review without release verification.
+
+1. Run `slop-signal-audit` once in its quick-pass mode: no category scores, no
+   quality or slop-risk score, and no verdict.
+2. Report up to five material changes with evidence labels and locations.
+   Never pad the list; fewer findings are a valid result.
+3. Apply the changes only if the user asked for edits; otherwise stop at the
+   report.
+4. State plainly that accessibility, reflow, and reduced-motion behavior were
+   not verified, and offer the full workflow as the follow-up.
+
+A quick pass must still respect the decision gates below. It may skip
+verification and scoring; it may not skip evidence labeling or invent support.
+Directly observed hard failures are still reported, without a release
+decision.
 
 If the client supports skill invocation, activate the listed focused skills.
 Otherwise execute the same sequence using the contracts in

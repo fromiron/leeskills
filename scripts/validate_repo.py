@@ -12,6 +12,11 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable, NoReturn
 
+# Keep UTF-8 output stable on Windows consoles with legacy code pages.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TRIGGER_ID_RE = re.compile(r"^(en|ko|ja)-(positive|negative)-[1-9][0-9]*$")
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")

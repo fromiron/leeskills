@@ -32,6 +32,17 @@
       ]
     },
     {
+      "id": "quick-pass-scope",
+      "prompt": "Give me a fast anti-slop pass on this one-page draft. I don't need a score or a release check yet, just the most important fixes.",
+      "expected_output": "A single quick-pass review that reports up to five material changes with evidence labels and locations, produces no scores or verdict, and explicitly states that accessibility, reflow, and reduced-motion behavior were not verified.",
+      "assertions": [
+        "The output does not run the full multi-skill pipeline and produces no quality score, slop-risk score, or release verdict.",
+        "The output reports at most five material changes with locations and does not pad the list to reach five.",
+        "The output states which checks were skipped and offers the full workflow as follow-up.",
+        "The output still labels evidence and invents no support."
+      ]
+    },
+    {
       "id": "nested-radius-handoff",
       "prompt": "Run an end-to-end audit of this dashboard. Its rounded cards contain inset surfaces, and I supplied screenshots plus computed radius and padding values.",
       "expected_output": "The workflow audits the observable signal, evaluates shared nested contours with the visual budget, and repeats the relationship check during final verification.",

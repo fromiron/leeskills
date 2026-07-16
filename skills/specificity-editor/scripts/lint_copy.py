@@ -10,15 +10,24 @@ import sys
 from pathlib import Path
 from typing import Any, NoReturn
 
+# Keep UTF-8 output stable on Windows consoles with legacy code pages.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 
 def die(message: str) -> NoReturn:
     print(f"error: {message}", file=sys.stderr)
     raise SystemExit(2)
 
 
+WATCHLIST_LANGUAGES = {"en", "ko", "ja"}
+
+
 def load_watchlist() -> list[dict[str, str]]:
     path = Path(__file__).resolve().parent.parent / "references" / "phrase-watchlist.txt"
     entries: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
     for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         line = raw.strip()
         if not line or line.startswith("#"):
@@ -27,6 +36,19 @@ def load_watchlist() -> list[dict[str, str]]:
         if len(parts) != 3:
             die(f"invalid watchlist line {number}: expected language|phrase|category")
         language, phrase, category = (part.strip() for part in parts)
+        if language not in WATCHLIST_LANGUAGES:
+            die(
+                f"invalid watchlist line {number}: language must be one of "
+                f"{sorted(WATCHLIST_LANGUAGES)}"
+            )
+        if not phrase:
+            die(f"invalid watchlist line {number}: phrase must be non-empty")
+        if not category:
+            die(f"invalid watchlist line {number}: category must be non-empty")
+        key = (language, phrase.casefold())
+        if key in seen:
+            die(f"invalid watchlist line {number}: duplicate phrase {phrase!r}")
+        seen.add(key)
         entries.append({"language": language, "phrase": phrase, "category": category})
     return entries
 
@@ -40,26 +62,33 @@ def line_col(text: str, offset: int) -> tuple[int, int]:
 
 def scan(text: str) -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
-    lowered = text.casefold()
 
+    # Match against the original text so offsets stay correct even when
+    # casefolding would change string length. Prefer the longest phrase when
+    # one watchlist phrase contains another at the same position.
+    raw_matches: list[tuple[int, int, dict[str, str]]] = []
     for entry in load_watchlist():
-        needle = entry["phrase"].casefold()
-        start = 0
-        while True:
-            index = lowered.find(needle, start)
-            if index == -1:
-                break
-            line, column = line_col(text, index)
-            findings.append({
-                "type": "watchlist-phrase",
-                "language": entry["language"],
-                "category": entry["category"],
-                "match": text[index:index + len(entry["phrase"])],
-                "line": line,
-                "column": column,
-                "action": "Review context and replace with a supported mechanism, constraint, or outcome when possible.",
-            })
-            start = index + max(1, len(needle))
+        pattern = re.compile(re.escape(entry["phrase"]), re.IGNORECASE)
+        for match in pattern.finditer(text):
+            raw_matches.append((match.start(), match.end(), entry))
+    raw_matches.sort(key=lambda item: (item[0], -item[1]))
+    kept: list[tuple[int, int, dict[str, str]]] = []
+    for start, end, entry in raw_matches:
+        if any(start >= k_start and end <= k_end for k_start, k_end, _ in kept):
+            continue
+        kept.append((start, end, entry))
+
+    for start, end, entry in kept:
+        line, column = line_col(text, start)
+        findings.append({
+            "type": "watchlist-phrase",
+            "language": entry["language"],
+            "category": entry["category"],
+            "match": text[start:end],
+            "line": line,
+            "column": column,
+            "action": "Review context and replace with a supported mechanism, constraint, or outcome when possible.",
+        })
 
     numeric_pattern = re.compile(
         r"(?<!\w)(?:\d+(?:[.,]\d+)?%|\$[0-9][0-9,]*(?:\.[0-9]+)?|"

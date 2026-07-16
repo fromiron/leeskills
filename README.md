@@ -4,7 +4,7 @@
 auditing, and verifying digital interfaces, landing pages, portfolios, product
 copy, and design systems.
 
-Version: **0.2.0**  
+Version: **0.3.0**  
 Status: **Beta / research-backed release**  
 License: **MIT**
 
@@ -113,6 +113,13 @@ slop-signal-audit
 
 ```text
 content-grounding → specificity-editor → prune-and-verify
+```
+
+### Quick pass (small artifact or early draft)
+
+```text
+slop-signal-audit in quick-pass mode
+(single pass, no scores or verdict, up to five changes, skipped checks disclosed)
 ```
 
 ## Evidence model

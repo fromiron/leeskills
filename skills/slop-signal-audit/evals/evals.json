@@ -30,6 +30,17 @@
       ]
     },
     {
+      "id": "generic-default-catalog",
+      "prompt": "Audit this SaaS page: centered hero with two buttons, three icon feature cards, a purple-blue gradient headline, an infinite logo marquee, and scroll-reveal on every section.",
+      "expected_output": "An audit that records each directly visible cue as observed with a location, records catalog-pattern interpretations with a separate measured, inferred, or unknown evidence state, explains what job each pattern fails to do, and routes remediation to the matching focused skill without claiming AI authorship.",
+      "assertions": [
+        "The output records directly visible cues as observed with locations, and records interpretations such as substitution-proofness, justification, or product correspondence with a separate measured, inferred, or unknown state.",
+        "The output does not present the patterns as proof of AI authorship.",
+        "The output allows a pattern to stay when the artifact's own content justifies it.",
+        "Remediation is routed to structure, visual-budget, copy, or motion skills as appropriate."
+      ]
+    },
+    {
       "id": "nested-radius-signal",
       "prompt": "Audit this dashboard for visual slop. Several cards contain inset panels that repeat the same 20px radius even though the contours are nested.",
       "expected_output": "An evidence-labeled finding that distinguishes radius-token count from nested contour coherence and requests semantic-step or measured-offset verification.",
