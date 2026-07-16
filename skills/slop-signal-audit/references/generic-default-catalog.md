@@ -6,15 +6,39 @@ output rather than as a specific person, product, or institution.
 Each entry was derived by contrasting common template and generated-page output
 with recurring choices in the curated minimal corpus recorded in
 `docs/source-notes.md` (Dead Simple Sites). The corpus observations are
-inferences from a curated sample, not universal laws.
+inferences from a curated sample, not universal laws. The template-side
+defaults are a maintainer heuristic, not a systematically sampled corpus;
+treat the catalog as reviewable guidance rather than a research-backed
+finding.
 
 ## Rules for use
 
-- A match is an `observed` signal with a location, never authorship evidence.
+- Record only the directly visible visual or structural cue as `observed`,
+  always with its location. A cue is never authorship evidence.
+- Record the interpretation of a cue — its cause, justification, authenticity,
+  or correspondence with the real product — separately as `measured`,
+  `inferred`, or `unknown` according to the supplied evidence. Do not promote
+  a composite pattern to `observed` as a whole.
+- Judgments such as "no record schema", "no identity", "substitution-proof",
+  "does not match the product", or "synthetic person" are interpretations.
+  They require supplied evidence or an explicit inference statement; without
+  either, record them as `unknown`.
 - A match is a review prompt. The artifact's own task, content, and brand can
   justify any pattern below; require the justification, not the removal.
 - Multiple matches raise slop risk because they indicate interchangeable
   defaults, not because they indicate a specific tool.
+
+Example split:
+
+```text
+Observed:
+- The hero contains a dashboard image presented as a product screen
+  (hero, right column).
+
+Unknown:
+- Whether the image matches real product capability could not be verified
+  without product access.
+```
 
 ## Layout and structure
 

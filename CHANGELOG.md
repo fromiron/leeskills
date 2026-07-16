@@ -9,11 +9,14 @@ All notable changes are documented here.
 - Added a generic-default pattern catalog to `slop-signal-audit` covering
   layout, visual-system, copy-shape, imagery, and motion defaults, each
   contrasted with recurring choices in the curated minimal corpus and routed
-  to the matching focused skill.
-- Added a quick-pass workflow to the orchestrator for small artifacts and
-  early drafts, with explicit skipped-check disclosure and unchanged decision
-  gates.
-- Added output evals for the catalog-driven audit and the quick-pass scope.
+  to the matching focused skill. Catalog matches record the directly visible
+  cue as `observed` and the interpretation with its own evidence state; the
+  template-side defaults are classified as a maintainer heuristic.
+- Added a quick-pass mode to `slop-signal-audit` (no scores, no verdict, up to
+  five unpadded findings, skipped checks disclosed) and a matching quick-pass
+  workflow to the orchestrator, with unchanged decision gates.
+- Added output evals for the catalog-driven audit and the quick-pass scope,
+  and quick-pass trigger fixtures in English, Korean, and Japanese.
 
 ### Changed
 
@@ -27,6 +30,10 @@ All notable changes are documented here.
 
 - Reconfigured script output streams to UTF-8 so non-ASCII findings no longer
   crash on Windows consoles with legacy code pages.
+- Matched watchlist phrases against the original text so reported offsets stay
+  correct when casefolding changes string length, preferred the longest phrase
+  for contained matches at the same position, and validated watchlist
+  language, phrase, and category fields on load.
 
 ## [0.2.0] - 2026-07-14
 

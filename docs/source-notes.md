@@ -60,6 +60,12 @@ affordances, and little nonessential motion. These observations are inferences
 from a curated sample and are recorded as contrasts, not universal laws or
 authorship evidence.
 
+The corpus side of each contrast traces to the curated sample above. The
+template-and-generated-defaults side is a maintainer heuristic drawn from
+recurring template output the maintainers have reviewed; it was not derived
+from a systematically sampled corpus. Treat the catalog as a reviewable
+heuristic, not a research-backed finding.
+
 ## Radius systems
 
 - Codeit Design System — Radius  

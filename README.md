@@ -118,7 +118,8 @@ content-grounding → specificity-editor → prune-and-verify
 ### Quick pass (small artifact or early draft)
 
 ```text
-slop-signal-audit (single pass, top five changes, skipped checks disclosed)
+slop-signal-audit in quick-pass mode
+(single pass, no scores or verdict, up to five changes, skipped checks disclosed)
 ```
 
 ## Evidence model

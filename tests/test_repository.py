@@ -496,6 +496,42 @@ class CommandTests(unittest.TestCase):
         self.assertIn("numeric-claim", finding_types)
         self.assertIn("universal-claim", finding_types)
 
+    def test_specificity_linter_prefers_longest_watchlist_match(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "copy.txt"
+            path.write_text("Integrates seamlessly.", encoding="utf-8")
+            result = self.run_json(
+                "skills/specificity-editor/scripts/lint_copy.py",
+                str(path),
+                "--format",
+                "json",
+            )
+        watchlist = [
+            item for item in result["findings"] if item["type"] == "watchlist-phrase"
+        ]
+        self.assertEqual(len(watchlist), 1)
+        self.assertEqual(watchlist[0]["match"], "seamlessly")
+
+    def test_specificity_linter_reports_correct_offsets_after_casefold_growth(self) -> None:
+        # "ß".casefold() == "ss" shifts casefolded offsets; original-text
+        # matching must keep the reported column and match text accurate.
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "copy.txt"
+            path.write_text("ß seamless", encoding="utf-8")
+            result = self.run_json(
+                "skills/specificity-editor/scripts/lint_copy.py",
+                str(path),
+                "--format",
+                "json",
+            )
+        watchlist = [
+            item for item in result["findings"] if item["type"] == "watchlist-phrase"
+        ]
+        self.assertEqual(len(watchlist), 1)
+        self.assertEqual(watchlist[0]["match"], "seamless")
+        self.assertEqual(watchlist[0]["line"], 1)
+        self.assertEqual(watchlist[0]["column"], 3)
+
     def test_generic_installer_dry_run_copy_and_conflict_guard(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / "skills"

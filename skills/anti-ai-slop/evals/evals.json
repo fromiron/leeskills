@@ -34,10 +34,10 @@
     {
       "id": "quick-pass-scope",
       "prompt": "Give me a fast anti-slop pass on this one-page draft. I don't need a score or a release check yet, just the most important fixes.",
-      "expected_output": "A single quick-pass review that reports the top prioritized changes with evidence labels and explicitly states that accessibility, reflow, and reduced-motion behavior were not verified.",
+      "expected_output": "A single quick-pass review that reports up to five material changes with evidence labels and locations, produces no scores or verdict, and explicitly states that accessibility, reflow, and reduced-motion behavior were not verified.",
       "assertions": [
-        "The output does not run the full multi-skill pipeline or produce a release verdict.",
-        "The output limits itself to a small prioritized set of changes with locations.",
+        "The output does not run the full multi-skill pipeline and produces no quality score, slop-risk score, or release verdict.",
+        "The output reports at most five material changes with locations and does not pad the list to reach five.",
         "The output states which checks were skipped and offers the full workflow as follow-up.",
         "The output still labels evidence and invents no support."
       ]

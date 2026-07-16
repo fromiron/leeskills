@@ -91,16 +91,19 @@ When critical evidence is absent, record it as unknown. Do not invent it.
 Use for a small artifact, an early draft, or an explicit request for a fast
 review without release verification.
 
-1. Run `slop-signal-audit` once, without the full scored rubric when the user
-   does not need a score.
-2. Report the top five changes with evidence labels and locations.
+1. Run `slop-signal-audit` once in its quick-pass mode: no category scores, no
+   quality or slop-risk score, and no verdict.
+2. Report up to five material changes with evidence labels and locations.
+   Never pad the list; fewer findings are a valid result.
 3. Apply the changes only if the user asked for edits; otherwise stop at the
    report.
 4. State plainly that accessibility, reflow, and reduced-motion behavior were
    not verified, and offer the full workflow as the follow-up.
 
 A quick pass must still respect the decision gates below. It may skip
-verification; it may not skip evidence labeling or invent support.
+verification and scoring; it may not skip evidence labeling or invent support.
+Directly observed hard failures are still reported, without a release
+decision.
 
 If the client supports skill invocation, activate the listed focused skills.
 Otherwise execute the same sequence using the contracts in

@@ -54,8 +54,10 @@ no passing credit merely because it was not visible.
 2. Inventory all visible sections, component families, CTAs, claims, images,
    motion patterns, and navigation structures.
 3. Compare the inventory against
-   [references/generic-default-catalog.md](references/generic-default-catalog.md)
-   and record each match as an observed signal with its location.
+   [references/generic-default-catalog.md](references/generic-default-catalog.md).
+   Record each directly visible cue as `observed` with its location, and record
+   its interpretation — cause, justification, authenticity, or product
+   correspondence — with its own evidence state per the catalog rules.
 4. Mark unsupported claims and absent evidence before judging aesthetics.
 5. Find repetition that adds no new decision-relevant information.
 6. Identify visual variants that do not communicate state, hierarchy, or brand.
@@ -85,6 +87,23 @@ python scripts/score_audit.py path/to/audit.json
 ```
 
 Use `--output result.json` to save the computed result.
+
+## Quick-pass mode
+
+When invoked by `anti-ai-slop` in quick-pass mode, or when the user asks for a
+fast review without a score or release decision:
+
+1. Run audit steps 1–9 only, as far as the supplied material supports them.
+2. Do not produce category scores, a quality score, a slop-risk score, or a
+   verdict.
+3. Report up to five material findings with evidence states and locations.
+   Never pad the list; fewer findings are a valid result.
+4. Mark accessibility, reflow, keyboard, and reduced-motion checks as unknown
+   unless directly verified.
+5. Report directly observed hard failures, but do not issue a passing or
+   release decision.
+6. State which checks were skipped and offer the full scored audit as the
+   follow-up.
 
 ## Project hard failures
 
@@ -121,11 +140,14 @@ the repaired relationship with `prune-and-verify`.
 
 ## Completion
 
-Conclude with:
+In the full audit, conclude with:
 
 - quality score;
 - derived slop-risk score;
 - verdict;
 - hard failures;
-- top five changes;
+- up to five prioritized changes;
 - unknowns that could change the result.
+
+In quick-pass mode, conclude with the prioritized findings, directly observed
+hard failures, skipped checks, and unknowns — no scores and no verdict.

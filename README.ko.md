@@ -112,7 +112,8 @@ content-grounding → specificity-editor → prune-and-verify
 ### 빠른 검토 (소규모 산출물·초안)
 
 ```text
-slop-signal-audit (1회 실행, 상위 5개 수정, 생략한 검증 항목 명시)
+slop-signal-audit quick-pass 모드
+(1회 실행, 점수·판정 없음, 최대 5개 수정, 생략한 검증 항목 명시)
 ```
 
 ## 근거 상태
