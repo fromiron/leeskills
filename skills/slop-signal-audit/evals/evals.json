@@ -32,9 +32,9 @@
     {
       "id": "generic-default-catalog",
       "prompt": "Audit this SaaS page: centered hero with two buttons, three icon feature cards, a purple-blue gradient headline, an infinite logo marquee, and scroll-reveal on every section.",
-      "expected_output": "An audit that records each catalog match as an observed signal with a location, explains what job each pattern fails to do, and routes remediation to the matching focused skill without claiming AI authorship.",
+      "expected_output": "An audit that records each directly visible cue as observed with a location, records catalog-pattern interpretations with a separate measured, inferred, or unknown evidence state, explains what job each pattern fails to do, and routes remediation to the matching focused skill without claiming AI authorship.",
       "assertions": [
-        "The output identifies the generic-default patterns as observed signals with locations.",
+        "The output records directly visible cues as observed with locations, and records interpretations such as substitution-proofness, justification, or product correspondence with a separate measured, inferred, or unknown state.",
         "The output does not present the patterns as proof of AI authorship.",
         "The output allows a pattern to stay when the artifact's own content justifies it.",
         "Remediation is routed to structure, visual-budget, copy, or motion skills as appropriate."
