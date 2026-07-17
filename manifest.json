@@ -1,6 +1,6 @@
 {
   "name": "leeskills",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "format": "Agent Skills",
   "license": "MIT",
   "maturity": "beta",
@@ -30,6 +30,11 @@
     {
       "name": "structure-selector",
       "path": "skills/structure-selector",
+      "role": "focused"
+    },
+    {
+      "name": "component-contract-audit",
+      "path": "skills/component-contract-audit",
       "role": "focused"
     },
     {
