@@ -49,6 +49,43 @@ Produce:
 }
 ```
 
+### Component contract
+
+Produce:
+
+```json
+{
+  "component": "",
+  "purpose": "",
+  "primary_user_task": "",
+  "source_of_truth": {
+    "surface": "design | documentation | code | live | split",
+    "location": "",
+    "owner": "",
+    "change_process": ""
+  },
+  "evidence": [],
+  "anatomy": [],
+  "variants": [],
+  "states": [],
+  "responsive_behavior": [],
+  "content_rules": [],
+  "accessibility": [],
+  "token_mappings": [],
+  "parity": [],
+  "exceptions": [],
+  "findings": [],
+  "accepted_risks": [],
+  "unknowns": []
+}
+```
+
+For each applicable state, separate visual treatment, runtime behavior,
+accessible representation, and evidence. Required failures, unknowns, or parity
+drift remain release blockers. Do not copy another system's variants or
+dimensions into the project. Preserve a justified identity or task exception
+with evidence, owner, and a review trigger.
+
 ### Visual budget
 
 Produce:
@@ -127,16 +164,21 @@ For each check, record:
 
 Run the deletion, substitution, semantic, five-second, growth, reflow,
 keyboard, reduced-motion, and provenance tests. When nested rounded surfaces
-exist or changed, also run nested-radius coherence verification. Unknown
-results remain unknown.
+exist or changed, also run nested-radius coherence verification. When reusable
+components changed, verify required anatomy, states, content, responsive
+behavior, accessibility, and design-code parity. Unknown results remain
+unknown.
 
 ## Dependency rules
 
 - Structure depends on grounded user needs and content.
 - Copy cannot add facts absent from grounding.
-- Visual budgets cannot override accessibility.
-- External spacing, layout, and typography values cannot override project
-  tokens or rendered evidence.
+- Component contracts cannot infer runtime support from a design file.
+- Design-code parity cannot pass while a required surface is failed, unknown,
+  or materially drifting.
+- Visual budgets cannot override accessibility or justified identity.
+- External spacing, layout, typography, color, iconography, and component values
+  cannot override project tokens, behavior, or rendered evidence.
 - A low radius-token count cannot override a measured nested-contour mismatch.
 - Motion cannot carry information without a static equivalent.
 - Pruning cannot delete evidence required for trust or task completion.
