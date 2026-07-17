@@ -1,5 +1,25 @@
 # Integration
 
+## skills CLI
+
+The repository is directly installable with the open `skills` CLI because its
+packages live under the standard `skills/<name>/SKILL.md` layout:
+
+```bash
+npx skills add fromiron/leeskills
+```
+
+Inspect the catalog without installing, or select one skill:
+
+```bash
+npx skills add fromiron/leeskills --list
+npx skills add fromiron/leeskills --skill anti-ai-slop
+```
+
+The CLI handles agent detection, installation scope, and skill selection. The
+bundled Python installer remains available for offline clones and explicit
+destination control.
+
 ## Generic Agent Skills client
 
 Register each directory under `skills/` with a client that supports the open

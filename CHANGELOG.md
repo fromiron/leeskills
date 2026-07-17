@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [Unreleased]
+
+### Added
+
+- Documented direct GitHub installation with `npx skills add fromiron/leeskills`,
+  including catalog listing and selective installation.
+- Added `skills` CLI installation paths to the generic, Codex, and Claude Code
+  integration guides while retaining the bundled offline installer.
+
 ## [0.3.0] - 2026-07-16
 
 ### Added

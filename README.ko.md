@@ -47,7 +47,28 @@ skill-name/
 핵심 지침은 특정 벤더에 종속되지 않습니다. 선택형 Python 스크립트는
 표준 라이브러리만 사용하며 네트워크 요청을 수행하지 않습니다.
 
-## 검증
+## 설치
+
+공개 [`skills` CLI](https://skills.sh/docs/cli)로 전체 스킬 모음을 설치할 수
+있습니다.
+
+```bash
+npx skills add fromiron/leeskills
+```
+
+CLI는 `skills/` 아래의 스킬 디렉터리를 모두 탐색한 뒤 대상 에이전트와 설치할
+스킬을 선택하게 합니다. 설치 전에 목록을 확인하거나 하나만 설치할 수도
+있습니다.
+
+```bash
+npx skills add fromiron/leeskills --list
+npx skills add fromiron/leeskills --skill anti-ai-slop
+```
+
+이 저장소 자체를 npm 패키지로 배포할 필요는 없습니다. `npx`가 외부 `skills`
+설치기를 실행해 GitHub 저장소의 스킬을 설치합니다.
+
+## 개발
 
 ```bash
 python scripts/validate_repo.py
@@ -57,7 +78,8 @@ python -m unittest discover -s tests -v
 예시는 `python` 실행기를 사용합니다. 환경에 따라 Unix 계열에서는
 `python3`, Windows에서는 `py -3`로 바꾸어 실행할 수 있습니다.
 
-## 설치
+별도로 clone한 저장소에서 네트워크 없이 설치하려면 포함된 Python 설치기를
+사용할 수 있습니다.
 
 ```bash
 # OpenAI Codex: 현재 저장소 범위

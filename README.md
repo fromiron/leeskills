@@ -49,7 +49,26 @@ skill-name/
 Core instructions are vendor-neutral. Optional Python scripts use only the
 standard library and perform no network requests.
 
-## Quick start
+## Install
+
+Install the collection with the open [`skills` CLI](https://skills.sh/docs/cli):
+
+```bash
+npx skills add fromiron/leeskills
+```
+
+The CLI discovers all skill directories under `skills/` and prompts for the
+target agent and skills. List the available skills or install only one with:
+
+```bash
+npx skills add fromiron/leeskills --list
+npx skills add fromiron/leeskills --skill anti-ai-slop
+```
+
+No npm package from this repository is required; `npx` runs the external
+`skills` installer against the GitHub repository.
+
+## Development
 
 Validate the repository:
 
@@ -61,7 +80,8 @@ python -m unittest discover -s tests -v
 Commands use the `python` launcher. Substitute `python3` on Unix-like systems
 or `py -3` on Windows when that is the available Python 3.9+ launcher.
 
-Install all skills into a repository:
+For offline installation, a separately maintained clone can use the bundled
+Python installer:
 
 ```bash
 # OpenAI Codex repository scope

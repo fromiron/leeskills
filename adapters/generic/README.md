@@ -17,6 +17,15 @@ only when the skill says they are needed.
 
 ## Installation
 
+For clients supported by the open `skills` CLI:
+
+```bash
+npx skills add fromiron/leeskills
+```
+
+For an offline clone or a client-specific destination, use the bundled
+installer:
+
 ```bash
 python scripts/install.py   --client generic   --target /path/to/your/client/skills   --mode copy   --dry-run
 ```

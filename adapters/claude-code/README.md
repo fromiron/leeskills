@@ -3,7 +3,19 @@
 The core skills use the open Agent Skills format and avoid Claude-only
 frontmatter.
 
-## Repository scope
+## Install from GitHub
+
+```bash
+npx skills add fromiron/leeskills --agent claude-code
+```
+
+The CLI installs to the current project by default. Add `--global` for user
+scope, `--list` to inspect the catalog without installing, or `--skill <name>`
+to select a skill.
+
+## Install from a clone
+
+### Repository scope
 
 ```bash
 python scripts/install.py --client claude-code --scope repo --mode copy --dry-run
@@ -16,7 +28,7 @@ Target:
 <repository>/.claude/skills/
 ```
 
-## User scope
+### User scope
 
 ```bash
 python scripts/install.py --client claude-code --scope user --mode copy --dry-run
@@ -29,7 +41,7 @@ Target:
 ~/.claude/skills/
 ```
 
-## Symlink mode
+### Symlink mode
 
 Claude Code follows symlinked skill directories in project and personal skill
 locations:
