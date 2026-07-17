@@ -2,6 +2,34 @@
 
 All notable changes are documented here.
 
+## [0.5.0] - 2026-07-17
+
+### Added
+
+- Added `component-contract-audit` for project-owned component purpose, anatomy,
+  variants, applicable states, content constraints, responsive behavior,
+  accessibility, token mappings, ownership, exceptions, and design-code parity.
+- Added a structured component-contract schema, a deliberately blocked example,
+  a deterministic validator, and English, Korean, and Japanese trigger and
+  output evals.
+- Added a reproducible Dead Simple Sites corpus protocol with an authorship
+  boundary, fixed-snapshot sampling rules, a coding matrix, denominator
+  reporting, counterexamples, and explicit observed/inferred/unknown states.
+
+### Changed
+
+- Added design-system and reusable-component routes to the orchestrator and its
+  fallback composition contract.
+- Expanded Codeit provenance from foundation values to its design principles,
+  semantic color and iconography governance, and component documentation
+  patterns such as anatomy, states, properties, usage, responsive behavior, and
+  keyboard expectations.
+- Added normalized principles for components as behavioral contracts and for
+  evidence-backed identity exceptions within a consistent system.
+- Replaced the current release label `research-backed` with `source-grounded`;
+  the DSS contrasts remain useful maintainer heuristics until a declared sample
+  is systematically coded.
+
 ## [0.4.0] - 2026-07-17
 
 ### Added
@@ -103,6 +131,6 @@ All notable changes are documented here.
 
 ### Status
 
-This is a research-backed initial release. Static validation is included, but
+This was a source-grounded initial release. Static validation is included, but
 trigger rates and output quality must still be evaluated in each target agent
 and on representative project artifacts.

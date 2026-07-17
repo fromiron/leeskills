@@ -8,6 +8,7 @@ In this repository, a slop signal is an observable symptom of output that is:
 - interchangeable across unrelated products or authors;
 - structurally redundant;
 - visually unnecessary for the user task;
+- behaviorally inconsistent across design, documentation, and code;
 - inaccessible because simplicity removed needed cues;
 - animated without a functional reason;
 - presented with false certainty.
@@ -64,7 +65,9 @@ typography rules.
 ### 6. Color has a job
 
 Each color should support identification, state, category, selection, data, or
-brand recognition. Decorative color systems require an explicit reason.
+brand recognition. Prefer project semantic token names over repeated raw
+values. Record theme mapping and contrast separately. Decorative color systems
+and repeated exceptions require an explicit reason and owner.
 
 ### 7. Whitespace communicates relationships
 
@@ -98,7 +101,7 @@ exists only to make a page feel active.
 ### 11. Accessibility is not decoration
 
 Do not remove focus indicators, labels, headings, errors, alternatives,
-contrast, or keyboard behavior to achieve a cleaner surface.
+contrast, status, or keyboard behavior to achieve a cleaner surface.
 
 ### 12. Complexity can remain
 
@@ -110,3 +113,25 @@ introducing new visual grammars.
 
 Deletion before grounding can remove necessary information. Establish the user
 task and evidence first, then remove elements that do not serve them.
+
+### 14. Components are contracts
+
+A reusable component is more than a visual variant. Define its purpose,
+required and optional anatomy, applicable states, content constraints,
+responsive and input behavior, accessibility representation, semantic tokens,
+ownership, and deprecation path.
+
+Inspect design, documentation, code, tests, and representative live usage
+separately. A Figma state does not prove runtime support, and visual similarity
+does not prove behavioral parity.
+
+### 15. Consistency needs an exception path
+
+Consistency supports recognition, collaboration, and maintenance; it should not
+erase authorship, brand, or content-specific identity. Preserve a distinctive
+choice when it has supported task or identity value and remains usable and
+accessible.
+
+Every exception needs evidence, an owner, status, and a review trigger.
+Repeated exceptions indicate that the shared contract or token system may need
+revision.

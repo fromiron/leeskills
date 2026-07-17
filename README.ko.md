@@ -1,17 +1,17 @@
 # leeskills
 
 `leeskills`는 디지털 인터페이스, 랜딩 페이지, 포트폴리오, 제품 카피,
-디자인 시스템에서 근거 없는 내용과 불필요한 시각 요소를 탐지·제거하기 위한
-범용 Agent Skills 모음입니다.
+컴포넌트 라이브러리, 디자인 시스템에서 근거 없는 내용과 불필요한 요소를
+탐지·제거하기 위한 범용 Agent Skills 모음입니다.
 
-버전: **0.4.0**<br>
-상태: **Beta / 연구 기반 릴리스**  
+버전: **0.5.0**<br>
+상태: **Beta / 출처 기반 릴리스**  
 라이선스: **MIT**
 
 ## 핵심 원칙
 
-> 사용자의 핵심 작업, 실제 콘텐츠, 접근성을 보존하면서 가장 적은 수의
-> 일관된 시각·언어 문법으로 표현한다.
+> 사용자의 핵심 작업, 실제 콘텐츠, 접근성, 고유한 정체성을 보존하면서 가장
+> 적은 수의 일관된 시각·언어·행동 문법으로 표현한다.
 
 이 저장소에서 `AI slop`은 범용적이고, 근거가 없거나, 목적 없이 추가된
 결과물을 가리키는 운영 용어입니다. 시각적 특징만으로 해당 결과물이 AI로
@@ -25,6 +25,7 @@
 | `slop-signal-audit` | 관찰 가능한 slop 신호를 찾고 점수화하며 제거 순서를 제안 |
 | `content-grounding` | 출처가 있는 콘텐츠 인벤토리를 만들고 조작·날조를 차단 |
 | `structure-selector` | 사용자의 작업에 맞는 지배적 정보 구조 하나를 선택 |
+| `component-contract-audit` | anatomy·상태·콘텐츠·반응형·접근성·소유권·디자인/코드 일치를 계약으로 감사 |
 | `visual-entropy-budget` | 시각 시스템을 제한하고 HTML 토큰안을 제시하며 반응형·중첩 Radius 관계를 검증 |
 | `specificity-editor` | 교체 가능한 마케팅 문구를 구체적이고 검증 가능한 문구로 수정 |
 | `motion-necessity-gate` | 피드백·상태·인과·공간 관계를 전달하는 모션만 유지 |
@@ -113,12 +114,22 @@ content-grounding
 → prune-and-verify
 ```
 
+### 디자인 시스템·재사용 컴포넌트
+
+```text
+component-contract-audit
+→ visual-entropy-budget
+→ accessibility-simplicity-guard
+→ prune-and-verify
+```
+
 ### 기존 화면 감사
 
 ```text
 slop-signal-audit
 → content-grounding
 → specificity-editor
+→ 재사용 컴포넌트·parity가 범위에 포함되면 component-contract-audit
 → visual-entropy-budget
 → motion-necessity-gate
 → accessibility-simplicity-guard
@@ -131,7 +142,7 @@ slop-signal-audit
 content-grounding → specificity-editor → prune-and-verify
 ```
 
-### 빠른 검토 (소규모 산출물·초안)
+### 빠른 검토
 
 ```text
 slop-signal-audit quick-pass 모드
@@ -142,13 +153,13 @@ slop-signal-audit quick-pass 모드
 
 모든 판단은 다음 중 하나로 표시합니다.
 
-- **Observed:** 제공된 화면·마크업·카피·토큰에서 직접 확인
+- **Observed:** 제공된 화면·마크업·코드·디자인 파일·카피·토큰에서 직접 확인
 - **Measured:** 스크립트나 계산으로 측정
 - **Inferred:** 근거를 바탕으로 추론했으며 추론임을 명시
 - **Unknown:** 제공 자료로 확인할 수 없음
 
-고객명, 수치, 후기, 수상 경력, 기능, 프로젝트 성과, 접근성 준수 여부를
-임의로 만들지 않습니다.
+고객명, 수치, 후기, 수상 경력, 기능, 프로젝트 성과, 제작 주체, 접근성 준수
+여부를 임의로 만들지 않습니다.
 
 ## 점수의 의미
 
@@ -160,10 +171,22 @@ slop-signal-audit quick-pass 모드
 `unknown` 범주는 해당 범주 최대 점수의 절반까지만 받을 수 있습니다. 프로젝트
 하드 실패는 관찰되거나 측정된 근거가 있을 때만 기록합니다.
 
+## 출처 범위
+
+Codeit Design System에서는 프로젝트별 숫자 토큰을 복사하지 않고, 시멘틱
+역할·컴포넌트 계약·협업·예외 관리 방식을 일반화합니다.
+
+Dead Simple Sites는 **큐레이션된 최소 사이트 코퍼스**로 다룹니다. 목록에
+포함됐다는 사실만으로 인간 제작 여부를 단정하지 않습니다. 현재의 반복 패턴은
+유용한 유지관리자 휴리스틱이지만 완결된 체계적 연구 결과는 아닙니다.
+자세한 경계와 표본 절차는 `docs/corpus-study.md`에 기록합니다.
+
 ## 한계
 
-- 스크린샷만으로 접근성 전체 준수를 확인할 수 없습니다.
+- 스크린샷만으로 접근성 전체 준수나 컴포넌트 런타임 동작을 확인할 수 없습니다.
 - 정적 감사만으로 이해도나 전환율을 입증할 수 없습니다.
-- 범용 문구 탐지는 오탐이 있으므로 맥락과 근거가 최종 기준입니다.
+- 범용 문구·패턴 탐지는 오탐이 있으므로 맥락과 근거가 최종 기준입니다.
+- 현재 DSS 대비 패턴은 출처 기반 휴리스틱이며, 체계적으로 코딩된 전체 코퍼스
+  연구가 아닙니다.
 - 시각 예산은 기본값이며 절대적인 미학 법칙이 아닙니다.
 - 스킬 자동 호출은 모델과 클라이언트마다 달라 실제 환경에서 eval이 필요합니다.
