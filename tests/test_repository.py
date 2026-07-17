@@ -81,7 +81,7 @@ class CommandTests(unittest.TestCase):
         result = self.run_json("scripts/validate_repo.py")
         self.assertTrue(result["valid"])
         self.assertEqual(result["name"], "leeskills")
-        self.assertEqual(result["skill_count"], 9)
+        self.assertEqual(result["skill_count"], 10)
         self.assertEqual(result["errors"], [])
 
     def test_project_package_name_is_leeskills(self) -> None:
