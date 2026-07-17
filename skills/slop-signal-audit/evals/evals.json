@@ -49,6 +49,16 @@
         "The output distinguishes shared contours from independent components and pills.",
         "The recommendation includes a repeatable verification method."
       ]
+    },
+    {
+      "id": "contextual-spacing-typography",
+      "prompt": "Audit this responsive article UI. It has arbitrary one-off gaps and clipped Japanese headings after a team copied letter-spacing and line-height values from a different font system.",
+      "expected_output": "An evidence-labeled audit that separates spacing-role inconsistency from rendered typography failures and routes remediation to the visual budget without treating external values as universal rules.",
+      "assertions": [
+        "The output records the observed clipping and spacing cues separately from inferred causes.",
+        "Typography is evaluated with the actual font, fallback, script, role, and rendered evidence.",
+        "No deduction is based solely on divergence from a third-party token table."
+      ]
     }
   ]
 }

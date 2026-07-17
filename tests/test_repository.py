@@ -95,6 +95,62 @@ class CommandTests(unittest.TestCase):
         for skill_md in sorted((ROOT / "skills").glob("*/SKILL.md")):
             self.assertIn(f'version: "{version}"', skill_md.read_text(encoding="utf-8"))
 
+    def test_contextual_spacing_layout_and_typography_contract(self) -> None:
+        source_notes = (ROOT / "docs/source-notes.md").read_text(encoding="utf-8")
+        for foundation in ("spacing", "layout", "radius", "typography"):
+            self.assertIn(
+                f"https://design.codeit.com/foundations/{foundation}",
+                source_notes,
+            )
+
+        budget_rules = (
+            ROOT / "skills/visual-entropy-budget/references/budget-rules.md"
+        ).read_text(encoding="utf-8")
+        for role in ("content-gap", "section-gap", "container-padding"):
+            self.assertIn(role, budget_rules)
+        self.assertRegex(
+            budget_rules,
+            r"no single numeric range is universally\s+correct",
+        )
+        self.assertIn("project's breakpoints and container tokens", budget_rules)
+
+        visual_evals = json.loads(
+            (
+                ROOT / "skills/visual-entropy-budget/evals/evals.json"
+            ).read_text(encoding="utf-8")
+        )
+        eval_ids = {item["id"] for item in visual_evals["evals"]}
+        self.assertIn("semantic-responsive-spacing", eval_ids)
+        self.assertIn("font-context-typesetting", eval_ids)
+        self.assertIn("token-proposal-html", eval_ids)
+
+        token_template = (
+            ROOT
+            / "skills/visual-entropy-budget/assets/token-proposal-template.html"
+        ).read_text(encoding="utf-8")
+        for section_id in (
+            "overview",
+            "typography",
+            "spacing",
+            "layout",
+            "radius",
+            "decisions",
+        ):
+            self.assertIn(f'id="{section_id}"', token_template)
+        self.assertIn("{{PROJECT_NAME}}", token_template)
+        self.assertIn("Primitive tokens", token_template)
+        self.assertIn("Semantic tokens", token_template)
+        self.assertNotRegex(
+            token_template,
+            r'(?:src|href)=["\']https?://',
+        )
+
+        accessibility = (
+            ROOT
+            / "skills/accessibility-simplicity-guard/references/wcag-checklist.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("resilience test, not a prescription", accessibility)
+
     def test_audit_example_scores_as_redesign(self) -> None:
         result = self.run_json(
             "skills/slop-signal-audit/scripts/score_audit.py",

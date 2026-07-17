@@ -56,7 +56,10 @@ all nested shapes into one arithmetic rule.
 
 Use a small number of type roles. Do not compensate for weak information
 architecture with gradient text, excessive scale jumps, or many unrelated
-weights.
+weights. Evaluate letter spacing and line height in the context of the actual
+typeface, fallback stack, script, language, size, weight, role, and rendered
+line length. Do not treat another design system's numeric values as universal
+typography rules.
 
 ### 6. Color has a job
 
@@ -66,7 +69,13 @@ brand recognition. Decorative color systems require an explicit reason.
 ### 7. Whitespace communicates relationships
 
 Spacing should indicate grouping and hierarchy, not merely create a sparse
-look. Large empty areas are not automatically minimal.
+look. Distinguish gaps within content, gaps between sections, and page-container
+padding. Prefer the project's semantic spacing scale, and verify that
+responsive changes preserve grouping while avoiding desktop-sized empty
+regions on narrow screens. Let outer containers own page padding and width
+constraints where practical, but do not copy another system's breakpoints or
+pixel values as universal defaults. Large empty areas are not automatically
+minimal.
 
 ### 8. Images are evidence
 

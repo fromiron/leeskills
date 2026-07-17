@@ -2,14 +2,32 @@
 
 All notable changes are documented here.
 
-## [Unreleased]
+## [0.4.0] - 2026-07-17
 
 ### Added
 
+- Added role-based spacing, responsive-container, and font-aware typography
+  guidance across the visual budget, slop audit, orchestration, accessibility,
+  and final verification workflows.
+- Added output evals for semantic responsive spacing, container ownership,
+  contextual letter spacing and line height, and the WCAG text-spacing
+  resilience boundary, plus multilingual trigger fixtures for the visual
+  budget.
+- Added a dependency-free single-page HTML template and workflow for proposing
+  concrete primitive and semantic token names, values, mappings, evidence, and
+  adoption status across Typography, Spacing, Layout, and Radius.
 - Documented direct GitHub installation with `npx skills add fromiron/leeskills`,
   including catalog listing and selective installation.
 - Added `skills` CLI installation paths to the generic, Codex, and Claude Code
   integration guides while retaining the bundled offline installer.
+
+### Changed
+
+- Expanded the Codeit Design System source notes from radius to spacing,
+  layout, radius, and typography while keeping its project-specific scales,
+  breakpoints, fonts, and numeric tokens out of universal pass/fail rules.
+- Clarified that WCAG text-spacing checks verify resilience and do not prescribe
+  ideal default letter spacing or line height for every font.
 
 ## [0.3.0] - 2026-07-16
 

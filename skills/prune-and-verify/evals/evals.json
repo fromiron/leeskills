@@ -38,6 +38,16 @@
         "The result records measured evidence and a repeatable method.",
         "The check does not claim that the prior design was AI-generated."
       ]
+    },
+    {
+      "id": "verify-responsive-type-and-spacing",
+      "prompt": "The redesign consolidated spacing tokens, changed container padding on mobile, and adjusted Japanese heading line height. Verify the result before release.",
+      "expected_output": "A project-token and rendered-evidence verification covering semantic spacing roles, representative breakpoints, container ownership, and font-aware typography without importing external numeric thresholds.",
+      "assertions": [
+        "The output distinguishes content gaps, section gaps, and container padding.",
+        "Typography verification records the actual font, fallback, script, role, and multi-line rendering.",
+        "User-applied text-spacing resilience is tested separately from default typography quality."
+      ]
     }
   ]
 }

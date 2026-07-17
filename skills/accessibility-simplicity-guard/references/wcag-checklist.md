@@ -45,6 +45,9 @@ Use the official WCAG 2.2 Quick Reference for full criteria and techniques.
 ### 1.4.12 Text Spacing — AA
 
 - User-applied text spacing does not cause loss of content or functionality.
+- Treat this as a resilience test, not a prescription for the design's default
+  letter spacing or line height. Evaluate default typography with the actual
+  font, fallback, script, language, size, weight, role, and rendered evidence.
 
 ## Operable
 

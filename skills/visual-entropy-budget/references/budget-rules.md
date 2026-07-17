@@ -1,5 +1,20 @@
 # Budget rules and exceptions
 
+## Contents
+
+- [Why count variants](#why-count-variants)
+- [What counts as a layout grammar](#what-counts-as-a-layout-grammar)
+- [Spacing roles and responsive relationships](#spacing-roles-and-responsive-relationships)
+- [Responsive container ownership](#responsive-container-ownership)
+- [Type roles and typography context](#type-roles-and-typography-context)
+- [Color](#color)
+- [Surfaces, radii, and shadows](#surfaces-radii-and-shadows)
+- [Nested radius coherence](#nested-radius-coherence)
+- [CTA styles](#cta-styles)
+- [Motion patterns](#motion-patterns)
+- [Decorative image families](#decorative-image-families)
+- [Legitimate exceptions](#legitimate-exceptions)
+
 ## Why count variants
 
 A small rule set makes relationships easier to perceive and makes the system
@@ -22,7 +37,40 @@ Examples:
 
 A responsive one-column version of the same project index is not a new grammar.
 
-## Type roles
+## Spacing roles and responsive relationships
+
+Inventory the project's primitive spacing scale before judging raw values.
+Classify each use by its communication role:
+
+- `content-gap`: relationships within a component or content group;
+- `section-gap`: separation between major page or flow regions;
+- `container-padding`: the page edge and primary content boundary;
+- documented exception: a measured interaction, data, brand, or accessibility
+  need that does not fit the shared scale.
+
+Prefer project semantic tokens over repeated raw values. Merge aliases that
+perform the same role, and require a reason for one-off values. A 4/8 scale is
+a common implementation choice, not a universal requirement.
+
+Compare the roles at representative project breakpoints. Larger section gaps
+and container padding may contract on narrow screens, while small control and
+content gaps may remain stable. Judge whether grouping, scanning, targets, and
+task flow survive; do not require every token to shrink.
+
+## Responsive container ownership
+
+Prefer a clear owner for page padding and width constraints. An outer container
+often owns responsive padding and min/max width while inner content uses the
+available space. Treat this as a maintainable default, not an absolute: forms,
+readable text measures, data tables, media, and specialized controls may need
+their own bounds.
+
+Use the project's breakpoints and container tokens. Flag overflow, clipped
+content, unreachable two-dimensional regions, or fixed desktop whitespace on
+narrow screens. Do not import another system's breakpoint, minimum height, or
+container dimensions as a pass/fail threshold.
+
+## Type roles and typography context
 
 Count semantic roles, not every font-size token. Typical roles:
 
@@ -35,6 +83,26 @@ Count semantic roles, not every font-size token. Typical roles:
 
 More roles may be justified in a complex application, but near-identical roles
 should be merged.
+
+For each role in scope, record the actual typeface and fallback stack, script
+and language, size, weight, letter spacing, line height, line length, and
+rendered use. Letter spacing and line height interact with the font's metrics,
+weight, size, script, and content; no single numeric range is universally
+correct.
+
+Compare typography with the project's declared tokens and representative
+multi-line rendering. Flag:
+
+- the same semantic role drifting across unrelated settings;
+- a declared token not matching the implementation;
+- clipping, overlap, broken wrapping, or truncated glyphs;
+- directly observed reading density or openness that impairs the task;
+- a responsive or fallback-font substitution that breaks the intended role.
+
+Do not flag a setting merely because it differs from a third-party typography
+table. Test user-applied text spacing for loss of content or functionality as a
+separate accessibility requirement; those tolerance checks do not prescribe
+ideal default typography.
 
 ## Color
 

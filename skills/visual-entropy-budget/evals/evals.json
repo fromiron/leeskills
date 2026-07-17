@@ -38,6 +38,38 @@
         "Shared contours are distinguished from independent components and pills.",
         "The correction includes evidence state and repeatable verification."
       ]
+    },
+    {
+      "id": "semantic-responsive-spacing",
+      "prompt": "This page uses many one-off gaps, fixed desktop section padding on mobile, and inner wrappers with competing max widths. Audit the spacing and responsive containers without importing another design system's pixel values.",
+      "expected_output": "A role-based spacing and container audit that starts from project tokens, separates content gaps, section gaps, and container padding, and verifies grouping and overflow at representative breakpoints.",
+      "assertions": [
+        "The output does not require a universal 4/8 scale or external breakpoint table.",
+        "Responsive changes are judged by preserved grouping, task flow, and rendered behavior.",
+        "One-off values and competing width owners receive evidence-backed recommendations."
+      ]
+    },
+    {
+      "id": "font-context-typesetting",
+      "prompt": "A team copied one design system's letter-spacing and line-height values into Korean, Japanese, and code roles that use different fonts. Decide what should change.",
+      "expected_output": "A font- and context-aware typography review that records each semantic role, project token, actual font and fallback, script, size, weight, measure, and rendered evidence before recommending changes.",
+      "assertions": [
+        "The external typography table is not treated as a universal pass/fail threshold.",
+        "Letter spacing and line height are evaluated with the actual font, script, role, and rendering.",
+        "Accessibility text-spacing resilience is kept separate from ideal default typography."
+      ]
+    },
+    {
+      "id": "token-proposal-html",
+      "prompt": "Our UI has no shared token system. Propose concrete primitive and semantic tokens for typography, spacing, layout, and radius, then show the recommendation as one HTML page for review.",
+      "expected_output": "After inspecting project values and rendered use, a self-contained HTML review artifact with exact evidence-grounded token names and values, primitive-to-semantic mappings, responsive or language mappings, specimens, current-to-proposed changes, exceptions, and explicit proposal status. Unsupported values remain unknown rather than being invented.",
+      "assertions": [
+        "The output provides concrete names and values instead of a generic standardization recommendation.",
+        "Every numeric proposal traces to project source or rendered evidence; missing evidence produces an unknown value or evidence request, not a convenient invented scale.",
+        "Primitive values are separated from semantic role tokens and every semantic token has a mapping.",
+        "The HTML is dependency-free, accessible, responsive, free of unresolved placeholders, and labeled as proposed rather than adopted.",
+        "Codeit or another design system is used as structural inspiration, not as a source of universal numbers or copied branding."
+      ]
     }
   ]
 }

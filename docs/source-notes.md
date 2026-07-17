@@ -66,10 +66,23 @@ recurring template output the maintainers have reviewed; it was not derived
 from a systematically sampled corpus. Treat the catalog as a reviewable
 heuristic, not a research-backed finding.
 
-## Radius systems
+## Interface foundation systems
 
-- Codeit Design System — Radius  
-  https://design.codeit.com/foundations/radius
+- [Codeit Design System — Spacing](https://design.codeit.com/foundations/spacing)
+- [Codeit Design System — Layout](https://design.codeit.com/foundations/layout)
+- [Codeit Design System — Radius](https://design.codeit.com/foundations/radius)
+- [Codeit Design System — Typography](https://design.codeit.com/foundations/typography)
+
+Codeit's spacing guidance separates primitive values from semantic content
+gaps and section gaps, and adjusts larger spacing at mobile sizes. This
+repository adopts the role separation and responsive-relationship checks, but
+not Codeit's 4/8 scale or pixel values as universal defaults.
+
+Codeit's layout guidance centralizes page padding, container bounds, and
+minimum screen dimensions in responsive tokens. This repository generalizes
+the container-ownership and responsive-verification principles. A project's
+own breakpoints and constraints take precedence; Codeit's breakpoints and
+dimensions are not portable requirements.
 
 Codeit's semantic-radius guidance uses relative size tokens and recommends a
 smaller inner token when boxes are nested. This repository generalizes that
@@ -77,6 +90,18 @@ relationship without adopting Codeit's project-specific pixel values as
 universal defaults. It adds separate handling for shared contours, independent
 components, pills and circles, plus an optional measured concentric-offset
 check when the curves are intended to remain parallel.
+
+Codeit's typography tokens are defined for its selected typefaces and assign
+letter spacing and line height to individual glyph roles. This repository
+adopts semantic-role consistency while treating those measurements as
+typeface-, script-, size-, weight-, and context-dependent. It never imports a
+third-party typography table as a universal pass/fail threshold; require
+project-token inconsistency or rendered evidence before recording a defect.
+
+The single-page token proposal template also adopts the documentation pattern
+of an overview followed by foundation-specific primitive tokens, semantic
+tokens, usage, and specimens. It does not copy Codeit's branding, navigation,
+content, token names, or numeric scales.
 
 ## Accessibility
 

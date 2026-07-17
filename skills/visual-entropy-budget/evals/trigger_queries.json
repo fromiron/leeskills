@@ -18,6 +18,18 @@
     "should_trigger": true
   },
   {
+    "id": "en-positive-4",
+    "language": "en",
+    "query": "Audit this design system's semantic spacing, responsive containers, and font-aware letter spacing and line height without imposing another system's pixel values.",
+    "should_trigger": true
+  },
+  {
+    "id": "en-positive-5",
+    "language": "en",
+    "query": "Propose primitive and semantic design tokens with concrete names and values, then present typography, spacing, layout, and radius in one HTML review page.",
+    "should_trigger": true
+  },
+  {
     "id": "en-negative-1",
     "language": "en",
     "query": "Rewrite this pricing paragraph to make the offer more concrete.",
@@ -54,6 +66,18 @@
     "should_trigger": true
   },
   {
+    "id": "ko-positive-4",
+    "language": "ko",
+    "query": "다른 디자인 시스템의 픽셀 값을 강제하지 말고 시멘틱 간격·반응형 컨테이너·폰트별 자간과 행간을 점검해줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-positive-5",
+    "language": "ko",
+    "query": "구체적인 이름과 수치가 있는 Primitive·Semantic 디자인 토큰을 제안하고 Typography·Spacing·Layout·Radius를 하나의 HTML 검토 페이지로 보여줘.",
+    "should_trigger": true
+  },
+  {
     "id": "ko-negative-1",
     "language": "ko",
     "query": "이 가격 문단의 제안을 더 구체적인 카피로 고쳐줘.",
@@ -87,6 +111,18 @@
     "id": "ja-positive-3",
     "language": "ja",
     "query": "内側に入ったパネルが外側カードと同じ角丸を繰り返す入れ子構造を監査してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-4",
+    "language": "ja",
+    "query": "別のデザインシステムの数値を強制せず、セマンティックな余白、レスポンシブコンテナ、フォント別の字間と行間を監査してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-5",
+    "language": "ja",
+    "query": "具体的な名前と値を持つPrimitive・Semanticデザイントークンを提案し、Typography・Spacing・Layout・Radiusを一つのHTMLレビューページで示してください。",
     "should_trigger": true
   },
   {

@@ -45,12 +45,20 @@ communication reason.
 Full credit requires:
 
 - hierarchy is readable;
-- line length and spacing support scanning and reading;
+- typography roles are consistent with project tokens;
+- letter spacing and line height are evaluated for the actual font, fallback,
+  script, language, size, weight, line length, and rendered use;
+- content gaps, section gaps, and container padding express clear relationships;
+- responsive spacing and container changes preserve grouping and avoid
+  overflow or desktop-sized empty regions;
 - alignment expresses relationships;
 - whitespace is structural rather than theatrical.
 
-Deduct for weak hierarchy compensated by effects, tiny faint text, or arbitrary
-large empty regions.
+Deduct for weak hierarchy compensated by effects, tiny faint text, unexplained
+one-off spacing, fixed desktop whitespace on narrow screens, or directly
+observed typography failures such as clipping, collision, broken wrapping, or
+impaired reading. Do not deduct solely because values differ from another
+design system's breakpoint, spacing, letter-spacing, or line-height table.
 
 ## 5. Component necessity — 10
 

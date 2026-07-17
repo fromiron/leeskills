@@ -126,3 +126,60 @@ surface treatment changed:
 
 Do not pass this check from a token count alone. Mark it not applicable only
 when no nested rounded relationship exists in scope.
+
+## 14. Semantic spacing and responsive container test
+
+When spacing tokens, page padding, width constraints, or responsive layout
+changed:
+
+1. identify the project's spacing scale, breakpoints, and container tokens;
+2. classify changed values as content gap, section gap, container padding, or
+   a documented exception;
+3. compare representative wide and narrow viewports;
+4. verify that grouping and task order remain clear while overflow and
+   desktop-sized empty regions are avoided;
+5. confirm that an explicit container owns each page-edge and width constraint;
+6. record any raw or one-off values and the reason they remain.
+
+Do not require a universal spacing scale, breakpoint, or pixel value. Mark
+missing responsive evidence as `unknown`.
+
+## 15. Typography context test
+
+When typography roles, fonts, letter spacing, line height, or text measures
+changed:
+
+1. record the actual typeface and fallback, script and language, size, weight,
+   role, letter spacing, line height, and line length;
+2. compare the implementation with project-owned typography tokens;
+3. render representative single- and multi-line content at target viewports;
+4. inspect clipping, overlap, wrapping, fallback substitution, and reading
+   density with explicit evidence;
+5. run applicable text-resize and user-applied text-spacing accessibility tests
+   separately.
+
+Do not use another design system's letter-spacing or line-height table as a
+universal pass/fail threshold. A difference without project or rendered
+evidence is not a defect.
+
+## 16. Token proposal artifact test
+
+When a shared token system or token documentation page was proposed:
+
+1. verify that every semantic token maps to declared primitive tokens or an
+   explicit responsive, language, or theme mapping;
+2. confirm that exact proposed names and values, current-to-proposed mappings,
+   retained exceptions, evidence, and adoption status are present;
+3. trace every numeric proposal to inspected project or rendered evidence and
+   reject a convenient scale invented only to fill the page;
+4. reject unresolved template placeholders; use an explicit `unknown` entry
+   when evidence is missing;
+5. confirm that the single HTML artifact has no external runtime dependencies
+   or network requests;
+6. inspect headings, table captions, keyboard focus, wide and narrow reflow,
+   reduced motion, and print output;
+7. confirm that the artifact labels recommendations as proposals rather than
+   adopted project standards.
+
+Do not approve the artifact merely because its token tables are complete.
+Rendered specimens and project-owner adoption remain separate requirements.

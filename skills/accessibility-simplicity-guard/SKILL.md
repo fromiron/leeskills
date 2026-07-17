@@ -5,7 +5,7 @@ license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.3.0"
+  version: "0.4.0"
   languages: "en, ko, ja"
 ---
 
@@ -97,6 +97,8 @@ Do not remove:
 - content needed at zoom or narrow widths.
 
 Do not make text faint or controls ambiguous merely to reduce visual weight.
+Do not present text-spacing resilience values or a third-party typography table
+as universally ideal default letter spacing or line height.
 
 ## Contrast and motion
 

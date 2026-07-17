@@ -4,7 +4,7 @@
 auditing, and verifying digital interfaces, landing pages, portfolios, product
 copy, and design systems.
 
-Version: **0.3.0**  
+Version: **0.4.0**<br>
 Status: **Beta / research-backed release**  
 License: **MIT**
 
@@ -27,7 +27,7 @@ The skills must not infer authorship from visual patterns.
 | `slop-signal-audit` | Finds observable slop signals, scores risk, and prioritizes removals |
 | `content-grounding` | Builds an evidence-backed content inventory and blocks fabrication |
 | `structure-selector` | Selects one dominant information structure from the user's task |
-| `visual-entropy-budget` | Limits visual variants and verifies nested-radius relationships |
+| `visual-entropy-budget` | Constrains visual systems, proposes tokens in HTML, and verifies responsive and nested-radius relationships |
 | `specificity-editor` | Rewrites interchangeable marketing copy into supported, concrete copy |
 | `motion-necessity-gate` | Keeps motion only when it conveys feedback, state, causality, or context |
 | `accessibility-simplicity-guard` | Prevents minimalism from removing accessibility cues or functions |
