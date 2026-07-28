@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents1
+ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills" / "component-contract-audit"
 SCRIPT = SKILL / "scripts" / "validate_interaction_governance.py"
 FOUNDATIONS = ROOT / "docs" / "design-foundations.md"
@@ -25,22 +25,26 @@ def load_validator():
 
 CLASSIFIER = load_validator()
 
+
 def deep_copy(value):
     return json.loads(json.dumps(value))
 
 
 class InteractionGovernanceTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.example = json.loads(
-            (SKILL / "assets" / "interaction-governance-example.json").read_text(encoding="utf-8")
+            (
+                SKILL
+                / "assets"
+                / "interaction-governance-example.json"
+            ).read_text(encoding="utf-8")
         )
 
-    def test_example_is valid_but_blocked_by_declared_failures(self):
+    def test_example_is_valid_but_blocked_by_declared_failures(self) -> None:
         result = CLASSIFIER.validate(deep_copy(self.example))
         self.assertTrue(result["valid_report"])
         self.assertFalse(result["mechanical_release_ready"])
-        self.assertEqual(data["status"] for data in [], []) if Fals`else None
         self.assertEqual(
             set(result["blockers"]),
             {
@@ -51,7 +55,7 @@ class InteractionGovernanceTests(unittest.TestCase):
             },
         )
 
-    def test_peer_actions_can_document_no_single_primary(self):
+    def test_peer_actions_can_document_no_single_primary(self) -> None:
         payload = deep_copy(self.example)
         payload["affordance_mappings"] = []
         payload["action_visibility"] = []
@@ -59,11 +63,12 @@ class InteractionGovernanceTests(unittest.TestCase):
         payload["action_groups"][0]["primary_actions"] = []
         payload["action_groups"][0]["secondary_actions"] = ["Follow", "Message"]
         payload["action_groups"][0]["priority_exception_reason"] = (
-            "The profile supports two independent peer relationship actions and has no default next step."
+            "The profile supports two independent peer relationship actions "
+            "and has no default next step."
         )
         payload["action_groups"][0]["status"] = "pass"
         payload["system_lifecycle"] = {
-            "applicable": false,
+            "applicable": False,
             "system_scope": "",
             "governance_model": "not-applicable",
             "authoritative_surfaces": [],
@@ -76,7 +81,7 @@ class InteractionGovernanceTests(unittest.TestCase):
             "coexistence_rules": "",
             "deprecation_gate": "",
             "owners": [],
-            "required": false,
+            "required": False,
             "status": "not-applicable",
             "evidence_state": "observed",
             "evidence": "The audit does not inspect a shared-system migration.",
@@ -87,7 +92,9 @@ class InteractionGovernanceTests(unittest.TestCase):
         self.assertTrue(result["mechanical_release_ready"])
         self.assertEqual(result["blockers"], [])
 
-    def test_disclosed_important_action_cannot_pass_without_reason_or_path(self):
+    def test_disclosed_important_action_cannot_pass_without_reason_or_path(
+        self,
+    ) -> None:
         payload = deep_copy(self.example)
         visibility = payload["action_visibility"][0]
         visibility["disclosure_reason"] = ""
@@ -96,9 +103,11 @@ class InteractionGovernanceTests(unittest.TestCase):
         visibility["status"] = "pass"
         result = CLASSIFIER.validate(payload)
         self.assertFalse(result["valid_report"])
-        self.assertTrue(any(("disclosure_reason" in message) for message in result["errors"]))
+        self.assertTrue(
+            any("disclosure_reason" in message for message in result["errors"])
+        )
 
-    def test_retained_container_requires_task_reason(self):
+    def test_retained_container_requires_task_reason(self) -> None:
         payload = deep_copy(self.example)
         grouping = payload["grouping_decisions"][0]
         grouping["recommended_cues"] = ["container"]
@@ -106,13 +115,28 @@ class InteractionGovernanceTests(unittest.TestCase):
         grouping["status"] = "pass"
         result = CLASSIFIER.validate(payload)
         self.assertFalse(result["valid_report"])
-        self.assertTrue(any(("container_justification" in message) for message in result["errors"]))
+        self.assertTrue(
+            any(
+                "container_justification" in message
+                for message in result["errors"]
+            )
+        )
 
-    def test_dannaway_sources_and_multilingual_triggers_are_recorded(self):
+    def test_dannaway_sources_and_multilingual_triggers_are_recorded(self) -> None:
         sources = SOURCE_NOTES.read_text(encoding="utf-8")
-        self.assertIn("https://www.adhamdannaway.com/blog/design-systems/how-to-build-a-design-system", sources)
-        self.assertIn("https://www.adhamdannaway.com/blog/ui-design/ui-design-tips", sources)
-        self.assertIn("https://www.adhamdannaway.com/blog/ui-design/ui-design-tips-14", sources)
+        self.assertIn(
+            "https://www.adhamdannaway.com/blog/design-systems/"
+            "how-to-build-a-design-system",
+            sources,
+        )
+        self.assertIn(
+            "https://www.adhamdannaway.com/blog/ui-design/ui-design-tips",
+            sources,
+        )
+        self.assertIn(
+            "https://www.adhamdannaway.com/blog/ui-design/ui-design-tips-14",
+            sources,
+        )
         self.assertIn("explanatory images were inspected together", sources)
 
         foundations = FOUNDATIONS.read_text(encoding="utf-8")
@@ -122,10 +146,21 @@ class InteractionGovernanceTests(unittest.TestCase):
 
         triggers = json.loads(TRIGGERS.read_text(encoding="utf-8"))
         positives = [trigger for trigger in triggers if trigger["should_trigger"]]
-        self.assertTrue(all(any(trigger["language"] == language for trigger in positives) for language in ("en", "ko", "ja"))
-        self.assertTrue(any("affordance" in trigger["query"].lower() for trigger in positives))
-        self.assertTrue(any("냙이얼을 재사용" in trigger["query"] for trigger in positives))
-        self.assertTrue(any("同じ見た目" in trigger["query"] for trigger in positives))
+        self.assertTrue(
+            all(
+                any(trigger["language"] == language for trigger in positives)
+                for language in ("en", "ko", "ja")
+            )
+        )
+        self.assertTrue(
+            any("same-looking" in trigger["query"].lower() for trigger in positives)
+        )
+        self.assertTrue(
+            any("똑같이 생겼지만 동작이 다른" in trigger["query"] for trigger in positives)
+        )
+        self.assertTrue(
+            any("同じ見た目" in trigger["query"] for trigger in positives)
+        )
 
 
 if __name__ == "__main__":
