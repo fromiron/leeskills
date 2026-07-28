@@ -86,6 +86,51 @@ drift remain release blockers. Do not copy another system's variants or
 dimensions into the project. Preserve a justified identity or task exception
 with evidence, owner, and a review trigger.
 
+When affordance, action priority or visibility, grouping, or system adoption is
+in scope, also produce the optional interaction-governance extension:
+
+```json
+{
+  "artifact": "",
+  "decision_context": "",
+  "evidence": [],
+  "affordance_mappings": [],
+  "action_groups": [],
+  "action_visibility": [],
+  "grouping_decisions": [],
+  "system_lifecycle": {
+    "applicable": false,
+    "system_scope": "",
+    "governance_model": "not-applicable",
+    "authoritative_surfaces": [],
+    "contribution_process": "",
+    "decision_process": "",
+    "versioning_and_changelog": "",
+    "roadmap": "",
+    "adoption_strategy": "",
+    "legacy_mapping": "",
+    "coexistence_rules": "",
+    "deprecation_gate": "",
+    "owners": [],
+    "required": false,
+    "status": "not-applicable",
+    "evidence_state": "observed",
+    "evidence": ""
+  },
+  "findings": [],
+  "accepted_risks": [],
+  "unknowns": []
+}
+```
+
+For affordances, compare visual treatment, perceived role, and actual behavior.
+For each decision context, declare primary, secondary, and destructive actions,
+or record the evidence-backed reason for zero or multiple primary actions. For
+action visibility, record importance, frequency, disclosure steps, reason,
+space evidence, and alternative path. A design-system lifecycle does not pass
+without reviewable ownership, current-to-target mapping, bounded coexistence,
+and a deprecation gate.
+
 ### Visual budget
 
 Produce:
@@ -166,8 +211,9 @@ Run the deletion, substitution, semantic, five-second, growth, reflow,
 keyboard, reduced-motion, and provenance tests. When nested rounded surfaces
 exist or changed, also run nested-radius coherence verification. When reusable
 components changed, verify required anatomy, states, content, responsive
-behavior, accessibility, and design-code parity. Unknown results remain
-unknown.
+behavior, accessibility, and design-code parity. When affordances, action
+hierarchy, disclosure, grouping, or a design-system migration changed, run the
+matching conditional checks. Unknown results remain unknown.
 
 ## Dependency rules
 
@@ -176,6 +222,13 @@ unknown.
 - Component contracts cannot infer runtime support from a design file.
 - Design-code parity cannot pass while a required surface is failed, unknown,
   or materially drifting.
+- Affordance mapping cannot pass from visual similarity without actual behavior
+  or semantic evidence.
+- Action priority is scoped to a decision context, not imposed as a page-wide
+  quota.
+- A disclosed or unavailable important action cannot pass from mere existence;
+  its reason and path must be reviewed.
+- Design-system adoption cannot pass from a component inventory alone.
 - Visual budgets cannot override accessibility or justified identity.
 - External spacing, layout, typography, color, iconography, and component values
   cannot override project tokens, behavior, or rendered evidence.

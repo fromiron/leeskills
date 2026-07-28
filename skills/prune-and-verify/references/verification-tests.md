@@ -69,8 +69,8 @@ boundary.
 
 At the project's target accessibility baseline, verify that content and
 functionality reflow without loss or unintended two-dimensional scrolling,
-except where two-dimensional presentation is essential. Record viewport,
-zoom, text-size, browser, and exceptions.
+except where two-dimensional presentation is essential. Record viewport, zoom,
+text-size, browser, and exceptions.
 
 ## 8. Keyboard and focus test
 
@@ -133,8 +133,8 @@ When spacing tokens, page padding, width constraints, or responsive layout
 changed:
 
 1. identify the project's spacing scale, breakpoints, and container tokens;
-2. classify changed values as content gap, section gap, container padding, or
-   a documented exception;
+2. classify changed values as content gap, section gap, container padding, or a
+   documented exception;
 3. compare representative wide and narrow viewports;
 4. verify that grouping and task order remain clear while overflow and
    desktop-sized empty regions are avoided;
@@ -183,3 +183,85 @@ When a shared token system or token documentation page was proposed:
 
 Do not approve the artifact merely because its token tables are complete.
 Rendered specimens and project-owner adoption remain separate requirements.
+
+## 17. Affordance-mapping test
+
+When visual treatment or interaction behavior changed:
+
+1. inventory repeated visual treatments and their locations;
+2. record the role a user is likely to perceive from each treatment;
+3. operate or inspect the actual behavior through keyboard, pointer, and touch
+   paths that are in scope;
+4. flag inert content that appears operable and materially different actions
+   that create the same false expectation;
+5. verify state, accessible name, role, and feedback separately;
+6. record evidence-backed exceptions.
+
+Do not require every action to look different. Compatible behavior and priority
+should reuse a shared treatment.
+
+## 18. Action-hierarchy test
+
+For each decision context that changed:
+
+1. state the user decision and task stage;
+2. identify the primary action when a default next step exists;
+3. list secondary and destructive actions;
+4. when no primary exists or actions are genuinely equal, record the product
+   evidence and reason;
+5. compare visual prominence, source order, focus order, and accessible names;
+6. run the glance-hierarchy and primary-task tests on the group.
+
+Do not treat a whole page as one decision context when it contains independent
+records or tool groups.
+
+## 19. Action-visibility and disclosure test
+
+For every primary, frequent, recovery, destructive, or otherwise important
+action that changed:
+
+1. classify it as persistent, contextual, disclosed, or unavailable;
+2. count the steps and conditions needed to reach it;
+3. inspect available-space and responsive evidence;
+4. record the reason for disclosure or hiding;
+5. verify an adequate discoverable path where one is required;
+6. test keyboard, touch, zoom, and error-recovery access;
+7. label frequency or importance as inferred unless supported by research,
+   analytics, or product requirements.
+
+Existence inside an overflow menu is not by itself a pass or a failure.
+
+## 20. Grouping-cue test
+
+When containers, borders, cards, alignment, or spacing changed:
+
+1. state the relationship being communicated;
+2. inventory proximity, alignment, similarity, and container cues before and
+   after;
+3. remove the strongest cue reversibly and repeat the scan, task, growth, and
+   reflow tests;
+4. retain a container when it communicates a boundary, state, interaction,
+   repeated record, error scope, or another task need;
+5. confirm source order, focus, and hit areas remain correct.
+
+A borderless result does not pass when the relationship becomes ambiguous.
+
+## 21. Design-system lifecycle and adoption test
+
+When a design-system migration or adoption plan is in scope:
+
+1. inventory current components, tokens, exceptions, and representative live
+   usages;
+2. identify authoritative surfaces and owners by contract dimension;
+3. inspect the contribution, review, versioning, changelog, and consumer
+   communication paths;
+4. trace each legacy component or token to a target, status, owner, exception,
+   and migration note;
+5. verify that old and new systems may coexist only under explicit bounded
+   rules;
+6. confirm a roadmap and measurable deprecation gate exist;
+7. sample one consumer migration and verify the target component's current
+   behavior and accessibility rather than assuming the migration repairs it.
+
+Do not require a central team, ambassador program, or a single migration
+strategy. Require reviewable ownership and convergence.
