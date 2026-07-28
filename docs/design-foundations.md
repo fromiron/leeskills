@@ -41,9 +41,9 @@ boundary is explicit.
 
 ### 3. Structure instead of containers
 
-Use headings, lists, tables, alignment, spacing, and rules before wrapping
-every item in a rounded card. A container should communicate a real boundary,
-state, or interaction.
+Use headings, lists, tables, alignment, spacing, and rules before wrapping every
+item in a rounded card. A container should communicate a real boundary, state,
+or interaction.
 
 ### 4. Nested curves preserve relationships
 
@@ -135,3 +135,46 @@ accessible.
 Every exception needs evidence, an owner, status, and a review trigger.
 Repeated exceptions indicate that the shared contract or token system may need
 revision.
+
+### 16. Affordance must match behavior
+
+Visual treatment creates an expectation about what can be operated, what will
+happen, and which state is current. Similar treatments should support compatible
+behavior; materially different behavior must remain distinguishable when the
+user needs to tell it apart.
+
+Do not infer behavior from appearance alone. Compare design, semantics, source
+code, input paths, feedback, and live usage. Allow evidence-backed exceptions
+without turning arbitrary variation into identity.
+
+### 17. Action priority belongs to a decision context
+
+A primary action is the default next step for one user decision or task stage,
+not a universal decoration and not a page-wide quota. Prefer one primary action
+when the context has a clear default. Permit equal-priority actions or no
+primary action when the task evidence requires it and the reason is explicit.
+
+Keep secondary and destructive actions distinguishable without changing the
+meaningful source or focus order.
+
+### 18. Visibility has a disclosure cost
+
+An action can exist and still be functionally hard to find. Classify whether it
+is persistent, contextual, disclosed, or hidden, and record the steps,
+constraints, importance, and alternative path.
+
+Overflow and progressive disclosure are valid for low-frequency, advanced,
+destructive, permission-sensitive, or space-constrained actions. Primary,
+frequent, and recovery actions need stronger evidence before being hidden.
+
+### 19. Systems need adoption paths
+
+A design system is not complete when tokens and components are documented.
+Record the current inventory, authoritative surfaces, governance, contribution
+process, legacy-to-target mappings, coexistence rules, adoption status,
+versioning, changelog, roadmap, owners, and deprecation gates.
+
+No organization model or migration strategy passes by name alone. The system
+must make responsibility, consumer impact, and convergence reviewable while
+continuing to audit the current behavior and accessibility of the target
+components.

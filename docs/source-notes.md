@@ -1,10 +1,10 @@
 # Source notes
 
-Accessed: **2026-07-17**
+Accessed: **2026-07-28**
 
 These sources informed the repository. The skills paraphrase and normalize
 their principles rather than copying source text, numerical scales, component
-names, or branding.
+names, imagery, or branding.
 
 ## Agent Skills format
 
@@ -153,6 +153,50 @@ The token proposal template adopts the documentation pattern of an overview
 followed by foundation-specific primitive tokens, semantic tokens, usage, and
 specimens. It does not copy Codeit's branding, navigation, content, token names,
 or numeric scales.
+
+## Adham Dannaway UI and design-system articles
+
+- How to build a design system  
+  https://www.adhamdannaway.com/blog/design-systems/how-to-build-a-design-system
+- UI design tips  
+  https://www.adhamdannaway.com/blog/ui-design/ui-design-tips
+- UI design tips, part 14  
+  https://www.adhamdannaway.com/blog/ui-design/ui-design-tips-14
+
+The article text and its explanatory images were inspected together. Relevant
+visual evidence included a palette organized by semantic roles, a spacing-token
+example, small components composed into larger components and templates, and
+before-and-after interfaces that changed action prominence, exposed profile
+actions, added non-color selection cues, removed unnecessary card containers,
+and clarified grouping through spacing and alignment.
+
+The repository generalizes the following questions:
+
+- whether a visual treatment creates the same expectation as the actual
+  behavior;
+- whether one decision context has a supported primary action, genuinely equal
+  alternatives, or an explicit reason for no primary action;
+- whether important actions are persistent, contextual, disclosed, or hidden,
+  and whether the disclosure cost is justified;
+- whether proximity, alignment, similarity, or a container is the necessary
+  grouping cue;
+- whether icon and text weight remain coherent in the actual typeface and icon
+  family;
+- whether a design system has an inventory, ownership, contribution path,
+  changelog, roadmap, legacy mapping, bounded coexistence, adoption status, and
+  deprecation gate.
+
+The articles' concrete values and simplified teaching rules remain examples,
+not repository-wide thresholds. This repository does not adopt an 8-point grid,
+a fixed type-scale ratio, a universal number of weights, radii, or shadows,
+48-point controls, left alignment in every context, or a blanket ban on pure
+black. Project tokens, rendered evidence, language and script, platform needs,
+brand requirements, and official accessibility guidance take precedence.
+
+A central design-system team or product-team ambassador model is recorded as a
+possible governance pattern, not a universal requirement. Solo, federated,
+distributed, and hybrid ownership can pass when authority, review, consumer
+communication, and convergence are explicit.
 
 ## Accessibility
 

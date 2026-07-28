@@ -8,9 +8,11 @@
 - [Responsive container ownership](#responsive-container-ownership)
 - [Type roles and typography context](#type-roles-and-typography-context)
 - [Color](#color)
+- [Iconography and icon–text pairing](#iconography-and-icon–text-pairing)
 - [Surfaces, radii, and shadows](#surfaces-radii-and-shadows)
 - [Nested radius coherence](#nested-radius-coherence)
-- [CTA styles](#cta-styles)
+- [CT styles and action priority](#cta-styles-and-action-priority)
+- [Grouping cues](#grouping-cues)
 - [Motion patterns](#motion-patterns)
 - [Decorative image families](#decorative-image-families)
 - [Legitimate exceptions](#legitimate-exceptions)
@@ -42,7 +44,7 @@ A responsive one-column version of the same project index is not a new grammar.
 Inventory the project's primitive spacing scale before judging raw values.
 Classify each use by its communication role:
 
-- `content-gap`: relationships within a component or content group;
+- `content-gap`: internal relationships within a component or content group;
 - `section-gap`: separation between major page or flow regions;
 - `container-padding`: the page edge and primary content boundary;
 - documented exception: a measured interaction, data, brand, or accessibility
@@ -112,6 +114,28 @@ they carry meaning.
 
 Never reduce a color system by making states indistinguishable.
 
+## Iconography and icon–text pairing
+
+Inventory icon roles, source families, stroke and fill styles, raw bounds,
+and interactive targets when icons create material variant. Similar semantic
+roles should use a coherent icon language, but optical correction may change
+the raw size or offset of a specific glyph.
+
+When an icon and text form one label or control, inspect the pair rather than
+the numbers in isolation:
+
+- does the icon's visual mass match the text role without dominating or
+  disappearing;
+- do their baseline and gap preserve one readable unit;
+- do hover, focus, selected, disabled, and error states remain coherent across
+  both parts;
+- is the icon decorative, supporting, or the sole label, and is that accessibility
+  role explicit?
+
+Do not require arithmetic equality between font size and icon bounds. Use the
+actual typeface, weight, icon family, optical size, script, language, and
+rendered result.
+
 ## Surfaces, radii, and shadows
 
 A surface style is a recurring combination of background, border, elevation,
@@ -163,12 +187,39 @@ review. Radius awkwardness is not proof of AI authorship and is not a release
 hard failure unless it also clips focus, content, targets, or another required
 accessibility signal.
 
-## CTA styles
+## CTA styles and action priority
 
 Count visual treatments, not labels. A primary CTA can have many text labels
-while remaining one style.
+throughout a product while remaining one shared style.
 
-Do not make every link a button. Use native link affordances for navigation.
+Do not confuse style count with action hierarchy. A system may correctly use
+one primary-button style and still present Follow, Message, Save, and Publish
+as equally prominent inside one decision context. Conversely, different contexts
+can each have a clear primary action without creating additional primary-button
+styles.
+
+Declare action priority per decision context. Prefer one primary action when
+at default next step exists; record the evidence-backed reason for multiple or
+no primary actions. Do not make every link a button. Use native link
+affordances for navigation.
+
+## Grouping cues
+
+For each material relationship, inventory the available cues:
+
+- `proximity`;
+- `alignment`;
+- `similarity`;
+- `container`.
+
+Use the lightest sufficient cue or combination. A container is stronger and
+more expensive than spacing or alignment, but it is appropriate when it
+means state, interaction, ownership, error scope, repeated record, or another
+task-relevant boundary.
+
+Remove a container reversibly and repeat the scan, growth, reflow, source-order,
+focus, and primary-task tests. Do not assume a borderless result is simpler if
+the relationship becomes ambiguous.
 
 ## Motion patterns
 

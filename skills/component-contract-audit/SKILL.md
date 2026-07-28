@@ -1,6 +1,6 @@
 ---
 name: component-contract-audit
-description: Use this skill to audit or define reusable UI component contracts across design files, documentation, Storybook, source code, and live usage. Use when anatomy, required and optional parts, variants, states, content constraints, responsive behavior, accessibility behavior, semantic tokens, or design-code parity need review. Do not use it for a visual-token-only request or to copy another design system's component specifications.
+description: Use this skill to audit or define reusable UI component and design-system contracts across design files, documentation, Storybook, source code, and live usage. Use when anatomy, variants, states, content, responsive or accessibility behavior, semantic tokens, design-code parity, affordance mapping, action priority or visibility, grouping cues, or design-system adoption need review. Do not use it for a visual-token-only request or to copy another design system's component specifications.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
@@ -11,14 +11,14 @@ metadata:
 
 # Component Contract Audit
 
-Treat a reusable component as a behavioral, content, and implementation contract,
-not as a screenshot or a collection of visual variants.
+Treat a reusable component as a behavioral, content, interaction, and
+implementation contract—not as a screenshot or a collection of visual variants.
 
 ## Goal
 
-Make the component predictable for users and maintainers across design,
-documentation, code, responsive contexts, languages, input methods, and
-accessibility settings.
+Make components and shared systems predictable for users and maintainers across
+design, documentation, code, responsive contexts, languages, input methods,
+accessibility settings, and product adoption.
 
 ## Inputs
 
@@ -29,9 +29,12 @@ Use as available:
 - design-library component and variants;
 - documentation or Storybook;
 - source code, tests, and rendered examples;
-- real product usage;
-- project tokens, breakpoints, and content rules;
-- supported browsers, devices, input methods, and accessibility baseline.
+- representative product usage and decision contexts;
+- project tokens, breakpoints, content rules, and action-priority rules;
+- overflow menus, disclosure paths, and available-space evidence;
+- supported browsers, devices, input methods, and accessibility baseline;
+- for design-system work, current inventories, legacy-to-target mappings,
+  adoption status, version history, roadmap, and deprecation criteria.
 
 Record missing surfaces as `unknown`. Do not infer runtime behavior from a
 design file or screenshot.
@@ -64,13 +67,23 @@ Review the applicable dimensions:
 10. **Accessibility** — name, role, value, relationships, focus, status, and target.
 11. **Ownership** — source of truth, change process, exceptions, and deprecation.
 12. **Parity** — alignment among design, documentation, code, and live usage.
+13. **Affordance mapping** — whether visual treatment matches expected and actual
+    behavior, including justified exceptions.
+14. **Action governance** — priority within each decision context, persistent or
+    disclosed visibility, and the cost of hiding important actions.
+15. **Grouping cues** — whether proximity, alignment, similarity, or a container
+    communicates each relationship with the least unnecessary visual weight.
+16. **System lifecycle** — inventory, governance, versioning, migration,
+    coexistence, adoption, ownership, and removal gates when a design system is
+    in scope.
 
 Read [references/contract-rules.md](references/contract-rules.md) before
-normalizing another system's component guidance.
+normalizing another system's component or governance guidance.
 
 ## Procedure
 
-1. Restate the component purpose, primary user, task, and success condition.
+1. Restate the component or system purpose, primary user, task, decision context,
+   and success condition.
 2. Identify the project-owned source of truth and accountable owner. When
    ownership is shared or disputed, record that as a finding.
 3. Inventory design, documentation, code, tests, and representative live usage.
@@ -79,20 +92,37 @@ normalizing another system's component guidance.
    require every possible state by default.
 6. Record visual treatment, behavior, accessible representation, and evidence
    separately for every applicable state.
-7. Test content expansion, localization, empty values, long labels, and error
-   or status messages where applicable.
+7. Test content expansion, localization, empty values, long labels, and error or
+   status messages where applicable.
 8. Test representative responsive contexts and input paths. Preserve task,
    meaning, and recovery rather than only matching dimensions.
 9. Map visual values to project semantic tokens. Route detailed token-system
    consolidation to `visual-entropy-budget`.
 10. Compare design, documentation, code, and live usage. Classify each inspected
     surface as `aligned`, `drift`, `unknown`, or `not-inspected`.
-11. Record justified identity or task exceptions with evidence, owner, and a
+11. Map repeated visual treatments to perceived roles and actual behavior. Check
+    both directions: similar treatments should create compatible expectations,
+    and materially different behavior should remain distinguishable.
+12. For each decision context, identify the primary, secondary, destructive, or
+    intentionally equal-priority actions. Do not impose one primary action on an
+    entire application when the contexts are independent.
+13. Record whether each important action is persistent, contextual, disclosed,
+    or unavailable. Require evidence for hiding primary, frequent, or recovery
+    actions, and record an equivalent discoverable path where one is required.
+14. For each relationship, inventory proximity, alignment, similarity, and
+    container cues. Retain a container when it communicates a real boundary,
+    state, interaction, or repeated-record need—not merely to make the region
+    appear designed.
+15. When a shared system is in scope, record its current inventory,
+    authoritative surfaces, governance model, contribution process, release and
+    changelog policy, legacy mappings, coexistence rules, adoption status,
+    roadmap, owners, and deprecation gate.
+16. Record justified identity or task exceptions with evidence, owner, and a
     review trigger. Do not erase distinctive choices merely to match a generic
     component library.
-12. Prioritize the smallest changes that restore user-facing behavior and
-    maintainer clarity.
-13. Validate the structured report.
+17. Prioritize the smallest changes that restore user-facing behavior,
+    discoverability, and maintainer clarity.
+18. Validate the applicable structured report.
 
 ## State scope
 
@@ -133,6 +163,27 @@ Use:
 A project may intentionally make one surface authoritative. The other required
 surfaces still need an update path; source-of-truth status does not excuse drift.
 
+## Interaction and system-governance extension
+
+Use the extension when affordances, competing actions, disclosure, grouping, or
+design-system adoption are material to the request. It is optional and does not
+invalidate an existing component-contract report that is outside this scope.
+
+Use:
+
+- [assets/interaction-governance.schema.json](assets/interaction-governance.schema.json)
+- [assets/interaction-governance-example.json](assets/interaction-governance-example.json)
+
+Validate:
+
+```bash
+python scripts/validate_interaction_governance.py path/to/interaction-governance.json
+```
+
+The validator checks the declared contract and fail-closed gates. It does not
+operate the interface, measure real discoverability, establish conversion
+impact, or prove usability.
+
 ## Hard gates
 
 Block a mechanical release-ready result when directly supported evidence shows:
@@ -147,14 +198,23 @@ Block a mechanical release-ready result when directly supported evidence shows:
   does not support;
 - mock component behavior is presented as live product capability without
   disclosure;
-- a required state or accessibility check remains `fail` or `unknown`.
+- a required state or accessibility check remains `fail` or `unknown`;
+- a non-interactive element uses an operable treatment, or materially different
+  actions share a treatment that creates a false expectation, without a
+  supported exception;
+- a decision context presents competing primary actions without an explicit
+  equal-priority requirement or a documented reason that no primary exists;
+- a required primary, frequent, or recovery action is hidden behind disclosure
+  without a supported reason and an adequate discoverable path;
+- a required design-system lifecycle remains `fail` or `unknown` when migration
+  or adoption is part of the release scope.
 
 An accepted risk records an owner decision but does not mechanically convert a
 failure or unknown into a pass.
 
 ## Output
 
-Use:
+For the base component contract, use:
 
 - [assets/component-contract.schema.json](assets/component-contract.schema.json)
 - [assets/component-contract-example.json](assets/component-contract-example.json)
@@ -165,16 +225,16 @@ Validate:
 python scripts/validate_component_contract.py path/to/component-contract.json
 ```
 
-The validator checks report structure and declared release blockers. It does not
-render the component, operate a browser, compare screenshots, or run assistive
-technology.
+The base validator checks report structure and declared release blockers. It
+does not render the component, operate a browser, compare screenshots, or run
+assistive technology.
 
 ## Recommendation format
 
 For each material finding include:
 
 - evidence state;
-- exact component, surface, and state;
+- exact component, surface, state, or decision context;
 - contract expectation;
 - observed drift or unknown;
 - user and maintainer impact;
@@ -185,6 +245,7 @@ For each material finding include:
 ## Completion
 
 The audit is complete when applicable anatomy, states, content, responsive
-behavior, accessibility, tokens, ownership, and parity are explicit; required
-failures and unknowns remain visible; and every recommended change has a
-repeatable verification method.
+behavior, accessibility, tokens, ownership, parity, affordances, action
+priority, visibility, grouping, and lifecycle are explicit; required failures
+and unknowns remain visible; and every recommended change has a repeatable
+verification method.

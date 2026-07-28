@@ -9,7 +9,6 @@ metadata:
   languages: "en, ko, ja"
 ---
 
-
 # Prune and Verify
 
 Remove the least necessary material first, then prove that the remaining
@@ -30,6 +29,8 @@ Use as available:
 - primary user, primary task, and success condition;
 - grounded content inventory;
 - structure decision and visual budget;
+- component, affordance, action-governance, and design-system lifecycle reports
+  when those dimensions changed;
 - motion and accessibility reports;
 - supported viewport, input, browser, and assistive-technology requirements;
 - release constraints and explicitly accepted risks.
@@ -72,10 +73,14 @@ For test status, use:
 10. Check reflow and input paths at the declared accessibility baseline.
 11. Check reduced-motion behavior for retained nonessential motion.
 12. Check provenance for claims, images, metrics, quotes, and product evidence.
-13. Classify each check as pass, fail, unknown, or not applicable.
-14. Block release for required failures or unknowns unless the exact risk is
+13. When interaction treatments changed, repeat the applicable affordance,
+    action-hierarchy, action-visibility, and grouping-cue checks.
+14. When a design-system migration or adoption plan changed, verify inventory,
+    mappings, coexistence, ownership, changelog, and deprecation gates.
+15. Classify each check as pass, fail, unknown, or not applicable.
+16. Block release for required failures or unknowns unless the exact risk is
     documented and explicitly accepted by an accountable owner.
-15. Produce the smallest reversible change plan and a repeatable verification
+17. Produce the smallest reversible change plan and a repeatable verification
     plan.
 
 Use [references/verification-tests.md](references/verification-tests.md) for
@@ -97,12 +102,20 @@ Unless the artifact makes a check genuinely irrelevant, include:
 - provenance.
 
 Also include `nested-radius-coherence` when nested rounded surfaces exist or a
-radius, padding, border, or surface relationship changed. Mark it genuinely
-not applicable when the artifact has no such relationship.
+radius, padding, border, or surface relationship changed. Mark it genuinely not
+applicable when the artifact has no such relationship.
+
+Include these checks when their corresponding scope exists or changed:
+
+- `affordance-mapping`;
+- `action-hierarchy`;
+- `action-visibility`;
+- `grouping-cues`;
+- `system-lifecycle`.
 
 A screenshot can support visual observations but cannot pass keyboard,
-semantics, runtime behavior, reflow, assistive-technology, or reduced-motion
-checks by itself.
+semantics, runtime behavior, reflow, assistive-technology, reduced-motion,
+action frequency, or design-system adoption checks by itself.
 
 ## Accepted-risk syntax
 
@@ -138,25 +151,32 @@ python scripts/validate_verification.py path/to/verification.json
 ```
 
 The script validates the report contract and required-check gates. It does not
-inspect CSS, render contours, or perform browser, accessibility, or usability
-testing.
+inspect CSS, render contours, operate disclosures, measure discoverability, or
+perform browser, accessibility, usability, or adoption testing.
 
 ## Recommendation order
 
 Prefer, in order:
 
 1. remove unsupported claims or fabricated proof;
-2. remove duplicate sections and actions;
-3. consolidate variants that communicate no distinct state;
-4. replace decorative evidence substitutes with real evidence or nothing;
-5. reduce purposeless motion;
-6. simplify copy without removing necessary constraints;
-7. preserve or restore labels, semantics, focus, errors, and alternatives.
+2. restore misleading or missing interaction and accessibility cues;
+3. expose or provide an adequate path to required primary, frequent, or
+   recovery actions;
+4. remove duplicate sections and actions;
+5. consolidate variants that communicate no distinct state;
+6. replace decorative evidence substitutes with real evidence or nothing;
+7. reduce purposeless motion;
+8. simplify copy without removing necessary constraints;
+9. remove grouping containers only when lighter cues preserve the relationship;
+10. preserve or restore labels, semantics, focus, errors, alternatives, and
+    bounded migration paths.
 
 ## Completion rule
 
 Stop pruning when another removal would make the primary task harder, weaken
-verified evidence, erase meaningful identity, or reduce accessibility.
+verified evidence, erase meaningful identity, create a false affordance, hide a
+necessary action, break a component contract or migration path, or reduce
+accessibility.
 
 Conclude with:
 

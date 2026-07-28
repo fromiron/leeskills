@@ -2,6 +2,31 @@
 
 All notable changes are documented here.
 
+## [Unreleased]
+
+### Added
+
+- Added an optional `component-contract-audit` interaction-governance extension
+  for affordance mapping, decision-context action priority, action visibility
+  and disclosure cost, grouping cues, and design-system lifecycle and adoption.
+- Added a strict JSON schema, a deliberately blocked example, a dependency-free
+  validator, and repository tests for the new extension.
+- Added English, Korean, and Japanese trigger coverage plus output evals for
+  misleading affordances, competing primary actions, hidden important actions,
+  and bounded design-system adoption.
+
+### Changed
+
+- Expanded component-contract and final-verification guidance to distinguish CTA
+  style counts from action priority, test same-look and same-behavior mappings,
+  and verify grouping without requiring decorative containers.
+- Added design-system inventory, governance, versioning, legacy mapping,
+  coexistence, adoption, and deprecation questions without requiring one team
+  structure or migration strategy.
+- Added source notes grounded in Adham Dannaway's design-system and UI articles,
+  including their explanatory images, while keeping their numerical examples
+  out of universal pass/fail rules.
+
 ## [0.5.0] - 2026-07-17
 
 ### Added
