@@ -4,7 +4,7 @@
 auditing, and verifying digital interfaces, landing pages, portfolios, product
 copy, component libraries, and design systems.
 
-Version: **0.5.0**<br>
+Version: **0.6.0**<br>
 Status: **Beta / source-grounded release**  
 License: **MIT**
 
