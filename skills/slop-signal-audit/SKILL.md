@@ -32,6 +32,8 @@ Collect as available:
 - motion inventory;
 - user and primary task;
 - real proof, constraints, and outcomes;
+- product style, terminology, approved nearby copy, and supplied locales when
+  voice or locale drift is in scope;
 - target viewport and accessibility baseline.
 
 Record anything not inspected.

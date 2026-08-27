@@ -12,6 +12,12 @@
     "should_trigger": true
   },
   {
+    "id": "en-positive-3",
+    "language": "en",
+    "query": "Review the English, Korean, and Japanese labels on this localized product screen for natural language, consistent terminology, and fit with the product's existing voice.",
+    "should_trigger": true
+  },
+  {
     "id": "en-negative-1",
     "language": "en",
     "query": "Choose the primary information architecture for this writing archive.",
@@ -36,6 +42,12 @@
     "should_trigger": true
   },
   {
+    "id": "ko-positive-3",
+    "language": "ko",
+    "query": "이 다국어 제품 화면의 영문·한국어·일본어 문구가 각 언어에서 자연스럽고 기존 제품 말투와 용어에 맞는지 교정하거나 제안해줘.",
+    "should_trigger": true
+  },
+  {
     "id": "ko-negative-1",
     "language": "ko",
     "query": "이 글 아카이브의 기본 정보 구조를 선택해줘.",
@@ -57,6 +69,12 @@
     "id": "ja-positive-2",
     "language": "ja",
     "query": "競合名への置換テストを行い、書き手の声は残したまま根拠のない最上級表現を削除してください。",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-3",
+    "language": "ja",
+    "query": "この多言語プロダクト画面の英語・韓国語・日本語が、それぞれ自然で既存の語り口と用語に合っているかを確認し、修正と提案を分けてください。",
     "should_trigger": true
   },
   {

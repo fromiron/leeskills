@@ -49,8 +49,15 @@
 
 ## Copy
 
-| Original | Issue | Supported rewrite | Evidence |
-|---|---|---|---|
+| Locale | Location | Decision | Original | Issue | Evidence status | Proposed copy | Evidence and voice basis | Unresolved |
+|---|---|---|---|---|---|---|---|---|
+
+### Multilingual parity
+
+Use only when more than one locale or localized runtime messages are in scope.
+
+| Meaning or action | Locales checked | Catalog key mapping | Terminology or priority drift | Runtime constraints checked | Decision |
+|---|---|---|---|---|---|
 
 ## Motion
 

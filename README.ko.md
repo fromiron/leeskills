@@ -64,7 +64,7 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 | 정보 구조 선택 | `structure-selector` | 사용자 작업을 기준으로 고른 구조와 제외한 대안 |
 | 재사용 UI 규칙 정리 | `component-contract-audit` | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
 | 시각 체계 정리 | `visual-entropy-budget` | 시각 규칙과 반응형·타이포그래피·중첩된 모서리 반경 검사 |
-| 모호한 카피 수정 | `specificity-editor` | 제공된 사실에 맞춰 구체적으로 고친 문구 |
+| 제품 문구 다듬기 | `specificity-editor` | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
 | 모션 검토 | `motion-necessity-gate` | 유지·축소·대체·삭제 판단과 모션 감소 검사 |
 | 접근성을 지키며 단순화 | `accessibility-simplicity-guard` | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
 | 수정한 결과 확인 | `prune-and-verify` | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |

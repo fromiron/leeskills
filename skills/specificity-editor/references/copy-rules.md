@@ -89,3 +89,7 @@ performance claims require source review.
 
 Preserve distinctive vocabulary, rhythm, humor, and domain terminology when
 they are intentional. Remove generic filler, not authorial character.
+
+For naturalness, register, translation, or cross-locale review, use
+[language-and-voice.md](language-and-voice.md). Product evidence sets the voice;
+external language guides do not.

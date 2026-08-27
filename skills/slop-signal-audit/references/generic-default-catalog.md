@@ -118,6 +118,8 @@ Route remediation to `specificity-editor` with a grounded inventory.
   audience.
 - **Watchlist phrases.** See the `specificity-editor` phrase watchlist for
   per-language generic vocabulary.
+- **Voice or locale drift.** Register, terminology, or action wording changes
+  across a product flow or its localized versions without a task-based reason.
 
 ## Imagery
 

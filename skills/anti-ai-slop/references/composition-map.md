@@ -173,15 +173,24 @@ path; do not imply adoption. Trace numeric proposals to inspected project or
 rendered evidence. If that evidence is unavailable, leave values `unknown`
 instead of inventing a complete scale.
 
-### Specificity edit
+### Copy edit
 
-For each changed statement, show:
+For each material copy decision, show:
 
+- locale and location;
 - original;
-- problem;
-- supported rewrite;
-- evidence used;
-- unresolved claim if evidence is missing.
+- decision: `correct`, `suggest`, or `keep`;
+- issue and evidence status;
+- proposed copy when changed;
+- evidence and product-voice or language basis;
+- unresolved information.
+
+When multiple locales or localized runtime strings are in scope, also compare
+meaning, task, terminology, and action priority. Map each canonical message key
+to its supplied locale-catalog entries and flag missing or misaligned keys.
+Record whether placeholders, markup, plural or select branches, and
+locale-aware formatting responsibilities remain intact; do not require
+word-for-word parity.
 
 ### Motion gate
 

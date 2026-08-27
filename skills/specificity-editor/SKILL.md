@@ -1,6 +1,6 @@
 ---
 name: specificity-editor
-description: Use this skill to audit and rewrite vague, interchangeable, inflated, or unsupported copy in a website, interface, landing page, portfolio, case study, or product narrative. Use when copy contains generic AI-marketing language, unverified superlatives, empty benefits, or claims that could fit any company. Ground every rewrite in supplied evidence and preserve the artifact's language and voice.
+description: Use this skill to audit and edit product, interface, landing-page, documentation, portfolio, case-study, or product-narrative copy for specificity, factual support, natural language, and consistency with the product's established voice. Use for vague or inflated claims, translation-like or stiff wording, mixed register, terminology drift, or multilingual screens. Preserve meaning and approved voice; never infer authorship from prose style.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
@@ -12,14 +12,39 @@ metadata:
 
 # Specificity Editor
 
-Replace interchangeable marketing language with concrete, attributable,
-task-relevant copy.
+Make copy concrete, supportable, natural in its language, and consistent with
+the surrounding product without flattening its voice.
 
-## Prerequisite
+## Context
 
-Use a grounded content inventory when claims, outcomes, customers, prices, or
-capabilities are involved. If evidence is missing, flag the claim or write
-around it; do not invent support.
+Collect as available:
+
+- a grounded content inventory for claims, outcomes, customers, prices, and
+  capabilities;
+- the product style guide, terminology list, and approved nearby copy;
+- the intended audience, task, surface, and locale;
+- equivalent copy from other supported locales when internationalization is in
+  scope;
+- message keys, placeholders, markup, plural or select branches, and formatting
+  ownership when editing localized runtime strings.
+
+If evidence is missing, flag the claim or write around it; do not invent
+support or a house style.
+
+## Authority
+
+Use this order when guidance conflicts:
+
+1. verified meaning, user instructions, and legal, safety, or accessibility
+   requirements;
+2. the product's explicit style and terminology rules;
+3. approved copy from the same product and locale;
+4. the audience, task, and interaction context;
+5. language-specific official guidance;
+6. editor preference.
+
+An outside guide can support clarity and usage decisions. It does not supply
+the product's personality.
 
 ## Specificity questions
 
@@ -37,22 +62,57 @@ Use the subset relevant to each statement:
 Not every sentence needs all eight answers. It needs enough detail to perform
 its job.
 
+## Language and voice questions
+
+Use the subset that fits the artifact:
+
+1. Does the wording sound natural in the target locale, or does it preserve the
+   source language's order and idiom?
+2. Does formality, politeness, humor, and sentence rhythm match approved nearby
+   copy?
+3. Are product terms, labels, and calls to action consistent across the flow?
+4. Do localized versions preserve meaning, task, and action priority without
+   forcing the same sentence structure?
+5. Do localized runtime strings preserve their keys, placeholders, markup,
+   branches, and locale-aware formatting contract?
+6. Is an unusual phrase intentional product voice or an isolated inconsistency?
+7. Is there enough voice evidence to correct the copy, or should the change be
+   offered as a suggestion?
+
 ## Workflow
 
-1. Preserve the source language unless translation is requested.
-2. Split copy into atomic claims and actions.
-3. Trace factual claims to grounded evidence.
-4. Run the substitution test: replace the name with an unrelated competitor.
-5. Flag wording that remains equally plausible after substitution.
-6. Flag superlatives, quantified outcomes, universal claims, and social proof
-   that lack evidence.
-7. Remove duplicated promises and filler transitions.
-8. Rewrite with concrete nouns, active verbs, relevant constraints, and one
-   clear action.
-9. Preserve approved brand voice; specificity is not the same as flat tone.
-10. Show unresolved claims rather than silently weakening or fabricating them.
+1. Identify the audience, task, surface, source language, target locale, and
+   available voice evidence.
+2. Preserve meaning and action priority. Translate only when requested.
+3. Split copy into atomic claims and actions, then trace factual claims to
+   grounded evidence.
+4. Run the substitution test: replace the name with an unrelated competitor
+   and flag wording that remains equally plausible.
+5. Flag unsupported superlatives, quantified outcomes, universal claims, and
+   social proof.
+6. Review each locale for natural syntax, register, terminology, rhythm, and
+   fit with approved surrounding copy.
+7. Compare multilingual versions by meaning, task, terminology, and action
+   priority rather than word-for-word similarity.
+8. Preserve message keys and runtime syntax. For locale catalogs, confirm that
+   each canonical key maps to the same meaning and action in every supplied
+   locale. Keep every required placeholder, markup boundary, plural or select
+   branch, and locale-aware formatting responsibility; flag missing or
+   misaligned keys and implementation context instead of guessing.
+9. Classify each material copy decision as `correct`, `suggest`, or `keep`:
+   - `correct` for grammar, mistranslation, ambiguity, terminology drift, or a
+     clear conflict with an established product rule;
+   - `suggest` for rhythm, tone, formality, or another reasonable style choice;
+   - `keep` for intentional, supported product voice.
+10. Remove duplicated promises and filler, then rewrite with concrete nouns,
+   active verbs where they improve clarity, relevant constraints, and a clear
+   action.
+11. Show unresolved claims and uncertain voice decisions instead of silently
+    weakening, normalizing, or fabricating them.
 
 Read [references/copy-rules.md](references/copy-rules.md).
+When tone, naturalness, translation, or multiple locales are in scope, also
+read [references/language-and-voice.md](references/language-and-voice.md).
 
 Optional lint:
 
@@ -62,7 +122,8 @@ python scripts/lint_copy.py path/to/copy.txt --format json
 ```
 
 The linter uses [references/phrase-watchlist.txt](references/phrase-watchlist.txt).
-A match is a review prompt, not an automatic failure.
+A match is a review prompt, not an automatic failure. The linter does not score
+naturalness, locale quality, product voice, or authorship.
 
 ## Rewrite rules
 
@@ -78,22 +139,36 @@ A match is a review prompt, not an automatic failure.
 - Do not invent a metric to make a sentence more specific.
 - Do not require every sentence to become longer. A concrete sentence can be
   shorter.
+- Do not flatten every product into a generic plain-language voice.
+- Do not copy Google, Microsoft, government, or another organization's house
+  style into the product.
+- Do not treat a common phrase, formal tone, or awkward sentence as evidence
+  that AI wrote it.
 
 ## Output
 
 Use [assets/rewrite-template.md](assets/rewrite-template.md).
 
-For every material rewrite include:
+For every material decision include:
 
+- locale and location;
 - original;
+- action: `correct`, `suggest`, or `keep`;
 - issue;
 - evidence status;
-- supported rewrite;
-- evidence used;
+- proposed copy when changed;
+- product-voice and language basis;
 - unresolved information.
+
+If the user asks for direct edits, apply confirmed corrections and clearly
+separate optional suggestions. Do not force the full template onto a simple
+copy-editing request.
 
 ## Completion
 
 Copy passes when the primary identity, offer, task, constraints, proof, and
-action are understandable, and every factual claim is supported or explicitly
-qualified.
+action are understandable; factual claims are supported or explicitly
+qualified; each reviewed locale reads naturally for its audience within the
+available evidence; uncertain judgments are explicit; and product voice,
+terminology, meaning, action priority, and localization runtime contracts remain
+coherent across the flow.

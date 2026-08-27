@@ -1,6 +1,6 @@
 # Source notes
 
-Accessed: **2026-07-28**
+Accessed: **2026-08-28**
 
 These sources informed the repository. The skills paraphrase and normalize
 their principles rather than copying source text, numerical scales, component
@@ -223,10 +223,29 @@ The accessibility skill treats automated checks as partial evidence and
 requires manual keyboard, zoom/reflow, and assistive-technology review where
 appropriate.
 
-## Content design
+## Content design and product copy
 
-- GOV.UK content planning guidance  
-  https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/
+- [Digital.gov: Principles of plain language](https://digital.gov/guides/plain-language/principles)
+- [GOV.UK clear-language guidance](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-language/)
+- [GOV.UK content planning guidance](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/plan-new-govuk-content/)
+- [Google developer documentation voice and tone](https://developers.google.com/style/tone)
+- [Microsoft Writing Style Guide brand voice](https://learn.microsoft.com/en-us/style-guide/brand-voice-above-all-simple-human)
+- [국립국어원 쉬운 공공언어 쓰기 길잡이](https://www.korean.go.kr/front/etcData/etcDataView.do?etc_seq=399&mn_id=62)
+- [文化庁: 公用文作成の考え方（建議）](https://www.bunka.go.jp/seisaku/kokugo_nihongo/kokugo_shisaku/94336802.html)
+- [出入国在留管理庁・文化庁 在留支援のためのやさしい日本語ガイドライン](https://www.bunka.go.jp/seisaku/kokugo_nihongo/kyoiku/pdf/92484001_01.pdf)
 
-The content workflow adopts task-oriented organization, avoids duplicate
-content, and separates current facts from uncertain future claims.
+Digital.gov and GOV.UK support audience-specific, direct, task-oriented plain
+English. The Google and Microsoft guides show how maintained product-writing
+systems adapt tone to context; their brand voices are examples, not defaults
+for other products. The National Institute of Korean Language and the Agency
+for Cultural Affairs support language-specific decisions about clear Korean
+and Japanese, including natural order, focused sentences, reader context, and
+restraint with literal translation. The joint Immigration Services Agency and
+Agency for Cultural Affairs guide is specifically for easy Japanese in foreign-
+resident support, so the skill uses it only when that audience and task apply.
+
+`specificity-editor` uses these sources below the product's own style guide,
+approved neighboring copy, audience, and interaction context. It does not
+import government or vendor house style, erase intentional product voice, or
+infer authorship from prose. The content workflow also avoids duplicate copy
+and separates current facts from uncertain future claims.

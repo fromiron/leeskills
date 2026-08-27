@@ -1,17 +1,31 @@
-# Specificity edit: [artifact]
+# Copy edit: [artifact]
 
 ## Context
 
 - Primary user:
 - Primary task:
-- Source language:
+- Source language or canonical locale:
+- Locales in scope:
+- Product voice evidence:
+- Product terminology or style guide:
 - Grounded evidence used:
 - Missing evidence:
 
 ## Rewrites
 
-| Location | Original | Issue | Evidence status | Supported rewrite | Evidence | Unresolved |
-|---|---|---|---|---|---|---|
+Use `correct` for objective errors, `suggest` for defensible style choices, and
+`keep` for intentional product voice.
+
+| Locale | Location | Decision | Original | Issue | Evidence status | Proposed copy | Evidence and voice basis | Unresolved |
+|---|---|---|---|---|---|---|---|---|
+
+## Multilingual and runtime parity
+
+Use this section when more than one locale or localized runtime messages are in
+scope.
+
+| Meaning or action | Locales checked | Catalog key mapping | Terminology or priority drift | Runtime constraints checked | Decision |
+|---|---|---|---|---|---|
 
 ## Removed claims
 
@@ -20,8 +34,8 @@
 
 ## Actions
 
-| Original label | Destination or operation | Revised label |
-|---|---|---|
+| Locale | Location | Decision | Original label | Destination or operation | Revised label | Evidence status | Evidence and voice basis | Unresolved |
+|---|---|---|---|---|---|---|---|---|
 
 ## Remaining risks
 

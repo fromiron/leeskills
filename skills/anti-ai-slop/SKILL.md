@@ -40,6 +40,7 @@ Use what the user supplied:
 - intended user, primary task, and material decision contexts;
 - visible, contextual, disclosed, or unavailable action paths when relevant;
 - real copy, claims, dates, prices, outcomes, and constraints;
+- approved product voice, terminology, nearby copy, and every locale in scope;
 - target platform and release stage;
 - current inventory, ownership, legacy mappings, and adoption plan when a design
   system is being introduced or migrated.
@@ -200,7 +201,9 @@ Include:
 7. affordance mapping, action hierarchy, visibility, grouping cues, and
    design-system lifecycle when in scope;
 8. visual budget, nested-radius relationships, and justified exceptions;
-9. copy changes;
+9. copy decisions with locale, `correct`/`suggest`/`keep`, evidence status,
+   evidence and voice basis, unresolved information, and multilingual or
+   runtime parity when in scope;
 10. motion decisions;
 11. accessibility findings;
 12. deletion plan ordered by impact and reversibility;

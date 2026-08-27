@@ -2,6 +2,21 @@
 
 All notable changes are documented here.
 
+## [Unreleased]
+
+### Changed
+
+- Expanded `specificity-editor` into one integrated product-copy review for
+  factual support, specificity, natural English, Korean, and Japanese, product
+  voice, terminology, and multilingual meaning and action parity.
+- Added source-grounded language guidance, correction/suggestion/keep decisions,
+  and multilingual trigger and output evals without adding an authorship
+  detector or a second copy-editing skill.
+- Preserved localization runtime contracts in copy review, corrected the scope
+  and provenance of the Japanese easy-language source, and carried locale,
+  decision, evidence, voice, parity, and unresolved fields through orchestrator
+  reports and fallback execution.
+
 ## [0.6.0] - 2026-07-28
 
 ### Added

@@ -51,6 +51,17 @@
         "Computed values are distinguished from screenshot observations.",
         "The output does not infer AI authorship from the rounded-card pattern."
       ]
+    },
+    {
+      "id": "multilingual-copy-handoff",
+      "prompt": "Use the anti-ai-slop orchestrator for a copy-only review of an English, Korean, and Japanese settings screen. Supplied evidence includes approved neighboring labels, the canonical save action, and localized runtime strings with `{count}` and `{workspace}` placeholders. Keep the product voice and runtime contract; do not redesign the screen.",
+      "expected_output": "A focused copy report that preserves specificity-editor decisions and multilingual runtime parity without expanding into a visual redesign.",
+      "assertions": [
+        "Each material copy decision retains its locale and correct, suggest, or keep classification.",
+        "Evidence status, evidence and product-voice basis, and unresolved information remain separate fields.",
+        "Meaning, terminology, action priority, catalog key mapping, placeholders, and runtime formatting ownership are compared across locales.",
+        "The output does not infer authorship or redesign the screen."
+      ]
     }
   ]
 }

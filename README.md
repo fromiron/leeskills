@@ -67,7 +67,7 @@ required fields, and repository validation.
 | Pick an information structure | `structure-selector` | A task-based choice with the rejected options recorded |
 | Define a reusable UI contract | `component-contract-audit` | Anatomy, states, behavior, accessibility, ownership, and parity checks |
 | Tighten the visual system | `visual-entropy-budget` | A visual budget with responsive, typography, and nested-radius checks |
-| Rewrite vague copy | `specificity-editor` | Concrete copy tied to the supplied facts |
+| Edit product copy | `specificity-editor` | Specific, supported copy that fits the product voice in each locale |
 | Review motion | `motion-necessity-gate` | Keep, reduce, replace, or remove decisions, including reduced-motion support |
 | Simplify without losing access | `accessibility-simplicity-guard` | Checks for semantics, keyboard use, focus, reflow, contrast, and status |
 | Check the finished work | `prune-and-verify` | Deletion, growth, reflow, provenance, and primary-task checks |

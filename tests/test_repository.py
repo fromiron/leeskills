@@ -533,6 +533,129 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["pass"])
         self.assertEqual(set(result["languages"]), {"en", "ko", "ja"})
 
+    def test_specificity_editor_integrates_voice_and_locale_review(self) -> None:
+        skill_dir = ROOT / "skills" / "specificity-editor"
+        language_reference = (
+            skill_dir / "references" / "language-and-voice.md"
+        ).read_text(encoding="utf-8")
+        source_notes = (ROOT / "docs" / "source-notes.md").read_text(
+            encoding="utf-8"
+        )
+        source_urls = (
+            "https://digital.gov/guides/plain-language/principles",
+            "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-language/",
+            "https://www.korean.go.kr/front/etcData/etcDataView.do?etc_seq=399&mn_id=62",
+            "https://www.bunka.go.jp/seisaku/kokugo_nihongo/kokugo_shisaku/94336802.html",
+            "https://www.bunka.go.jp/seisaku/kokugo_nihongo/kyoiku/pdf/92484001_01.pdf",
+        )
+        for url in source_urls:
+            self.assertIn(url, language_reference)
+            self.assertIn(url, source_notes)
+        for source_title in (
+            "Principles of plain language",
+            "公用文作成の考え方（建議）",
+            "在留支援のためのやさしい日本語ガイドライン",
+        ):
+            self.assertIn(source_title, language_reference)
+            self.assertIn(source_title, source_notes)
+        self.assertIn("出入国在留管理庁・文化庁", language_reference)
+
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        rewrite_template = (skill_dir / "assets" / "rewrite-template.md").read_text(
+            encoding="utf-8"
+        )
+        report_template = (
+            ROOT / "skills" / "anti-ai-slop" / "assets" / "full-report-template.md"
+        ).read_text(encoding="utf-8")
+        fallback_contract = (
+            ROOT
+            / "skills"
+            / "anti-ai-slop"
+            / "references"
+            / "composition-map.md"
+        ).read_text(encoding="utf-8")
+        audit_skill = (
+            ROOT / "skills" / "slop-signal-audit" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Source language or canonical locale:", rewrite_template)
+        self.assertIn("| Locale | Location | Decision |", rewrite_template)
+        self.assertIn("| Locale | Location | Decision | Original label |", rewrite_template)
+        self.assertIn("localized runtime messages", rewrite_template)
+        self.assertIn("Catalog key mapping", rewrite_template)
+        self.assertIn("Runtime constraints checked", rewrite_template)
+        self.assertIn("Unresolved |", rewrite_template)
+        self.assertIn("| Locale | Location | Decision |", report_template)
+        self.assertIn("Issue | Evidence status |", report_template)
+        self.assertIn("Catalog key mapping", report_template)
+        self.assertIn("Runtime constraints checked", report_template)
+        for contract_term in (
+            "`correct`, `suggest`, or `keep`",
+            "placeholders",
+            "locale-aware formatting",
+            "unresolved information",
+        ):
+            self.assertIn(contract_term, fallback_contract)
+        self.assertIn("message keys", skill_text)
+        self.assertIn("canonical key maps", skill_text)
+        self.assertIn("approved nearby copy", audit_skill)
+
+        output_evals = json.loads(
+            (skill_dir / "evals" / "evals.json").read_text(encoding="utf-8")
+        )
+        output_by_id = {item["id"]: item for item in output_evals["evals"]}
+        output_ids = set(output_by_id)
+        self.assertTrue(
+            {
+                "english-product-voice",
+                "korean-product-voice",
+                "japanese-product-voice",
+                "multilingual-screen-parity",
+                "localization-runtime-integrity",
+            }.issubset(output_ids)
+        )
+        runtime_prompt = output_by_id["localization-runtime-integrity"]["prompt"]
+        for runtime_token in (
+            "settings.saveSummary",
+            "<strong>{workspace}</strong>",
+            "{audience, select",
+            "{count, plural",
+            "{storageUsed}",
+            "{savedAt",
+            "Intl.NumberFormat",
+            "unit formatting",
+        ):
+            self.assertIn(runtime_token, runtime_prompt)
+
+        orchestrator_evals = json.loads(
+            (
+                ROOT / "skills" / "anti-ai-slop" / "evals" / "evals.json"
+            ).read_text(encoding="utf-8")
+        )
+        orchestrator_by_id = {
+            item["id"]: item for item in orchestrator_evals["evals"]
+        }
+        self.assertIn("multilingual-copy-handoff", orchestrator_by_id)
+        self.assertTrue(
+            any(
+                "Evidence status" in assertion
+                for assertion in orchestrator_by_id["multilingual-copy-handoff"][
+                    "assertions"
+                ]
+            )
+        )
+
+        triggers = json.loads(
+            (skill_dir / "evals" / "trigger_queries.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        triggers_by_id = {item["id"]: item for item in triggers}
+        for language in ("en", "ko", "ja"):
+            item = triggers_by_id[f"{language}-positive-3"]
+            self.assertEqual(item["language"], language)
+            self.assertTrue(item["should_trigger"])
+
     def test_specificity_linter_flags_review_items_without_failing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "copy.txt"
