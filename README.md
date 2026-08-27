@@ -5,12 +5,12 @@
 <h1 align="center">leeskills</h1>
 
 <p align="center">
-  <strong>Ground the content. Cut the noise. Verify what remains.</strong>
+  <strong>Agent Skills for reviewing generic, unsupported, or unnecessary interface work.</strong>
 </p>
 
 <p align="center">
-  Ten portable Agent Skills for turning generic, unsupported interface output<br>
-  into a smaller, clearer, evidence-backed system.
+  Ten focused skills cover copy, information structure, components, visual systems,<br>
+  motion, accessibility, and final verification.
 </p>
 
 <p align="center">
@@ -20,67 +20,62 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 </p>
 
-## Install in one command
+## Install
 
 ```bash
 npx skills add fromiron/leeskills
 ```
 
 <p align="center">
-  <img src=".github/assets/leeskills-hero.png" width="720" alt="Concept illustration of noisy interface fragments passing through an audit frame and becoming a clear hierarchy">
+  <img src=".github/assets/leeskills-hero.png" width="720" alt="Noisy interface fragments passing through a review frame and becoming a clear information hierarchy">
 </p>
 
-<p align="center">Concept illustration, not a product screenshot or proof of a real interface.</p>
+<p align="center">An illustration of the review process, not a product screenshot.</p>
 
-> [!IMPORTANT]
-> `leeskills` audits observable design output. It does **not** determine whether
-> AI made it, and it never treats an aesthetic pattern as authorship evidence.
+`leeskills` reviews the work in front of it. It does not guess who made it or
+which tools they used.
 
-The open [`skills` CLI](https://skills.sh/docs/cli) discovers every package in
-`skills/` and lets you choose the target agent and skills. Inspect the catalog
-or install only the orchestrator:
+The open [`skills` CLI](https://skills.sh/docs/cli) finds the packages under
+`skills/` and installs them for a supported agent. List the catalog first, or
+install only the main reviewer:
 
 ```bash
 npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill anti-ai-slop
 ```
 
-No package from this repository needs to be published to npm. The command uses
-the external installer to fetch the GitHub repository.
+The installer fetches this GitHub repository. Nothing here needs to be
+published to npm.
 
-## Why leeskills
+## How it works
 
-- **Evidence before aesthetics.** Claims, metrics, screenshots, and outcomes
-  stay tied to sources. Missing evidence remains missing.
-- **Small skills with clear ownership.** Use one focused skill for a narrow
-  problem or let `anti-ai-slop` choose the smallest useful sequence.
-- **Judgment where it matters, scripts where it helps.** Contextual design
-  decisions stay with the agent; schemas and dependency-free Python helpers
-  check mechanical contracts.
-- **Portable by default.** Core skills use the open Agent Skills format rather
-  than vendor-only frontmatter. Adapters cover Codex, Claude Code, and generic
-  compatible clients.
+Use one skill when the job is specific. For a broader review, start with
+`anti-ai-slop`; it selects the checks that fit the artifact instead of running
+every skill by default.
 
-## Ten skills, one shared contract
+The skills describe the judgment calls in Markdown. Optional schemas and
+dependency-free Python scripts handle repeatable checks such as file structure,
+required fields, and repository validation.
 
-| Need | Skill | What it produces |
+## Included skills
+
+| Task | Skill | Output |
 |---|---|---|
-| A broad end-to-end review | `anti-ai-slop` | The smallest applicable workflow and a consolidated verdict |
-| Diagnosis of an existing artifact | `slop-signal-audit` | Observable findings, risk scores, and prioritized removals |
-| A factual foundation | `content-grounding` | A source-traced content inventory that blocks fabrication |
-| One dominant information structure | `structure-selector` | A task-based structure decision with rejected alternatives |
-| A reusable UI contract | `component-contract-audit` | Anatomy, states, behavior, accessibility, ownership, and parity checks |
-| A coherent visual system | `visual-entropy-budget` | A visual budget plus responsive, typography, and nested-radius checks |
-| Specific product copy | `specificity-editor` | Evidence-aware rewrites that survive the substitution test |
-| Necessary motion only | `motion-necessity-gate` | Keep, reduce, replace, or remove decisions with reduced-motion checks |
-| Simplicity without lost access | `accessibility-simplicity-guard` | Semantics, keyboard, focus, reflow, contrast, and status safeguards |
-| A verified final pass | `prune-and-verify` | Deletion, growth, reflow, provenance, and primary-task verification |
+| Review an interface end to end | `anti-ai-slop` | A scoped workflow and one combined result |
+| Diagnose an existing artifact | `slop-signal-audit` | Observed problems, risk scores, and an order for cleanup |
+| Check the facts behind the copy | `content-grounding` | A source-traced content inventory that leaves gaps visible |
+| Pick an information structure | `structure-selector` | A task-based choice with the rejected options recorded |
+| Define a reusable UI contract | `component-contract-audit` | Anatomy, states, behavior, accessibility, ownership, and parity checks |
+| Tighten the visual system | `visual-entropy-budget` | A visual budget with responsive, typography, and nested-radius checks |
+| Rewrite vague copy | `specificity-editor` | Concrete copy tied to the supplied facts |
+| Review motion | `motion-necessity-gate` | Keep, reduce, replace, or remove decisions, including reduced-motion support |
+| Simplify without losing access | `accessibility-simplicity-guard` | Checks for semantics, keyboard use, focus, reflow, contrast, and status |
+| Check the finished work | `prune-and-verify` | Deletion, growth, reflow, provenance, and primary-task checks |
 
-The skills do not ban cards, gradients, motion, or expressive work by category.
-They ask what each choice communicates, which task it supports, and what
-evidence justifies keeping it.
+These skills do not ban cards, gradients, motion, or expressive work. Keep them
+when they help the task and there is a clear reason to use them.
 
-## Choose the smallest workflow
+## Common workflows
 
 **New interface or landing page**
 
@@ -111,72 +106,70 @@ component-contract-audit
 → prune-and-verify
 ```
 
-**Copy-only review**
+**Copy review**
 
 ```text
 content-grounding → specificity-editor → prune-and-verify
 ```
 
-For a small artifact or early draft, run `slop-signal-audit` in quick-pass
-mode: one pass, no score or verdict, up to five changes, and an explicit list
-of skipped checks.
+For a small draft, use the `slop-signal-audit` quick pass. It reports up to five
+useful changes without a score or release verdict and names the checks it did
+not run.
 
-## Evidence, not vibes
+## Evidence labels
 
-Every material finding keeps one evidence state:
+Each material finding gets one label:
 
-| State | Meaning |
+| Label | Use it when |
 |---|---|
-| **Observed** | Directly visible in supplied copy, screenshots, markup, code, design files, or tokens |
-| **Measured** | Produced by a deterministic test or calculation |
-| **Inferred** | Reasoned from available evidence and labeled as inference |
-| **Unknown** | Not verifiable from the supplied material |
+| **Observed** | The supplied copy, screenshot, markup, code, design file, or token shows it directly |
+| **Measured** | A deterministic test or calculation produced it |
+| **Inferred** | The evidence supports a conclusion, but does not show it directly |
+| **Unknown** | The supplied material cannot answer the question |
 
-An inference never becomes a fact by repetition. The skills prohibit invented
-customers, metrics, quotes, awards, capabilities, outcomes, and accessibility
-claims. Structured validators also keep required unknowns from silently
-becoming passes.
+If something cannot be checked, the report says so. It does not fill the gap
+with a customer, metric, quote, capability, result, or accessibility claim.
 
-## Portable package, deterministic checks
+## Package layout
 
 ```text
 skill-name/
-├── SKILL.md      # core workflow
-├── references/   # loaded only when needed
+├── SKILL.md      # instructions
+├── references/   # material loaded when needed
 ├── assets/       # schemas and templates
-├── scripts/      # optional deterministic helpers
-└── evals/        # trigger and output-quality fixtures
+├── scripts/      # optional repeatable checks
+└── evals/        # trigger and output fixtures
 ```
 
-- Core instructions use the open Agent Skills fields and stay vendor-neutral.
-- Optional Python 3.9+ scripts are non-interactive, standard-library-only, and
-  make no network requests.
+- Core instructions use the open Agent Skills fields and no vendor-only
+  frontmatter.
+- Optional Python 3.9+ scripts use the standard library, run non-interactively,
+  and make no network requests.
 - Trigger fixtures cover English, Korean, and Japanese, including near-miss
-  negatives. Fixtures prove coverage, not real client trigger rates.
-- JSON schemas make handoffs reviewable where structure helps; human judgment
-  remains required for hierarchy, authenticity, voice, and usability.
+  negatives. They check fixture coverage, not real activation rates.
+- Adapters are included for Codex, Claude Code, and other compatible clients.
 
-## Try it on real work
+## Example prompt
 
 After installation, ask your agent in ordinary language:
 
-> Audit this landing page for generic, unsupported, or unnecessary design.
-> Preserve its real identity, required actions, and accessibility. Label every
-> finding by evidence state, make the smallest complete change, then verify the
-> primary flow again.
+> Review this landing page with leeskills. Point out generic copy, unsupported
+> claims, and design choices that do not help the main task. Keep the product's
+> actual voice, required actions, and accessibility. Separate observations from
+> inferences, make the smallest complete fix, and check the main flow again.
 
-Start with the [full audit request](examples/full-audit-request.md), the
-[manual integration example](examples/manual-agent-integration.md), or the
-structured artifacts in [`examples/`](examples/README.md).
+More examples are in the [full audit request](examples/full-audit-request.md),
+the [manual integration example](examples/manual-agent-integration.md), and
+the [`examples/` directory](examples/README.md).
 
-## Develop and validate
+## Development
 
 ```bash
 python scripts/validate_repo.py
 python -m unittest discover -s tests -v
 ```
 
-Use `python3` on Unix-like systems or `py -3` on Windows when that is the
+Use `python3` on Unix-like systems or `py -3` on Windows if that is the
 available Python 3.9+ launcher. CI runs the same checks on Ubuntu and Windows
 with Python 3.9 and 3.12.
 
@@ -188,30 +181,19 @@ python scripts/install.py --client claude-code --scope repo --mode copy --dry-ru
 python scripts/install.py --client generic --target /path/to/skills --mode copy --dry-run
 ```
 
-Existing skills are not overwritten unless `--force` is supplied.
+Existing skills are not overwritten unless you pass `--force`.
 
-## Read next
+## Documentation
 
-| Document | Use it for |
+| Document | Contents |
 |---|---|
 | [Architecture](docs/architecture.md) | Composition, data contracts, and portability boundaries |
 | [Integration](docs/integration.md) | Client setup and invocation strategy |
 | [Evaluation](docs/evaluation.md) | Trigger measurement, output comparison, and release gates |
-| [Design foundations](docs/design-foundations.md) | Normalized product and design principles |
-| [Source notes](docs/source-notes.md) | Provenance and the limits of borrowed guidance |
+| [Design foundations](docs/design-foundations.md) | Product and design principles used by the skills |
+| [Source notes](docs/source-notes.md) | Provenance and the use of outside guidance |
 | [Contributing](CONTRIBUTING.md) | Repository conventions and contribution flow |
-
-## Honest limits
-
-- A screenshot cannot establish runtime behavior or complete accessibility
-  conformance.
-- A static audit cannot prove comprehension or conversion impact.
-- Phrase and pattern linting produces false positives; context decides.
-- Visual budgets are defaults, not universal aesthetic laws.
-- Skill activation is nondeterministic and must be measured in the target
-  client before reporting a trigger rate.
 
 ## License
 
-[MIT](LICENSE). Use the skills, adapt them, and keep the evidence boundary
-intact.
+[MIT](LICENSE)

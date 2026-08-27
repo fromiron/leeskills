@@ -5,84 +5,76 @@
 <h1 align="center">leeskills</h1>
 
 <p align="center">
-  <strong>内容を根拠につなぎ、ノイズを削り、残したものを検証する。</strong>
+  <strong>根拠のないコピーや余計な装飾、ちぐはぐな操作を見つけるための Agent Skills 集です。</strong>
 </p>
 
 <p align="center">
-  汎用的で根拠のないインターフェース出力を、より小さく明確な根拠ベースの<br>
-  システムへ整える、ポータブルな10個のAgent Skillsです。
+  コンテンツ、情報設計、コンポーネント、ビジュアル、モーション、<br>
+  アクセシビリティ、仕上げの確認を10個のスキルに分けています。
 </p>
 
 <p align="center">
   <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="検証ステータス" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-  <img alt="バージョン0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
-  <img alt="オープンなAgent Skills形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
-  <a href="LICENSE"><img alt="MITライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
+  <img alt="バージョン 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+  <img alt="オープンな Agent Skills 形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
+  <a href="LICENSE"><img alt="MIT ライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 </p>
 
-## 1コマンドでインストール
+## インストール
 
 ```bash
 npx skills add fromiron/leeskills
 ```
 
 <p align="center">
-  <img src=".github/assets/leeskills-hero.png" width="720" alt="雑然としたインターフェースの断片が監査フレームを通り、明確な情報階層へ整理されるコンセプトイラスト">
+  <img src=".github/assets/leeskills-hero.png" width="720" alt="雑然としたインターフェースの断片がレビューフレームを通り、明確な情報構造へ整理されるイラスト">
 </p>
 
-<p align="center">コンセプトイラストです。実在する製品画面やインターフェースの証拠ではありません。</p>
+<p align="center">レビューの流れを表したイラストです。実際の製品画面ではありません。</p>
 
-> [!IMPORTANT]
-> `leeskills`が監査するのは、観察できるデザイン出力です。AIが作ったか
-> どうかを判定せず、見た目のパターンを作者の証拠として扱いません。
+`leeskills` が見るのは、目の前にある成果物です。誰が何を使って作ったかは
+推測しません。
 
-オープンな[`skills` CLI](https://skills.sh/docs/cli)が`skills/`内の全パッケージを
-検出し、使用するエージェントとスキルを選べるようにします。カタログだけを
-確認することも、オーケストレーターだけをインストールすることもできます。
+オープンな [`skills` CLI](https://skills.sh/docs/cli) が `skills/` 内の
+パッケージを見つけてインストールします。まず一覧を見ることも、
+`anti-ai-slop` だけを選ぶこともできます。
 
 ```bash
 npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill anti-ai-slop
 ```
 
-このリポジトリのパッケージをnpmへ公開する必要はありません。上のコマンドは
-外部インストーラーを使ってGitHubリポジトリを取得します。
+インストーラーは、この GitHub リポジトリを取得します。npm への公開は不要です。
 
-## leeskillsの違い
+## 使い方
 
-- **美しさより先に根拠を確認します。** 主張、数値、スクリーンショット、成果を
-  出典へ結び付けます。根拠がなければ、未知のまま残します。
-- **責務が明確な小さなスキルです。** 狭い問題にはフォーカスしたスキルを1つ、
-  広い問題には`anti-ai-slop`が最小限の有効な順序を選びます。
-- **判断はエージェントに、機械的な検査はスクリプトに任せます。** 文脈を要する
-  デザイン判断はエージェントが行い、スキーマと依存パッケージ不要のPython
-  ヘルパーが機械的な契約を検査します。
-- **最初からポータブルです。** コアスキルはベンダー専用frontmatterではなく、
-  オープンなAgent Skills形式を使います。Codex、Claude Code、汎用互換
-  クライアント向けのアダプターを含みます。
+範囲が狭ければ、目的に合うスキルを1つだけ使います。画面全体を見直すなら
+`anti-ai-slop` から始めてください。成果物に必要なチェックだけを選びます。
 
-## 10個のスキル、1つの根拠契約
+判断が必要な部分は Markdown の手順に、繰り返し確認できる項目はスキーマと
+外部依存のない Python スクリプトに分けています。
 
-| 必要なこと | スキル | 生成するもの |
+## 収録スキル
+
+| やりたいこと | スキル | 得られるもの |
 |---|---|---|
-| 全体を通したレビュー | `anti-ai-slop` | 適用する最小ワークフローと統合判定 |
-| 既存成果物の診断 | `slop-signal-audit` | 観察可能な指摘、リスクスコア、削除の優先順位 |
-| 事実の土台 | `content-grounding` | 出典を追跡したコンテンツ一覧と捏造の防止 |
-| 支配的な情報構造を1つ選ぶ | `structure-selector` | 不採用案も記録したタスク基準の構造決定 |
-| 再利用UIの契約 | `component-contract-audit` | Anatomy、状態、動作、アクセシビリティ、所有者、パリティの検査 |
-| 一貫した視覚システム | `visual-entropy-budget` | 視覚予算とレスポンシブ・タイポグラフィ・入れ子radiusの検査 |
-| プロダクト固有のコピー | `specificity-editor` | 置換テストに耐える、根拠を意識したリライト |
-| 必要なモーションだけを残す | `motion-necessity-gate` | 維持・削減・置換・削除の判断とreduced-motion検査 |
-| アクセシビリティを失わない簡素化 | `accessibility-simplicity-guard` | セマンティクス、キーボード、フォーカス、リフロー、コントラスト、状態の保護 |
-| 検証済みの最終パス | `prune-and-verify` | 削除、拡張、リフロー、出典、主要タスクの検証 |
+| インターフェース全体を見直す | `anti-ai-slop` | 範囲に合うスキルの順序と、まとめた結果 |
+| 既存の成果物を診断する | `slop-signal-audit` | 確認できた問題、リスクスコア、修正の順番 |
+| コピーの根拠を確かめる | `content-grounding` | 出典付きのコンテンツ一覧と、確認できない項目 |
+| 情報構造を決める | `structure-selector` | タスクを基準に選んだ構造と、不採用にした案 |
+| 再利用する UI の仕様をそろえる | `component-contract-audit` | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
+| 見た目のルールを整理する | `visual-entropy-budget` | ビジュアルの基準と、レスポンシブ・文字組み・入れ子の角丸のチェック |
+| 曖昧なコピーを書き直す | `specificity-editor` | 根拠に沿った具体的なコピー |
+| モーションを見直す | `motion-necessity-gate` | 残す・減らす・置き換える・削る判断と、動きを抑える設定の確認 |
+| アクセシビリティを保って簡素化する | `accessibility-simplicity-guard` | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
+| 修正後の成果物を確かめる | `prune-and-verify` | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
 
-カード、グラデーション、モーション、表現的な作品を、種類だけで禁止する
-スキルではありません。それぞれの選択が何を伝え、どのタスクを支え、どの
-根拠によって残すべきかを問います。
+カードやグラデーション、モーションを一律に禁止するものではありません。
+タスクに役立ち、残す理由を説明できるものは残します。
 
-## 最小のワークフローを選ぶ
+## よく使う流れ
 
-**新しいインターフェース・ランディングページ**
+**新しいインターフェースやランディングページ**
 
 ```text
 content-grounding
@@ -94,15 +86,15 @@ content-grounding
 → prune-and-verify
 ```
 
-**既存インターフェースの監査**
+**既存インターフェースの見直し**
 
 ```text
 slop-signal-audit
-→ 必要なフォーカススキル
+→ 必要な個別スキル
 → prune-and-verify
 ```
 
-**デザインシステム・再利用コンポーネント**
+**デザインシステムや再利用コンポーネント**
 
 ```text
 component-contract-audit
@@ -111,75 +103,75 @@ component-contract-audit
 → prune-and-verify
 ```
 
-**コピーだけをレビュー**
+**コピーの見直し**
 
 ```text
 content-grounding → specificity-editor → prune-and-verify
 ```
 
-小さな成果物や初期ドラフトでは、`slop-signal-audit`のquick-passモードを
-使ってください。1回だけ実行し、スコアや判定を出さず、最大5件の変更と
-省略した検査を明示します。
+小さな下書きなら、`slop-signal-audit` の `quick-pass` で十分です。スコアや
+リリース判定は付けず、直す価値のある点を5件以内に絞ります。確認していない
+項目も明記します。
 
-## 雰囲気ではなく根拠
+## 根拠のラベル
 
-重要な指摘には、次のいずれか1つの根拠状態を保持します。
+指摘には、次のいずれかを付けます。
 
-| 状態 | 意味 |
+| ラベル | 意味 |
 |---|---|
-| **Observed** | 提供されたコピー、スクリーンショット、マークアップ、コード、デザインファイル、トークンから直接確認 |
-| **Measured** | 決定論的なテストまたは計算で測定 |
-| **Inferred** | 利用できる根拠から推論し、推論であることを明示 |
-| **Unknown** | 提供された資料からは検証できない |
+| **Observed** | 提供されたコピー、画面、コード、デザインファイル、トークンから直接確認したこと |
+| **Measured** | テストや計算で得た値 |
+| **Inferred** | 根拠から判断できるが、直接は確認していないこと |
+| **Unknown** | 提供された資料だけでは分からないこと |
 
-推論は、繰り返しても事実にはなりません。顧客名、数値、引用、受賞、機能、
-成果、アクセシビリティ準拠を作り出すことを禁じます。構造化バリデーターも、
-必須項目の`unknown`を黙って合格へ変えません。
+確認できない部分を、もっともらしい顧客名、数値、引用、機能、実績で埋めることは
+しません。
 
-## ポータブルなパッケージ、決定論的な検査
+## ディレクトリ構成
 
 ```text
 skill-name/
-├── SKILL.md      # コアワークフロー
-├── references/   # 必要なときだけ読む参考資料
+├── SKILL.md      # スキルの手順
+├── references/   # 必要なときに読む資料
 ├── assets/       # スキーマとテンプレート
-├── scripts/      # 任意の決定論的ヘルパー
-└── evals/        # トリガーと出力品質のfixture
+├── scripts/      # 繰り返し使うチェック
+└── evals/        # トリガーと出力の評価ケース
 ```
 
-- コア手順はオープンなAgent Skillsのフィールドだけを使い、ベンダーに依存しません。
-- 任意のPython 3.9+スクリプトは非対話型で、標準ライブラリだけを使い、
-  ネットワークへ接続しません。
-- トリガーfixtureは英語、韓国語、日本語とnear-miss negativeを含みます。
-  Fixtureが示すのは網羅範囲であり、実クライアントのtrigger rateではありません。
-- JSONスキーマは、構造が有効なhandoffをレビュー可能にします。階層、真正性、
-  文体、使いやすさには、引き続き人の判断が必要です。
+- コアの手順は、オープンな Agent Skills のフィールドだけを使い、ベンダー固有の
+  frontmatter は含めません。
+- 任意の Python 3.9+ スクリプトは標準ライブラリだけで動き、対話や
+  ネットワーク接続を必要としません。
+- 評価ケースは英語、韓国語、日本語に対応し、似ていても起動すべきでない例も
+  含みます。実際のクライアントでの起動率は、別途測定が必要です。
+- Codex、Claude Code、その他の互換クライアント向けアダプターを収録しています。
 
-## 実際の作業で試す
+## プロンプト例
 
-インストールしたら、普段の言葉でエージェントへ依頼してください。
+インストール後は、普段の言葉で依頼できます。
 
-> このランディングページにある、汎用的、根拠がない、または不要なデザインを
-> 監査してください。実際の個性、必要なアクション、アクセシビリティは残し、
-> すべての指摘に根拠状態を付けてください。最小で完全な変更を行った後、主要
-> フローをもう一度検証してください。
+> このランディングページを leeskills で見直してください。根拠のないコピーや、
+> 主なタスクに役立たないデザインを探し、製品らしい言葉、必要な操作、
+> アクセシビリティは残してください。確認したことと推測を分け、必要な範囲だけ
+> 直した後で、主な操作をもう一度確認してください。
 
-[フル監査の依頼例](examples/full-audit-request.md)、
-[手動統合の例](examples/manual-agent-integration.md)、または
-[`examples/`の構造化成果物](examples/README.md)から始められます。
+[全体レビューの依頼例](examples/full-audit-request.md)、
+[手動で組み込む例](examples/manual-agent-integration.md)、
+[`examples/` ディレクトリ](examples/README.md)にも例があります。
 
-## 開発と検証
+## 開発とテスト
 
 ```bash
 python scripts/validate_repo.py
 python -m unittest discover -s tests -v
 ```
 
-利用できるPython 3.9+ランチャーに応じて、Unix系では`python3`、Windowsでは
-`py -3`も使えます。CIはUbuntuとWindows、Python 3.9と3.12で同じ検査を
-実行します。
+利用できる Python 3.9+ のランチャーに合わせて、Unix 系では `python3`、
+Windows では `py -3` も使えます。CI は Ubuntu と Windows で、Python 3.9 と
+3.12 を使って同じチェックを実行します。
 
-オフラインのcloneや明示した保存先には、同梱インストーラーを使います。
+オフラインのコピーや指定した場所へインストールする場合は、同梱の
+インストーラーを使います。
 
 ```bash
 python scripts/install.py --client codex --scope repo --mode copy --dry-run
@@ -187,29 +179,19 @@ python scripts/install.py --client claude-code --scope repo --mode copy --dry-ru
 python scripts/install.py --client generic --target /path/to/skills --mode copy --dry-run
 ```
 
-`--force`を指定しない限り、既存スキルを上書きしません。
+`--force` を指定しない限り、既存のスキルは上書きしません。
 
-## 次に読むもの
+## ドキュメント
 
 | ドキュメント | 内容 |
 |---|---|
-| [アーキテクチャ](docs/architecture.md) | 構成、データ契約、ポータビリティの境界 |
-| [統合](docs/integration.md) | クライアント設定と呼び出し戦略 |
-| [評価](docs/evaluation.md) | トリガー測定、出力比較、リリース基準 |
-| [デザイン基盤](docs/design-foundations.md) | 正規化したプロダクト・デザイン原則 |
-| [出典ノート](docs/source-notes.md) | 出典と外部ガイダンスを適用する限界 |
-| [コントリビューション](CONTRIBUTING.md) | リポジトリ規約とコントリビューションの流れ |
-
-## 正直な限界
-
-- スクリーンショットだけでは、ランタイム動作や完全なアクセシビリティ準拠を
-  確認できません。
-- 静的監査だけでは、理解度やコンバージョンへの影響を証明できません。
-- 語句やパターンのlintには誤検知があるため、文脈が最終判断になります。
-- 視覚予算は初期値であり、普遍的な美的法則ではありません。
-- スキルの起動は非決定的です。trigger rateを報告する前に、対象クライアントで
-  実測する必要があります。
+| [アーキテクチャ](docs/architecture.md) | 構成、データ契約、移植できる範囲 |
+| [連携方法](docs/integration.md) | クライアントの設定と呼び出し方 |
+| [評価](docs/evaluation.md) | 起動率の測定、出力の比較、リリース基準 |
+| [デザインの基礎](docs/design-foundations.md) | スキルが参照するプロダクトとデザインの原則 |
+| [出典ノート](docs/source-notes.md) | 出典と外部ガイドラインの扱い |
+| [コントリビューション](CONTRIBUTING.md) | リポジトリの規約とコントリビューション手順 |
 
 ## ライセンス
 
-[MIT](LICENSE)。自由に利用・改変しつつ、根拠の境界は維持してください。
+[MIT](LICENSE)
