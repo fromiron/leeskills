@@ -1,108 +1,88 @@
-# leeskills
+<p align="center">
+  <a href="README.md">English</a> · <strong>한국어</strong> · <a href="README.ja.md">日本語</a>
+</p>
 
-`leeskills`는 디지털 인터페이스, 랜딩 페이지, 포트폴리오, 제품 카피,
-컴포넌트 라이브러리, 디자인 시스템에서 근거 없는 내용과 불필요한 요소를
-탐지·제거하기 위한 범용 Agent Skills 모음입니다.
+<h1 align="center">leeskills</h1>
 
-버전: **0.6.0**<br>
-상태: **Beta / 출처 기반 릴리스**  
-라이선스: **MIT**
+<p align="center">
+  <strong>콘텐츠를 근거에 묶고, 소음을 덜어내고, 남은 것을 검증합니다.</strong>
+</p>
 
-## 핵심 원칙
+<p align="center">
+  범용적이고 근거 없는 인터페이스 결과물을 더 작고 명확한 근거 기반 시스템으로<br>
+  다듬는, 어디서나 쓸 수 있는 Agent Skills 10종입니다.
+</p>
 
-> 사용자의 핵심 작업, 실제 콘텐츠, 접근성, 고유한 정체성을 보존하면서 가장
-> 적은 수의 일관된 시각·언어·행동 문법으로 표현한다.
+<p align="center">
+  <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="검증 상태" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
+  <img alt="버전 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+  <img alt="공개 Agent Skills 형식" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
+  <a href="LICENSE"><img alt="MIT 라이선스" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
+</p>
 
-이 저장소에서 `AI slop`은 범용적이고, 근거가 없거나, 목적 없이 추가된
-결과물을 가리키는 운영 용어입니다. 시각적 특징만으로 해당 결과물이 AI로
-생성되었다고 단정하지 않습니다.
-
-## 포함된 스킬
-
-| 스킬 | 역할 |
-|---|---|
-| `anti-ai-slop` | 필요한 집중 스킬을 선택하고 순서를 결정하는 선택형 오케스트레이터 |
-| `slop-signal-audit` | 관찰 가능한 slop 신호를 찾고 점수화하며 제거 순서를 제안 |
-| `content-grounding` | 출처가 있는 콘텐츠 인벤토리를 만들고 조작·날조를 차단 |
-| `structure-selector` | 사용자의 작업에 맞는 지배적 정보 구조 하나를 선택 |
-| `component-contract-audit` | anatomy·상태·콘텐츠·반응형·접근성·소유권·디자인/코드 일치를 계약으로 감사 |
-| `visual-entropy-budget` | 시각 시스템을 제한하고 HTML 토큰안을 제시하며 반응형·중첩 Radius 관계를 검증 |
-| `specificity-editor` | 교체 가능한 마케팅 문구를 구체적이고 검증 가능한 문구로 수정 |
-| `motion-necessity-gate` | 피드백·상태·인과·공간 관계를 전달하는 모션만 유지 |
-| `accessibility-simplicity-guard` | 심플화를 이유로 접근성 단서나 기능을 제거하지 못하게 함 |
-| `prune-and-verify` | 삭제·치환·리플로·키보드·모션·출처 검증을 수행 |
-
-## 호환 형식
-
-각 스킬은 공개 Agent Skills 디렉터리 형식을 따릅니다.
-
-```text
-skill-name/
-├── SKILL.md
-├── references/
-├── assets/
-├── scripts/
-└── evals/
-```
-
-핵심 지침은 특정 벤더에 종속되지 않습니다. 선택형 Python 스크립트는
-표준 라이브러리만 사용하며 네트워크 요청을 수행하지 않습니다.
-
-## 설치
-
-공개 [`skills` CLI](https://skills.sh/docs/cli)로 전체 스킬 모음을 설치할 수
-있습니다.
+## 한 줄로 설치
 
 ```bash
 npx skills add fromiron/leeskills
 ```
 
-CLI는 `skills/` 아래의 스킬 디렉터리를 모두 탐색한 뒤 대상 에이전트와 설치할
-스킬을 선택하게 합니다. 설치 전에 목록을 확인하거나 하나만 설치할 수도
-있습니다.
+<p align="center">
+  <img src=".github/assets/leeskills-hero.png" width="720" alt="복잡한 인터페이스 조각이 검수 프레임을 지나 명확한 정보 계층으로 정리되는 개념 일러스트">
+</p>
+
+<p align="center">개념 일러스트이며, 실제 제품 화면이나 인터페이스의 증거가 아닙니다.</p>
+
+> [!IMPORTANT]
+> `leeskills`는 관찰 가능한 디자인 결과물을 감사합니다. AI가 만들었는지
+> 판정하지 않으며, 미적 패턴을 제작 주체의 증거로 취급하지 않습니다.
+
+공개 [`skills` CLI](https://skills.sh/docs/cli)는 `skills/` 아래의 패키지를 모두
+찾고, 사용할 에이전트와 스킬을 선택하게 합니다. 목록만 보거나
+오케스트레이터 하나만 설치할 수도 있습니다.
 
 ```bash
 npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill anti-ai-slop
 ```
 
-이 저장소 자체를 npm 패키지로 배포할 필요는 없습니다. `npx`가 외부 `skills`
-설치기를 실행해 GitHub 저장소의 스킬을 설치합니다.
+이 저장소의 패키지를 npm에 따로 배포할 필요는 없습니다. 위 명령은 외부
+설치기로 GitHub 저장소를 가져옵니다.
 
-## 개발
+## leeskills가 다른 점
 
-```bash
-python scripts/validate_repo.py
-python -m unittest discover -s tests -v
-```
+- **미감보다 근거를 먼저 봅니다.** 주장, 수치, 스크린샷, 성과를 출처에
+  연결합니다. 근거가 없으면 모르는 상태로 남깁니다.
+- **책임 범위가 분명한 작은 스킬입니다.** 좁은 문제에는 집중 스킬 하나를
+  쓰고, 넓은 문제에는 `anti-ai-slop`이 필요한 최소 순서를 고릅니다.
+- **판단은 에이전트가, 기계적 검사는 스크립트가 맡습니다.** 맥락이 필요한
+  디자인 판단은 에이전트가 하고, 스키마와 외부 의존성 없는 Python 도구는
+  기계적인 계약을 검사합니다.
+- **처음부터 이식 가능합니다.** 핵심 스킬은 벤더 전용 frontmatter 대신 공개
+  Agent Skills 형식을 씁니다. Codex, Claude Code, 범용 호환 클라이언트용
+  어댑터가 포함됩니다.
 
-예시는 `python` 실행기를 사용합니다. 환경에 따라 Unix 계열에서는
-`python3`, Windows에서는 `py -3`로 바꾸어 실행할 수 있습니다.
+## 10개 스킬, 하나의 근거 계약
 
-별도로 clone한 저장소에서 네트워크 없이 설치하려면 포함된 Python 설치기를
-사용할 수 있습니다.
+| 필요한 일 | 스킬 | 결과물 |
+|---|---|---|
+| 전체 흐름을 아우르는 검토 | `anti-ai-slop` | 적용할 최소 워크플로와 통합 판정 |
+| 기존 결과물 진단 | `slop-signal-audit` | 관찰 가능한 발견 사항, 위험 점수, 제거 우선순위 |
+| 사실 기반 마련 | `content-grounding` | 출처를 추적한 콘텐츠 인벤토리와 날조 차단 |
+| 지배적 정보 구조 하나 선택 | `structure-selector` | 탈락 대안까지 기록한 작업 기반 구조 결정 |
+| 재사용 UI 계약 정의 | `component-contract-audit` | Anatomy, 상태, 동작, 접근성, 소유권, parity 검사 |
+| 일관된 시각 시스템 정리 | `visual-entropy-budget` | 시각 예산과 반응형·타이포그래피·중첩 radius 검사 |
+| 제품다운 구체적 카피 작성 | `specificity-editor` | 치환 테스트를 견디는 근거 기반 문구 |
+| 필요한 모션만 유지 | `motion-necessity-gate` | 유지·축소·대체·제거 결정과 reduced-motion 검사 |
+| 접근성을 잃지 않는 단순화 | `accessibility-simplicity-guard` | 시맨틱·키보드·포커스·리플로·대비·상태 보호 |
+| 최종 결과 검증 | `prune-and-verify` | 삭제·확장·리플로·출처·핵심 작업 검증 |
 
-```bash
-# OpenAI Codex: 현재 저장소 범위
-python scripts/install.py --client codex --scope repo --mode copy
+이 스킬들은 카드, 그라디언트, 모션, 표현적인 작업을 종류만 보고 금지하지
+않습니다. 각 선택이 무엇을 전달하고, 어떤 작업을 돕고, 무엇을 근거로 남아야
+하는지 묻습니다.
 
-# Claude Code: 현재 저장소 범위
-python scripts/install.py --client claude-code --scope repo --mode copy
+## 가장 작은 워크플로를 고르세요
 
-# 기타 Agent Skills 호환 클라이언트
-python scripts/install.py --client generic --target /path/to/skills --mode copy
-```
-
-먼저 `--dry-run`으로 결과를 확인하십시오. `--force`를 주지 않으면 기존
-스킬을 덮어쓰지 않습니다.
-
-Trigger fixture는 영어·한국어·일본어를 모두 포함합니다. 대상 클라이언트에서
-각 질의를 실제로 반복 실행한 뒤 `scripts/evaluate_trigger_results.py`로 측정
-결과를 평가하십시오. Fixture 커버리지는 실제 trigger rate의 증거가 아닙니다.
-
-## 권장 실행 순서
-
-### 새 인터페이스
+**새 인터페이스·랜딩 페이지**
 
 ```text
 content-grounding
@@ -114,7 +94,15 @@ content-grounding
 → prune-and-verify
 ```
 
-### 디자인 시스템·재사용 컴포넌트
+**기존 인터페이스 감사**
+
+```text
+slop-signal-audit
+→ 필요한 집중 스킬
+→ prune-and-verify
+```
+
+**디자인 시스템·재사용 컴포넌트**
 
 ```text
 component-contract-audit
@@ -123,70 +111,103 @@ component-contract-audit
 → prune-and-verify
 ```
 
-### 기존 화면 감사
-
-```text
-slop-signal-audit
-→ content-grounding
-→ specificity-editor
-→ 재사용 컴포넌트·parity가 범위에 포함되면 component-contract-audit
-→ visual-entropy-budget
-→ motion-necessity-gate
-→ accessibility-simplicity-guard
-→ prune-and-verify
-```
-
-### 카피만 검토
+**카피만 검토**
 
 ```text
 content-grounding → specificity-editor → prune-and-verify
 ```
 
-### 빠른 검토
+작은 결과물이나 초기 초안에는 `slop-signal-audit`의 quick-pass 모드를
+사용하세요. 한 번만 실행하고, 점수나 판정 없이 최대 5개 수정과 생략한 검사를
+명시합니다.
+
+## 느낌 대신 근거
+
+중요한 판단마다 근거 상태 하나를 유지합니다.
+
+| 상태 | 의미 |
+|---|---|
+| **Observed** | 제공된 카피·스크린샷·마크업·코드·디자인 파일·토큰에서 직접 확인 |
+| **Measured** | 결정론적 테스트나 계산으로 측정 |
+| **Inferred** | 확보한 근거에서 추론했으며 추론임을 명시 |
+| **Unknown** | 제공 자료로는 확인할 수 없음 |
+
+추론은 반복해서 말해도 사실이 되지 않습니다. 고객명, 수치, 후기, 수상 경력,
+기능, 성과, 접근성 준수 여부를 만들어내는 행위를 금지합니다. 구조화된 검증기도
+필수 항목의 `unknown`을 몰래 통과로 바꾸지 않습니다.
+
+## 이식 가능한 패키지, 결정론적 검사
 
 ```text
-slop-signal-audit quick-pass 모드
-(1회 실행, 점수·판정 없음, 최대 5개 수정, 생략한 검증 항목 명시)
+skill-name/
+├── SKILL.md      # 핵심 워크플로
+├── references/   # 필요할 때만 읽는 참고 자료
+├── assets/       # 스키마와 템플릿
+├── scripts/      # 선택형 결정론적 도구
+└── evals/        # 트리거·출력 품질 fixture
 ```
 
-## 근거 상태
+- 핵심 지침은 공개 Agent Skills 필드만 사용하며 특정 벤더에 종속되지 않습니다.
+- 선택형 Python 3.9+ 스크립트는 비대화형이며, 표준 라이브러리만 사용하고,
+  네트워크 요청을 하지 않습니다.
+- 트리거 fixture는 영어·한국어·일본어와 near-miss negative를 포함합니다.
+  Fixture는 범위를 증명할 뿐 실제 클라이언트의 trigger rate를 증명하지 않습니다.
+- JSON 스키마는 구조가 도움이 되는 handoff를 검토 가능하게 만듭니다. 정보 계층,
+  진정성, 목소리, 사용성은 여전히 사람이 판단해야 합니다.
 
-모든 판단은 다음 중 하나로 표시합니다.
+## 실제 작업에 써보기
 
-- **Observed:** 제공된 화면·마크업·코드·디자인 파일·카피·토큰에서 직접 확인
-- **Measured:** 스크립트나 계산으로 측정
-- **Inferred:** 근거를 바탕으로 추론했으며 추론임을 명시
-- **Unknown:** 제공 자료로 확인할 수 없음
+설치 후 평소 말하듯 에이전트에게 요청하세요.
 
-고객명, 수치, 후기, 수상 경력, 기능, 프로젝트 성과, 제작 주체, 접근성 준수
-여부를 임의로 만들지 않습니다.
+> 이 랜딩 페이지에서 범용적이거나, 근거가 없거나, 불필요한 디자인을 감사해줘.
+> 실제 정체성, 필요한 행동, 접근성은 보존하고 모든 판단에 근거 상태를 표시해.
+> 가장 작은 완전한 수정을 한 뒤 핵심 흐름을 다시 검증해줘.
 
-## 점수의 의미
+[전체 감사 요청 예시](examples/full-audit-request.md),
+[수동 통합 예시](examples/manual-agent-integration.md), 또는
+[`examples/`의 구조화된 결과물](examples/README.md)에서 시작할 수 있습니다.
 
-`slop-signal-audit`의 점수는 수정 우선순위를 정하기 위한 보조 수단입니다.
-과학적 측정값이나 AI 생성 여부 판별값이 아닙니다. 날조된 증거, 실제처럼
-표현된 가짜 제품 UI, 키보드 포커스 제거, 대체 수단 없는 스크롤 강제 등은
-총점과 무관하게 통과를 차단합니다.
+## 개발·검증
 
-`unknown` 범주는 해당 범주 최대 점수의 절반까지만 받을 수 있습니다. 프로젝트
-하드 실패는 관찰되거나 측정된 근거가 있을 때만 기록합니다.
+```bash
+python scripts/validate_repo.py
+python -m unittest discover -s tests -v
+```
 
-## 출처 범위
+사용 가능한 Python 3.9+ 실행기에 따라 Unix 계열에서는 `python3`, Windows에서는
+`py -3`를 사용해도 됩니다. CI는 Ubuntu와 Windows, Python 3.9와 3.12에서 같은
+검사를 실행합니다.
 
-Codeit Design System에서는 프로젝트별 숫자 토큰을 복사하지 않고, 시멘틱
-역할·컴포넌트 계약·협업·예외 관리 방식을 일반화합니다.
+오프라인 clone이나 명시한 경로에 설치할 때는 포함된 설치기를 사용하세요.
 
-Dead Simple Sites는 **큐레이션된 최소 사이트 코퍼스**로 다룹니다. 목록에
-포함됐다는 사실만으로 인간 제작 여부를 단정하지 않습니다. 현재의 반복 패턴은
-유용한 유지관리자 휴리스틱이지만 완결된 체계적 연구 결과는 아닙니다.
-자세한 경계와 표본 절차는 `docs/corpus-study.md`에 기록합니다.
+```bash
+python scripts/install.py --client codex --scope repo --mode copy --dry-run
+python scripts/install.py --client claude-code --scope repo --mode copy --dry-run
+python scripts/install.py --client generic --target /path/to/skills --mode copy --dry-run
+```
 
-## 한계
+`--force`를 주지 않으면 기존 스킬을 덮어쓰지 않습니다.
 
-- 스크린샷만으로 접근성 전체 준수나 컴포넌트 런타임 동작을 확인할 수 없습니다.
+## 다음 문서
+
+| 문서 | 다루는 내용 |
+|---|---|
+| [아키텍처](docs/architecture.md) | 구성, 데이터 계약, 이식성 경계 |
+| [통합](docs/integration.md) | 클라이언트 설정과 호출 전략 |
+| [평가](docs/evaluation.md) | 트리거 측정, 출력 비교, 릴리스 기준 |
+| [디자인 기초](docs/design-foundations.md) | 정규화한 제품·디자인 원칙 |
+| [출처 노트](docs/source-notes.md) | 근거와 외부 지침을 적용하는 한계 |
+| [기여 안내](CONTRIBUTING.md) | 저장소 규칙과 기여 흐름 |
+
+## 솔직한 한계
+
+- 스크린샷만으로 런타임 동작이나 접근성 전체 준수를 확인할 수 없습니다.
 - 정적 감사만으로 이해도나 전환율을 입증할 수 없습니다.
-- 범용 문구·패턴 탐지는 오탐이 있으므로 맥락과 근거가 최종 기준입니다.
-- 현재 DSS 대비 패턴은 출처 기반 휴리스틱이며, 체계적으로 코딩된 전체 코퍼스
-  연구가 아닙니다.
-- 시각 예산은 기본값이며 절대적인 미학 법칙이 아닙니다.
-- 스킬 자동 호출은 모델과 클라이언트마다 달라 실제 환경에서 eval이 필요합니다.
+- 문구·패턴 lint에는 오탐이 있으므로 맥락이 최종 기준입니다.
+- 시각 예산은 기본값이지 절대적인 미학 법칙이 아닙니다.
+- 스킬 호출은 비결정적이므로 trigger rate를 보고하기 전에 대상 클라이언트에서
+  실제로 측정해야 합니다.
+
+## 라이선스
+
+[MIT](LICENSE). 자유롭게 사용하고 수정하되 근거의 경계는 지켜주세요.
