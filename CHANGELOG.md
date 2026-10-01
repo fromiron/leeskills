@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### README
+
+- Reorganized the English, Korean, and Japanese READMEs: the install command
+  is followed by an example request, outputs and evidence labels are grouped
+  together, the skill table leads with the skill name, and workflow sequences
+  are listed in one table. Described the `review-visuals` token proposal page and its JSON renderer
+  and moved clone-based installation next to the adapter links.
+
 ### Skill names
 
 - Renamed the entry skill to `design-workflow` and the nine focused skills to
