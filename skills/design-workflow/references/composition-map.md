@@ -14,7 +14,7 @@ existing schemas; record delivery details in the accompanying report.
 
 ## Handoff contracts
 
-### Content grounding
+### Verify content (`verify-content`)
 
 Produce:
 
@@ -37,7 +37,7 @@ Produce:
 }
 ```
 
-### Structure selection
+### Plan structure (`plan-structure`)
 
 Produce:
 
@@ -59,7 +59,7 @@ Produce:
 }
 ```
 
-### Component contract
+### Review components (`review-components`)
 
 Produce:
 
@@ -141,7 +141,7 @@ space evidence, and alternative path. A design-system lifecycle does not pass
 without reviewable ownership, current-to-target mapping, bounded coexistence,
 and a deprecation gate.
 
-### Visual budget
+### Review visuals (`review-visuals`)
 
 Produce:
 
@@ -155,6 +155,7 @@ Produce:
   "token_proposal": {
     "required": false,
     "artifact_path": "",
+    "proposal_json_path": "",
     "foundations": [],
     "primitive_tokens": [],
     "semantic_tokens": [],
@@ -177,13 +178,16 @@ external typography table as a pass/fail threshold.
 
 When shared tokenization is recommended, supply exact proposed names and
 values, distinguish primitive values from semantic roles, and create one
-self-contained HTML review page for the applicable Typography, Spacing,
-Layout, and Radius foundations. Label the page as a proposal and report its
-path; do not imply adoption. Trace numeric proposals to inspected project or
-rendered evidence. If that evidence is unavailable, leave values `unknown`
-instead of inventing a complete scale.
+self-contained HTML review page for the applicable Color, Typography, Spacing,
+Layout, and Radius foundations. Follow the `review-visuals` token proposal
+procedure: write the proposal JSON, validate it, render the page with the
+bundled renderer where Python is available, and inspect it at wide and narrow
+viewports. Label the page as a proposal and report both paths; do not imply
+adoption. Trace numeric proposals to inspected project or rendered evidence.
+If that evidence is unavailable, leave values `unknown` instead of inventing a
+complete scale.
 
-### Copy edit
+### Edit copy (`edit-copy`)
 
 For each material copy decision, show:
 
@@ -202,7 +206,7 @@ Record whether placeholders, markup, plural or select branches, and
 locale-aware formatting responsibilities remain intact; do not require
 word-for-word parity.
 
-### Motion gate
+### Review motion (`review-motion`)
 
 For each motion pattern, record:
 
@@ -213,7 +217,7 @@ For each motion pattern, record:
 - reduced-motion behavior;
 - equivalent static state.
 
-### Accessibility guard
+### Check accessibility (`check-accessibility`)
 
 For each check, record:
 
@@ -224,7 +228,7 @@ For each check, record:
 - fix;
 - verification method.
 
-### Verify changes
+### Verify changes (`verify-changes`)
 
 Keep deletion and consolidation decisions and a reversible change plan in
 scope. Apply authorized changes before final checks; leave proposals unapplied

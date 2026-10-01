@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -130,10 +131,12 @@ class CommandTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         for section_id in (
             "overview",
+            "color",
             "typography",
             "spacing",
             "layout",
             "radius",
+            "changes",
             "decisions",
         ):
             self.assertIn(f'id="{section_id}"', token_template)
@@ -210,6 +213,152 @@ class CommandTests(unittest.TestCase):
         )
         self.assertTrue(result["valid"])
         self.assertEqual(result["dominant_grammar"], "portfolio-index")
+
+    def test_delivery_convention_is_identical_in_every_skill(self) -> None:
+        blocks = {}
+        for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            text = skill.read_text(encoding="utf-8")
+            start = text.index("## Delivery\n")
+            end = text.index("\n## ", start + 1)
+            blocks[skill.parent.name] = text[start:end]
+        self.assertEqual(len(blocks), 10)
+        self.assertEqual(len(set(blocks.values())), 1, msg="Delivery sections drifted apart")
+
+    def token_proposal(self) -> dict[str, object]:
+        return json.loads(
+            (ROOT / "skills/review-visuals/assets/token-proposal-example.json").read_text(encoding="utf-8")
+        )
+
+    def test_token_proposal_example_is_valid_with_explicit_unknowns(self) -> None:
+        result = self.run_json(
+            "skills/review-visuals/scripts/validate_token_proposal.py",
+            "skills/review-visuals/assets/token-proposal-example.json",
+        )
+        self.assertTrue(result["valid"])
+        proposal = result["proposal"]
+        self.assertIn("text-secondary@dark", proposal["unknown_values"])
+        self.assertTrue(all(item["status"] == "pass" for item in proposal["contrast"]))
+
+    def test_token_proposal_rejects_unsupported_or_unsafe_values(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        cases = []
+
+        no_evidence = self.token_proposal()
+        no_evidence["foundations"]["spacing"]["primitives"][0]["evidence"] = []
+        cases.append((no_evidence, "requires evidence"))
+
+        unsafe = self.token_proposal()
+        unsafe["foundations"]["color"]["primitives"][0]["value"] = "url(https://example.com/x.png)"
+        cases.append((unsafe, "not allowed"))
+
+        low_contrast = self.token_proposal()
+        low_contrast["foundations"]["color"]["primitives"][3]["value"] = "#bbbbbb"
+        cases.append((low_contrast, "below the declared"))
+
+        adopted = self.token_proposal()
+        adopted["status"] = "adopted"
+        cases.append((adopted, "status must be"))
+
+        dangling = self.token_proposal()
+        dangling["foundations"]["spacing"]["semantic"][0]["references"]["wide"] = "space-99"
+        cases.append((dangling, "unknown primitive"))
+
+        for document, message in cases:
+            result = self.run_json_document(script, document, expected=1)
+            errors = "\n".join(result["proposal"]["errors"])
+            self.assertIn(message, errors)
+
+    def test_token_proposal_renders_localized_page_without_placeholders(self) -> None:
+        template = (
+            ROOT / "skills/review-visuals/assets/token-proposal-template.html"
+        ).read_text(encoding="utf-8")
+        style = template.split("<style>", 1)[1].split("</style>", 1)[0]
+        defined = set(re.findall(r"\.([a-z][a-z0-9-]*)", style))
+        with tempfile.TemporaryDirectory() as directory:
+            for language, expected in (("ko", "디자인 토큰 제안"), ("ja", "デザイントークン提案"), ("en", "Design token proposal")):
+                document = self.token_proposal()
+                document["language"] = language
+                source = Path(directory) / f"{language}.json"
+                output = Path(directory) / f"{language}.html"
+                source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+                result = self.run_json(
+                    "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output),
+                )
+                self.assertTrue(result["rendered"])
+                html = output.read_text(encoding="utf-8")
+                self.assertIn(f'<html lang="{language}">', html)
+                self.assertIn(expected, html)
+                self.assertNotRegex(html, r"\{\{[A-Z0-9_]+\}\}")
+                self.assertNotIn("Manual fill:", html)
+                for section in ("overview", "color", "typography", "spacing", "layout", "radius", "changes", "decisions"):
+                    self.assertIn(f'<section id="{section}"', html)
+                self.assertIn('data-proposal-status="proposed"', html)
+                self.assertIn('class="unknown"', html)
+                shell = html.split("<!-- shell:start -->", 1)[1].split("<!-- shell:end -->", 1)[0]
+                used = {
+                    name
+                    for value in re.findall(r'class="([^"]+)"', shell)
+                    for name in value.split()
+                }
+                self.assertEqual(sorted(used - defined), [], msg="rendered classes missing from the template stylesheet")
+                checked = self.run_json(
+                    "skills/review-visuals/scripts/validate_token_proposal.py", "--html", str(output),
+                )
+                self.assertTrue(checked["valid"])
+
+            omitted = self.token_proposal()
+            del omitted["foundations"]["layout"]
+            source = Path(directory) / "partial.json"
+            output = Path(directory) / "partial.html"
+            source.write_text(json.dumps(omitted, ensure_ascii=False), encoding="utf-8")
+            self.run_json("skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output))
+            html = output.read_text(encoding="utf-8")
+            self.assertNotIn('<section id="layout"', html)
+            self.assertNotIn('href="#layout"', html)
+
+    def test_token_proposal_renderer_refuses_invalid_input(self) -> None:
+        document = self.token_proposal()
+        document["foundations"]["radius"]["primitives"][0]["evidence"] = []
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "invalid.json"
+            output = Path(directory) / "invalid.html"
+            source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+            result = self.run_json(
+                "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output),
+                expected=1,
+            )
+            self.assertFalse(result["rendered"])
+            self.assertFalse(output.exists())
+
+    def test_token_proposal_template_flags_placeholders_and_keeps_its_budget(self) -> None:
+        path = ROOT / "skills/review-visuals/assets/token-proposal-template.html"
+        result = self.run_json(
+            "skills/review-visuals/scripts/validate_token_proposal.py", "--html", str(path), expected=1,
+        )
+        self.assertFalse(result["valid"])
+        self.assertTrue(result["html"]["placeholders"])
+
+        template = path.read_text(encoding="utf-8")
+        strings = json.loads(
+            template.split('<script type="application/json" id="chrome-strings">', 1)[1].split("</script>", 1)[0]
+        )
+        self.assertEqual(set(strings), {"en", "ko", "ja"})
+        self.assertEqual(set(strings["en"]), set(strings["ko"]))
+        self.assertEqual(set(strings["en"]), set(strings["ja"]))
+        used_keys = set(re.findall(r'data-i18n="([a-z_-]+)"', template))
+        self.assertEqual(sorted(used_keys - set(strings["en"])), [])
+
+        style = template.split("<style>", 1)[1].split("</style>", 1)[0]
+        self.assertLessEqual(len(set(re.findall(r"--radius-[a-z]+:", style))), 2)
+        self.assertLessEqual(len(set(re.findall(r"--text-[a-z]+:", style))), 6)
+        font_sizes = set(re.findall(r"font-size:\s*([^;]+);", style))
+        self.assertTrue(all(value.startswith("var(--") for value in font_sizes), msg=font_sizes)
+        self.assertNotIn("box-shadow: 0", style)
+        self.assertNotRegex(style, r"(?:https?:)?//[a-z]")
+        self.assertIn("prefers-reduced-motion", style)
+        self.assertIn("@media print", style)
+        self.assertIn("html:lang(ko) body { word-break: keep-all; }", style)
+
 
     def test_visual_budget_example_exposes_overages(self) -> None:
         result = self.run_json(
@@ -434,7 +583,7 @@ class CommandTests(unittest.TestCase):
             missing = sorted(set(schema.get("required", [])) - set(example))
             self.assertEqual(missing, [], msg=f"{example_path} does not satisfy {schema_path}")
 
-    def test_prune_example_is_release_ready_with_declared_scope(self) -> None:
+    def test_verify_changes_example_is_release_ready_with_declared_scope(self) -> None:
         result = self.run_json(
             "skills/verify-changes/scripts/validate_verification.py",
             "skills/verify-changes/assets/verification-example.json",
@@ -444,7 +593,7 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(result["status_counts"]["pass"], 11)
         self.assertEqual(result["status_counts"]["unknown"], 1)
 
-    def test_prune_baseline_failure_cannot_be_marked_optional(self) -> None:
+    def test_verify_changes_baseline_failure_cannot_be_marked_optional(self) -> None:
         baseline = {
             "deletion",
             "substitution",
@@ -533,7 +682,7 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["pass"])
         self.assertEqual(set(result["languages"]), {"en", "ko", "ja"})
 
-    def test_specificity_editor_integrates_voice_and_locale_review(self) -> None:
+    def test_edit_copy_integrates_voice_and_locale_review(self) -> None:
         skill_dir = ROOT / "skills" / "edit-copy"
         language_reference = (
             skill_dir / "references" / "language-and-voice.md"
@@ -656,7 +805,7 @@ class CommandTests(unittest.TestCase):
             self.assertEqual(item["language"], language)
             self.assertTrue(item["should_trigger"])
 
-    def test_specificity_linter_flags_review_items_without_failing(self) -> None:
+    def test_copy_linter_flags_review_items_without_failing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "copy.txt"
             path.write_text(
@@ -675,7 +824,7 @@ class CommandTests(unittest.TestCase):
         self.assertIn("numeric-claim", finding_types)
         self.assertIn("universal-claim", finding_types)
 
-    def test_specificity_linter_prefers_longest_watchlist_match(self) -> None:
+    def test_copy_linter_prefers_longest_watchlist_match(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "copy.txt"
             path.write_text("Integrates seamlessly.", encoding="utf-8")
@@ -691,7 +840,7 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(len(watchlist), 1)
         self.assertEqual(watchlist[0]["match"], "seamlessly")
 
-    def test_specificity_linter_reports_correct_offsets_after_casefold_growth(self) -> None:
+    def test_copy_linter_reports_correct_offsets_after_casefold_growth(self) -> None:
         # "ß".casefold() == "ss" shifts casefolded offsets; original-text
         # matching must keep the reported column and match text accurate.
         with tempfile.TemporaryDirectory() as directory:
