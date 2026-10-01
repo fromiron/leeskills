@@ -26,9 +26,9 @@ is not an applied fix. Report checks actually run and their outcomes, unverified
 items, and how to undo your changes while preserving unrelated work.
 
 Verify through the intended user flow where available and state environment
-limits. Report validators check declarations, not product behavior. Re-run
-affected checks after any later edit. Keep the delivery proportionate to the
-request; a small fix does not need a full report.
+limits. Bundled report validators check declarations, not product behavior.
+Re-run affected checks after any later edit. Keep the delivery proportionate to
+the request; a small fix does not need a full report.
 
 ## Definition
 
@@ -105,6 +105,8 @@ Use:
 
 - [assets/visual-budget.schema.json](assets/visual-budget.schema.json)
 - [assets/visual-budget-example.json](assets/visual-budget-example.json)
+- [assets/token-proposal.schema.json](assets/token-proposal.schema.json)
+- [assets/token-proposal-example.json](assets/token-proposal-example.json)
 - [assets/token-proposal-template.html](assets/token-proposal-template.html)
 
 Check a structured budget:
@@ -125,9 +127,9 @@ record those conclusions separately with project and rendered evidence.
 
 Create a token proposal when repeated raw values, inconsistent naming,
 responsive drift, or unclear ownership indicate that a shared system is
-needed, or when the user asks for token definitions. If the proposal spans
-Typography, Spacing, Layout, or Radius, present the applicable foundations in
-one self-contained HTML page.
+needed, or when the user asks for token definitions. Present the applicable
+Color, Typography, Spacing, Layout, and Radius foundations in one
+self-contained HTML page.
 
 Evidence gate: inspect the project's source tokens, CSS or theme values,
 computed styles, representative content, and rendered viewports before filling
@@ -135,33 +137,84 @@ numeric proposals. If that evidence is unavailable, stop numeric design work,
 request or locate it, and provide only a name-and-role scaffold with values
 marked `unknown`. Do not invent a convenient scale merely to complete the page.
 
+### Decide the tokens
+
 1. Inventory current names, raw values, usage frequency, responsive mappings,
    aliases, and exceptions before proposing a scale.
 2. Extend the project's naming convention when one exists. Otherwise propose a
-   consistent namespace and explain it.
-3. Propose primitive tokens as reusable values without component meaning. Use
-   an ordered scale or value-oriented names that remain stable under the
-   project's responsive strategy.
-4. Propose semantic tokens by role, such as content gap, section gap, container
-   padding, body text, page title, card corner, or pill corner. Map each
-   semantic token to one or more primitives by breakpoint, language, or theme.
-5. Include exact proposed names and values, current-to-proposed mappings,
-   deleted aliases, retained exceptions, rationale, evidence, and adoption
-   status. Label unverified recommendations as `proposed` or `unknown`, never
-   as existing standards.
+   consistent namespace and show its parts, for example category and step for
+   primitives and category and role for semantic tokens.
+3. Propose primitive tokens as single reusable values without component
+   meaning. Do not give a primitive per-breakpoint values.
+4. Propose semantic tokens by role, such as text primary, content gap, section
+   gap, container padding, page title, card corner, or pill corner. Map each
+   semantic token to primitives per context: `default`, a breakpoint, a
+   language, or a theme such as `light` and `dark`.
+5. Record current-to-proposed mappings, merged and renamed aliases, deletions,
+   retained exceptions, rationale, evidence, and adoption status. Label
+   unverified recommendations as `proposed` or `unknown`, never as existing
+   standards.
 6. Derive values by clustering the project's current system and testing the
-   rendered result. Do not copy Codeit or another system's numbers or token
-   names unless the project explicitly adopts that system.
-7. For typography, propose letter spacing and line height separately for the
+   rendered result. Do not copy Codeit or another system's numbers, token
+   names, or branding unless the project explicitly adopts that system.
+7. For color, keep status, data, and validation colors separate from accents
+   and declare the background each text or status color must meet, with the
+   required contrast ratio.
+8. For typography, propose letter spacing and line height separately for the
    actual font, fallback, script, language, size, weight, and role. Do not
    extrapolate one font's values across unrelated roles.
-8. Copy the HTML template, replace or explicitly resolve every placeholder,
-   duplicate rows as needed, and keep only sections supported by the scope.
-9. Keep the artifact dependency-free and network-free. Preserve semantic
-   headings, table captions, keyboard navigation, visible focus, reflow,
-   reduced-motion behavior, and print readability.
-10. Render and inspect representative wide and narrow viewports before sharing
-    the page. Report the output path and unresolved decisions.
+
+### Build the page
+
+Prefer the data path, which keeps the page consistent and checkable:
+
+1. Write the proposal as JSON matching
+   [assets/token-proposal.schema.json](assets/token-proposal.schema.json);
+   [assets/token-proposal-example.json](assets/token-proposal-example.json)
+   shows every field. Set `language` to the reader's language (`en`, `ko`, or
+   `ja` chrome is bundled) and write titles, roles, and notes in that language.
+2. Validate it. The validator rejects stated values without evidence,
+   references to undefined primitives, CSS values that could inject rules or
+   load resources, and computable contrast below the declared minimum:
+
+   ```bash
+   python scripts/validate_token_proposal.py proposal.json
+   ```
+
+3. Render the page from the validated JSON. The renderer reuses the
+   template's stylesheet and localized chrome, omits foundations that are not
+   in scope, and refuses invalid input:
+
+   ```bash
+   python scripts/render_token_proposal.py proposal.json --output design-token-proposal.html
+   ```
+
+4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
+   previews draw the proposed values, unknown values show the unknown marker,
+   the page does not scroll horizontally, and tables scroll only inside their
+   own regions. Fix the data, not the generated markup, then render again.
+5. Check the final file and report the output path, unknown values, and open
+   decisions:
+
+   ```bash
+   python scripts/validate_token_proposal.py proposal.json --html design-token-proposal.html
+   ```
+
+Without Python, copy
+[assets/token-proposal-template.html](assets/token-proposal-template.html),
+replace or explicitly resolve every placeholder, duplicate rows, ramp steps,
+and frames as needed, delete out-of-scope sections from both the page and its
+navigation, and state that the deterministic checks were not run.
+
+The page must keep: the status badge and `data-proposal-status="proposed"`;
+previews drawn from the proposed values (color ramps and pairs, type
+specimens, spacing bars, radius corners, container frames); one column per
+mapping context; the unknown marker instead of guessed values; the changes and
+decisions sections; semantic headings, table captions, keyboard-scrollable
+table regions, visible focus, reflow, reduced-motion behavior, and print
+readability; and no network requests. The template's own chrome follows the
+default budget in this skill; do not add decorative gradients, glows, or
+shadows to it.
 
 Use an existing project documentation or artifact directory when one is
 clearly established; otherwise write `design-token-proposal.html` to the

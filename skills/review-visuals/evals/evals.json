@@ -67,8 +67,21 @@
         "The output provides concrete names and values instead of a generic standardization recommendation.",
         "Every numeric proposal traces to project source or rendered evidence; missing evidence produces an unknown value or evidence request, not a convenient invented scale.",
         "Primitive values are separated from semantic role tokens and every semantic token has a mapping.",
-        "The HTML is dependency-free, accessible, responsive, free of unresolved placeholders, and labeled as proposed rather than adopted.",
+        "Previews are drawn from the proposed values, with one column per mapping context and an unknown marker where evidence is missing.",
+        "The HTML is dependency-free, accessible, responsive without page-level horizontal scrolling, free of unresolved placeholders, and labeled as proposed rather than adopted.",
         "Codeit or another design system is used as structural inspiration, not as a source of universal numbers or copied branding."
+      ]
+    },
+    {
+      "id": "token-proposal-korean-color",
+      "prompt": "우리 서비스 CSS에서 회색이 열 가지 넘게 쓰이고 있어요. 첨부한 CSS와 화면 캡처를 근거로 컬러와 간격 토큰을 정리해서, 팀이 검토할 한국어 HTML 페이지로 만들어 주세요. 다크 모드 값은 아직 정해지지 않았어요.",
+      "expected_output": "A Korean token proposal page rendered from validated proposal data: color ramps and semantic pairs with declared contrast checks, spacing primitives and role mappings, dark-theme values left unknown, current-to-proposed changes, and the output path with remaining open decisions.",
+      "assertions": [
+        "Proposal data is validated before rendering, or the report states that the deterministic checks could not run.",
+        "Text and status colors declare their background and minimum contrast; failing pairs are reported rather than hidden.",
+        "Undecided dark-theme mappings stay unknown instead of being invented.",
+        "Page chrome, headings, and notes are Korean, with Korean line breaking that keeps words intact.",
+        "The page is checked at a wide viewport and at about 375 CSS px before it is shared."
       ]
     }
   ]

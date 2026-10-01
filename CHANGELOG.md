@@ -31,11 +31,39 @@ All notable changes are documented here.
   establish, and distinguished installed packages from loaded skill bodies.
   No new trigger-rate or design-quality measurement is claimed.
 
+### Token proposal page
+
+- Rebuilt the `review-visuals` token proposal page as a documentation-style
+  review page: navigation beside one content panel, token-name anatomy,
+  color ramps, contrast pairs, type specimens, spacing bars, radius corners,
+  container frames, one column per mapping context, and an unknown marker.
+  Previews are drawn from the proposed values rather than from page styles.
+- Added a Color foundation, current-to-proposed changes with deletions and
+  renames, and English, Korean, and Japanese page chrome. Korean text keeps
+  words intact when wrapping, and Japanese uses a Japanese font stack.
+- Moved breakpoint values from primitives to semantic mappings so the page
+  matches the skill's primitive and semantic rules.
+- Added `token-proposal.schema.json`, a Korean example, a dependency-free
+  validator for evidence, references, safe CSS values, contrast, and leftover
+  placeholders, and a renderer that builds the page from validated data with
+  the template's stylesheet. Updated the skill procedure, the orchestrator's
+  composition map, evals, and tests, including checks that the page chrome
+  stays within the skill's own visual budget.
+- Structure was informed by the Codeit Design System documentation; no Codeit
+  values, names, colors, or branding were copied.
+
+### Maintenance
+
+- Added a test that keeps the shared delivery section identical across skills,
+  clarified its validator sentence, renamed composition-map headings and test
+  names to the current skill names, and added the missing test shebang.
+
 ### Changed
 
-- Expanded `specificity-editor` into one integrated product-copy review for
-  factual support, specificity, natural English, Korean, and Japanese, product
-  voice, terminology, and multilingual meaning and action parity.
+- Expanded `edit-copy` (formerly `specificity-editor`) into one integrated
+  product-copy review for factual support, specificity, natural English,
+  Korean, and Japanese, product voice, terminology, and multilingual meaning
+  and action parity.
 - Added source-grounded language guidance, correction/suggestion/keep decisions,
   and multilingual trigger and output evals without adding an authorship
   detector or a second copy-editing skill.
