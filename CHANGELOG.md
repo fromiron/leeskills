@@ -4,6 +4,17 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Skill names
+
+- Renamed the entry skill to `design-workflow` and the nine focused skills to
+  short action-and-target names. See the
+  [migration table and installation guide](docs/skill-name-migration.md).
+- Updated directories, frontmatter names, manifest, routing references, eval
+  metadata, tests, and English, Korean, and Japanese installation examples.
+  Preserved descriptions, existing eval IDs, trigger queries, helper interfaces,
+  and JSON contracts during the rename. Historical entries below retain their
+  original names.
+
 ### Changed
 
 - Expanded `specificity-editor` into one integrated product-copy review for

@@ -60,5 +60,5 @@ when you need UI labels, invocation policy, or MCP dependency declarations.
 ## Invocation
 
 Use the client skill picker or explicitly mention a skill. Broad requests can
-start with `anti-ai-slop`; focused requests should invoke the corresponding
+start with `design-workflow`; focused requests should invoke the corresponding
 single-purpose skill.

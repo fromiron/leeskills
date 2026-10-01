@@ -37,11 +37,11 @@ npx skills add fromiron/leeskills
 
 オープンな [`skills` CLI](https://skills.sh/docs/cli) が `skills/` 内の
 パッケージを見つけてインストールします。まず一覧を見ることも、
-`anti-ai-slop` だけを選ぶこともできます。
+`design-workflow` だけを選ぶこともできます。
 
 ```bash
 npx skills add fromiron/leeskills --list
-npx skills add fromiron/leeskills --skill anti-ai-slop
+npx skills add fromiron/leeskills --skill design-workflow
 ```
 
 インストーラーは、この GitHub リポジトリを取得します。npm への公開は不要です。
@@ -49,7 +49,7 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 ## 使い方
 
 範囲が狭ければ、目的に合うスキルを1つだけ使います。画面全体を見直すなら
-`anti-ai-slop` から始めてください。成果物に必要なチェックだけを選びます。
+`design-workflow` から始めてください。成果物に必要なチェックだけを選びます。
 
 判断が必要な部分は Markdown の手順に、繰り返し確認できる項目はスキーマと
 外部依存のない Python スクリプトに分けています。
@@ -58,16 +58,16 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 
 | やりたいこと | スキル | 得られるもの |
 |---|---|---|
-| インターフェース全体を見直す | `anti-ai-slop` | 範囲に合うスキルの順序と、まとめた結果 |
-| 既存の成果物を診断する | `slop-signal-audit` | 確認できた問題、リスクスコア、修正の順番 |
-| コピーの根拠を確かめる | `content-grounding` | 出典付きのコンテンツ一覧と、確認できない項目 |
-| 情報構造を決める | `structure-selector` | タスクを基準に選んだ構造と、不採用にした案 |
-| 再利用する UI の仕様をそろえる | `component-contract-audit` | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
-| 見た目のルールを整理する | `visual-entropy-budget` | ビジュアルの基準と、レスポンシブ・文字組み・入れ子の角丸のチェック |
-| プロダクトのコピーを整える | `specificity-editor` | 根拠があり、プロダクトの語り口と各言語に合うコピー |
-| モーションを見直す | `motion-necessity-gate` | 残す・減らす・置き換える・削る判断と、動きを抑える設定の確認 |
-| アクセシビリティを保って簡素化する | `accessibility-simplicity-guard` | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
-| 修正後の成果物を確かめる | `prune-and-verify` | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
+| インターフェース全体を見直す | `design-workflow` | 範囲に合うスキルの順序と、まとめた結果 |
+| 既存の成果物を診断する | `audit-design` | 確認できた問題、リスクスコア、修正の順番 |
+| コピーの根拠を確かめる | `verify-content` | 出典付きのコンテンツ一覧と、確認できない項目 |
+| 情報構造を決める | `plan-structure` | タスクを基準に選んだ構造と、不採用にした案 |
+| 再利用する UI の仕様をそろえる | `review-components` | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
+| 見た目のルールを整理する | `review-visuals` | ビジュアルの基準と、レスポンシブ・文字組み・入れ子の角丸のチェック |
+| プロダクトのコピーを整える | `edit-copy` | 根拠があり、プロダクトの語り口と各言語に合うコピー |
+| モーションを見直す | `review-motion` | 残す・減らす・置き換える・削る判断と、動きを抑える設定の確認 |
+| アクセシビリティを保って簡素化する | `check-accessibility` | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
+| 修正後の成果物を確かめる | `verify-changes` | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
 
 カードやグラデーション、モーションを一律に禁止するものではありません。
 タスクに役立ち、残す理由を説明できるものは残します。
@@ -77,39 +77,39 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 **新しいインターフェースやランディングページ**
 
 ```text
-content-grounding
-→ structure-selector
-→ visual-entropy-budget
-→ specificity-editor
-→ motion-necessity-gate
-→ accessibility-simplicity-guard
-→ prune-and-verify
+verify-content
+→ plan-structure
+→ review-visuals
+→ edit-copy
+→ review-motion
+→ check-accessibility
+→ verify-changes
 ```
 
 **既存インターフェースの見直し**
 
 ```text
-slop-signal-audit
+audit-design
 → 必要な個別スキル
-→ prune-and-verify
+→ verify-changes
 ```
 
 **デザインシステムや再利用コンポーネント**
 
 ```text
-component-contract-audit
-→ visual-entropy-budget
-→ accessibility-simplicity-guard
-→ prune-and-verify
+review-components
+→ review-visuals
+→ check-accessibility
+→ verify-changes
 ```
 
 **コピーの見直し**
 
 ```text
-content-grounding → specificity-editor → prune-and-verify
+verify-content → edit-copy → verify-changes
 ```
 
-小さな下書きなら、`slop-signal-audit` の `quick-pass` で十分です。スコアや
+小さな下書きなら、`audit-design` の `quick-pass` で十分です。スコアや
 リリース判定は付けず、直す価値のある点を5件以内に絞ります。確認していない
 項目も明記します。
 

@@ -104,7 +104,7 @@ class CommandTests(unittest.TestCase):
             )
 
         budget_rules = (
-            ROOT / "skills/visual-entropy-budget/references/budget-rules.md"
+            ROOT / "skills/review-visuals/references/budget-rules.md"
         ).read_text(encoding="utf-8")
         for role in ("content-gap", "section-gap", "container-padding"):
             self.assertIn(role, budget_rules)
@@ -116,7 +116,7 @@ class CommandTests(unittest.TestCase):
 
         visual_evals = json.loads(
             (
-                ROOT / "skills/visual-entropy-budget/evals/evals.json"
+                ROOT / "skills/review-visuals/evals/evals.json"
             ).read_text(encoding="utf-8")
         )
         eval_ids = {item["id"] for item in visual_evals["evals"]}
@@ -126,7 +126,7 @@ class CommandTests(unittest.TestCase):
 
         token_template = (
             ROOT
-            / "skills/visual-entropy-budget/assets/token-proposal-template.html"
+            / "skills/review-visuals/assets/token-proposal-template.html"
         ).read_text(encoding="utf-8")
         for section_id in (
             "overview",
@@ -147,14 +147,14 @@ class CommandTests(unittest.TestCase):
 
         accessibility = (
             ROOT
-            / "skills/accessibility-simplicity-guard/references/wcag-checklist.md"
+            / "skills/check-accessibility/references/wcag-checklist.md"
         ).read_text(encoding="utf-8")
         self.assertIn("resilience test, not a prescription", accessibility)
 
     def test_audit_example_scores_as_redesign(self) -> None:
         result = self.run_json(
-            "skills/slop-signal-audit/scripts/score_audit.py",
-            "skills/slop-signal-audit/assets/audit-example.json",
+            "skills/audit-design/scripts/score_audit.py",
+            "skills/audit-design/assets/audit-example.json",
         )
         self.assertEqual(result["quality_score"], 57.0)
         self.assertEqual(result["slop_risk_score"], 43.0)
@@ -187,7 +187,7 @@ class CommandTests(unittest.TestCase):
             path = Path(directory) / "audit.json"
             path.write_text(json.dumps(document), encoding="utf-8")
             completed = self.run_command(
-                "skills/slop-signal-audit/scripts/score_audit.py",
+                "skills/audit-design/scripts/score_audit.py",
                 str(path),
                 expected=2,
             )
@@ -195,8 +195,8 @@ class CommandTests(unittest.TestCase):
 
     def test_content_inventory_example_is_valid(self) -> None:
         result = self.run_json(
-            "skills/content-grounding/scripts/validate_inventory.py",
-            "skills/content-grounding/assets/content-inventory-example.json",
+            "skills/verify-content/scripts/validate_inventory.py",
+            "skills/verify-content/assets/content-inventory-example.json",
         )
         self.assertTrue(result["valid"])
         self.assertEqual(result["status_counts"]["placeholder"], 1)
@@ -205,16 +205,16 @@ class CommandTests(unittest.TestCase):
 
     def test_structure_example_is_valid(self) -> None:
         result = self.run_json(
-            "skills/structure-selector/scripts/validate_structure.py",
-            "skills/structure-selector/assets/structure-decision-example.json",
+            "skills/plan-structure/scripts/validate_structure.py",
+            "skills/plan-structure/assets/structure-decision-example.json",
         )
         self.assertTrue(result["valid"])
         self.assertEqual(result["dominant_grammar"], "portfolio-index")
 
     def test_visual_budget_example_exposes_overages(self) -> None:
         result = self.run_json(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
-            "skills/visual-entropy-budget/assets/visual-budget-example.json",
+            "skills/review-visuals/scripts/check_budget.py",
+            "skills/review-visuals/assets/visual-budget-example.json",
             expected=1,
         )
         self.assertFalse(result["pass"])
@@ -230,7 +230,7 @@ class CommandTests(unittest.TestCase):
                 encoding="utf-8",
             )
             completed = self.run_command(
-                "skills/visual-entropy-budget/scripts/check_budget.py",
+                "skills/review-visuals/scripts/check_budget.py",
                 str(path),
                 expected=2,
             )
@@ -241,7 +241,7 @@ class CommandTests(unittest.TestCase):
         observed = dict(limits)
         observed["typeface_families"] = 2
         result = self.run_json_document(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
+            "skills/review-visuals/scripts/check_budget.py",
             {
                 "artifact": "Editorial site",
                 "observed": observed,
@@ -266,7 +266,7 @@ class CommandTests(unittest.TestCase):
     def test_visual_budget_rejects_same_radius_on_shared_nested_contour(self) -> None:
         limits = self.visual_limits()
         result = self.run_json_document(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
+            "skills/review-visuals/scripts/check_budget.py",
             {
                 "artifact": "Nested card",
                 "observed": dict(limits),
@@ -297,7 +297,7 @@ class CommandTests(unittest.TestCase):
     def test_visual_budget_accepts_measured_concentric_radius(self) -> None:
         limits = self.visual_limits()
         result = self.run_json_document(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
+            "skills/review-visuals/scripts/check_budget.py",
             {
                 "artifact": "Nested card",
                 "observed": dict(limits),
@@ -329,7 +329,7 @@ class CommandTests(unittest.TestCase):
     def test_visual_budget_unknown_radius_scope_requires_review(self) -> None:
         limits = self.visual_limits()
         result = self.run_json_document(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
+            "skills/review-visuals/scripts/check_budget.py",
             {
                 "artifact": "Uninspected interface",
                 "observed": dict(limits),
@@ -346,7 +346,7 @@ class CommandTests(unittest.TestCase):
     def test_visual_budget_radius_exception_requires_human_review(self) -> None:
         limits = self.visual_limits()
         result = self.run_json_document(
-            "skills/visual-entropy-budget/scripts/check_budget.py",
+            "skills/review-visuals/scripts/check_budget.py",
             {
                 "artifact": "Branded nested card",
                 "observed": dict(limits),
@@ -381,16 +381,16 @@ class CommandTests(unittest.TestCase):
 
     def test_motion_example_has_no_hard_failure(self) -> None:
         result = self.run_json(
-            "skills/motion-necessity-gate/scripts/validate_motion_inventory.py",
-            "skills/motion-necessity-gate/assets/motion-inventory-example.json",
+            "skills/review-motion/scripts/validate_motion_inventory.py",
+            "skills/review-motion/assets/motion-inventory-example.json",
         )
         self.assertTrue(result["valid"])
         self.assertEqual(result["hard_failures"], [])
 
     def test_accessibility_example_blocks_release(self) -> None:
         result = self.run_json(
-            "skills/accessibility-simplicity-guard/scripts/validate_accessibility_report.py",
-            "skills/accessibility-simplicity-guard/assets/accessibility-report-example.json",
+            "skills/check-accessibility/scripts/validate_accessibility_report.py",
+            "skills/check-accessibility/assets/accessibility-report-example.json",
             expected=1,
         )
         self.assertTrue(result["valid_report"])
@@ -399,7 +399,7 @@ class CommandTests(unittest.TestCase):
 
     def test_accessibility_optional_failure_still_blocks_release(self) -> None:
         result = self.run_json_document(
-            "skills/accessibility-simplicity-guard/scripts/validate_accessibility_report.py",
+            "skills/check-accessibility/scripts/validate_accessibility_report.py",
             {
                 "artifact": "Example form",
                 "target": {"standard": "WCAG 2.2", "level": "AA"},
@@ -436,8 +436,8 @@ class CommandTests(unittest.TestCase):
 
     def test_prune_example_is_release_ready_with_declared_scope(self) -> None:
         result = self.run_json(
-            "skills/prune-and-verify/scripts/validate_verification.py",
-            "skills/prune-and-verify/assets/verification-example.json",
+            "skills/verify-changes/scripts/validate_verification.py",
+            "skills/verify-changes/assets/verification-example.json",
         )
         self.assertTrue(result["valid_report"])
         self.assertTrue(result["release_ready"])
@@ -473,7 +473,7 @@ class CommandTests(unittest.TestCase):
             for test in sorted(baseline)
         ]
         result = self.run_json_document(
-            "skills/prune-and-verify/scripts/validate_verification.py",
+            "skills/verify-changes/scripts/validate_verification.py",
             {
                 "artifact": "Example redesign",
                 "primary_user": "User",
@@ -508,11 +508,11 @@ class CommandTests(unittest.TestCase):
                 self.assertGreaterEqual(counts[language][False], 2, msg=f"{path}: {language}")
 
     def test_measured_trigger_results_are_evaluated_per_language(self) -> None:
-        queries_path = ROOT / "skills" / "anti-ai-slop" / "evals" / "trigger_queries.json"
+        queries_path = ROOT / "skills" / "design-workflow" / "evals" / "trigger_queries.json"
         queries = json.loads(queries_path.read_text(encoding="utf-8"))
         measurements = {
             "client": "example-agent",
-            "skill_name": "anti-ai-slop",
+            "skill_name": "design-workflow",
             "results": [
                 {
                     "id": item["id"],
@@ -534,7 +534,7 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(set(result["languages"]), {"en", "ko", "ja"})
 
     def test_specificity_editor_integrates_voice_and_locale_review(self) -> None:
-        skill_dir = ROOT / "skills" / "specificity-editor"
+        skill_dir = ROOT / "skills" / "edit-copy"
         language_reference = (
             skill_dir / "references" / "language-and-voice.md"
         ).read_text(encoding="utf-8")
@@ -565,17 +565,17 @@ class CommandTests(unittest.TestCase):
             encoding="utf-8"
         )
         report_template = (
-            ROOT / "skills" / "anti-ai-slop" / "assets" / "full-report-template.md"
+            ROOT / "skills" / "design-workflow" / "assets" / "full-report-template.md"
         ).read_text(encoding="utf-8")
         fallback_contract = (
             ROOT
             / "skills"
-            / "anti-ai-slop"
+            / "design-workflow"
             / "references"
             / "composition-map.md"
         ).read_text(encoding="utf-8")
         audit_skill = (
-            ROOT / "skills" / "slop-signal-audit" / "SKILL.md"
+            ROOT / "skills" / "audit-design" / "SKILL.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Source language or canonical locale:", rewrite_template)
@@ -629,7 +629,7 @@ class CommandTests(unittest.TestCase):
 
         orchestrator_evals = json.loads(
             (
-                ROOT / "skills" / "anti-ai-slop" / "evals" / "evals.json"
+                ROOT / "skills" / "design-workflow" / "evals" / "evals.json"
             ).read_text(encoding="utf-8")
         )
         orchestrator_by_id = {
@@ -664,7 +664,7 @@ class CommandTests(unittest.TestCase):
                 encoding="utf-8",
             )
             result = self.run_json(
-                "skills/specificity-editor/scripts/lint_copy.py",
+                "skills/edit-copy/scripts/lint_copy.py",
                 str(path),
                 "--format",
                 "json",
@@ -680,7 +680,7 @@ class CommandTests(unittest.TestCase):
             path = Path(directory) / "copy.txt"
             path.write_text("Integrates seamlessly.", encoding="utf-8")
             result = self.run_json(
-                "skills/specificity-editor/scripts/lint_copy.py",
+                "skills/edit-copy/scripts/lint_copy.py",
                 str(path),
                 "--format",
                 "json",
@@ -698,7 +698,7 @@ class CommandTests(unittest.TestCase):
             path = Path(directory) / "copy.txt"
             path.write_text("ß seamless", encoding="utf-8")
             result = self.run_json(
-                "skills/specificity-editor/scripts/lint_copy.py",
+                "skills/edit-copy/scripts/lint_copy.py",
                 str(path),
                 "--format",
                 "json",
@@ -721,7 +721,7 @@ class CommandTests(unittest.TestCase):
                 "--target",
                 str(target),
                 "--skill",
-                "content-grounding",
+                "verify-content",
                 "--dry-run",
             )
             self.assertEqual(dry["installed"], [])
@@ -734,10 +734,10 @@ class CommandTests(unittest.TestCase):
                 "--target",
                 str(target),
                 "--skill",
-                "content-grounding",
+                "verify-content",
             )
-            self.assertEqual(installed["installed"], ["content-grounding"])
-            self.assertTrue((target / "content-grounding" / "SKILL.md").is_file())
+            self.assertEqual(installed["installed"], ["verify-content"])
+            self.assertTrue((target / "verify-content" / "SKILL.md").is_file())
 
             conflict = self.run_json(
                 "scripts/install.py",
@@ -746,10 +746,55 @@ class CommandTests(unittest.TestCase):
                 "--target",
                 str(target),
                 "--skill",
-                "content-grounding",
+                "verify-content",
                 expected=1,
             )
             self.assertEqual(len(conflict["conflicts"]), 1)
+
+    def test_repo_installer_new_catalog_preserves_custom_legacy_copy(self) -> None:
+        expected_names = {
+            "design-workflow", "audit-design", "verify-content", "plan-structure",
+            "review-components", "review-visuals", "edit-copy", "review-motion",
+            "check-accessibility", "verify-changes",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / ".agents" / "skills"
+            legacy = target / "content-grounding"
+            legacy.mkdir(parents=True)
+            custom = legacy / "SKILL.md"
+            custom.write_text("A locally customized installation.\n", encoding="utf-8")
+            before = custom.read_bytes()
+
+            installed = self.run_json(
+                "scripts/install.py", "--client", "codex", "--scope", "repo",
+                "--repo", directory,
+            )
+            self.assertEqual(set(installed["installed"]), expected_names)
+            self.assertEqual(custom.read_bytes(), before)
+            self.assertEqual(
+                {path.name for path in target.iterdir()},
+                expected_names | {"content-grounding"},
+            )
+            for name in expected_names:
+                source = ROOT / "skills" / name
+                destination = target / name
+                self.assertIn(
+                    f"name: {name}\n",
+                    (destination / "SKILL.md").read_text(encoding="utf-8"),
+                )
+                source_files = {
+                    path.relative_to(source) for path in source.rglob("*") if path.is_file()
+                }
+                copied_files = {
+                    path.relative_to(destination)
+                    for path in destination.rglob("*") if path.is_file()
+                }
+                self.assertEqual(copied_files, source_files)
+                for relative in source_files:
+                    self.assertEqual(
+                        (source / relative).read_bytes(),
+                        (destination / relative).read_bytes(),
+                    )
 
     @unittest.skipIf(os.name == "nt", "directory symlink permissions vary on Windows")
     def test_generic_installer_symlink_mode(self) -> None:
@@ -762,12 +807,12 @@ class CommandTests(unittest.TestCase):
                 "--target",
                 str(target),
                 "--skill",
-                "motion-necessity-gate",
+                "review-motion",
                 "--mode",
                 "symlink",
             )
-            self.assertEqual(result["installed"], ["motion-necessity-gate"])
-            destination = target / "motion-necessity-gate"
+            self.assertEqual(result["installed"], ["review-motion"])
+            destination = target / "review-motion"
             self.assertTrue(destination.is_symlink())
             self.assertTrue((destination / "SKILL.md").is_file())
 
@@ -778,12 +823,12 @@ class CommandTests(unittest.TestCase):
                 "--target",
                 str(target),
                 "--skill",
-                "motion-necessity-gate",
+                "review-motion",
                 "--mode",
                 "symlink",
                 "--force",
             )
-            self.assertEqual(replaced["installed"], ["motion-necessity-gate"])
+            self.assertEqual(replaced["installed"], ["review-motion"])
             self.assertTrue(destination.is_symlink())
 
 

@@ -23,7 +23,7 @@ nondeterministic. Record:
 ```json
 {
   "client": "target-agent-name",
-  "skill_name": "content-grounding",
+  "skill_name": "verify-content",
   "results": [
     {
       "id": "ko-positive-1",
@@ -38,7 +38,7 @@ Include one result for every query ID, then evaluate the measured file:
 
 ```bash
 python scripts/evaluate_trigger_results.py \
-  skills/content-grounding/evals/trigger_queries.json \
+  skills/verify-content/evals/trigger_queries.json \
   path/to/measured-trigger-results.json
 ```
 

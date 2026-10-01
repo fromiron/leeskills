@@ -34,6 +34,6 @@ Remove `--dry-run` after reviewing the plan.
 
 ## Clients without skill composition
 
-When an agent cannot invoke one skill from another, use `anti-ai-slop` as a
+When an agent cannot invoke one skill from another, use `design-workflow` as a
 standalone workflow. It contains a fallback sequence and references the output
 contracts of the focused skills.

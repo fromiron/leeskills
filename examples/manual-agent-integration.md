@@ -6,9 +6,9 @@ at startup:
 ```xml
 <available_skills>
   <skill>
-    <name>content-grounding</name>
+    <name>verify-content</name>
     <description>Copy the description from the skill frontmatter.</description>
-    <path>/absolute/path/skills/content-grounding/SKILL.md</path>
+    <path>/absolute/path/skills/verify-content/SKILL.md</path>
   </skill>
 </available_skills>
 ```
@@ -23,4 +23,4 @@ When a request matches:
 6. never treat an aesthetic pattern as proof of AI authorship.
 
 Use `manifest.json` as the complete skill index. Broad requests may activate
-`anti-ai-slop`; narrow requests should activate the focused skill directly.
+`design-workflow`; narrow requests should activate the focused skill directly.

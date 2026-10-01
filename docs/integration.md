@@ -13,7 +13,7 @@ Inspect the catalog without installing, or select one skill:
 
 ```bash
 npx skills add fromiron/leeskills --list
-npx skills add fromiron/leeskills --skill anti-ai-slop
+npx skills add fromiron/leeskills --skill design-workflow
 ```
 
 The CLI handles agent detection, installation scope, and skill selection. The
@@ -35,9 +35,9 @@ A simple implementation can enumerate skills like this:
 ```xml
 <available_skills>
   <skill>
-    <name>content-grounding</name>
+    <name>verify-content</name>
     <description>...</description>
-    <path>/absolute/path/skills/content-grounding/SKILL.md</path>
+    <path>/absolute/path/skills/verify-content/SKILL.md</path>
   </skill>
 </available_skills>
 ```

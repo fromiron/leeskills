@@ -63,7 +63,7 @@ snapshot, declared sample, evidence-state split, counts with denominators,
 missing-data reporting, and counterexamples before stronger recurring-pattern
 claims are made.
 
-The generic-default pattern catalog in `slop-signal-audit` contrasts common
+The generic-default pattern catalog in `audit-design` contrasts common
 template and generated-page defaults with choices observed by maintainers in a
 curated sample: text-led structures, typography-carried identity, restrained
 accents, evidence images, native link affordances, and little nonessential
@@ -144,7 +144,7 @@ document priority and keyboard behavior. Text fields document labels, helper
 and error feedback, state variants, and mobile constraints. Tabs document
 selection state and keyboard movement.
 
-`component-contract-audit` generalizes this documentation pattern into a
+`review-components` generalizes this documentation pattern into a
 project-owned contract spanning design, documentation, code, tests, and live
 usage. It does not copy Codeit's component inventory, variant names, dimensions,
 or implementation choices.
@@ -244,7 +244,7 @@ restraint with literal translation. The joint Immigration Services Agency and
 Agency for Cultural Affairs guide is specifically for easy Japanese in foreign-
 resident support, so the skill uses it only when that audience and task apply.
 
-`specificity-editor` uses these sources below the product's own style guide,
+`edit-copy` uses these sources below the product's own style guide,
 approved neighboring copy, audience, and interaction context. It does not
 import government or vendor house style, erase intentional product voice, or
 infer authorship from prose. The content workflow also avoids duplicate copy

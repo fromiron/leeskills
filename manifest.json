@@ -10,56 +10,56 @@
     "ko",
     "ja"
   ],
-  "entrypoint": "skills/anti-ai-slop/SKILL.md",
+  "entrypoint": "skills/design-workflow/SKILL.md",
   "skills": [
     {
-      "name": "anti-ai-slop",
-      "path": "skills/anti-ai-slop",
+      "name": "design-workflow",
+      "path": "skills/design-workflow",
       "role": "orchestrator"
     },
     {
-      "name": "slop-signal-audit",
-      "path": "skills/slop-signal-audit",
+      "name": "audit-design",
+      "path": "skills/audit-design",
       "role": "focused"
     },
     {
-      "name": "content-grounding",
-      "path": "skills/content-grounding",
+      "name": "verify-content",
+      "path": "skills/verify-content",
       "role": "focused"
     },
     {
-      "name": "structure-selector",
-      "path": "skills/structure-selector",
+      "name": "plan-structure",
+      "path": "skills/plan-structure",
       "role": "focused"
     },
     {
-      "name": "component-contract-audit",
-      "path": "skills/component-contract-audit",
+      "name": "review-components",
+      "path": "skills/review-components",
       "role": "focused"
     },
     {
-      "name": "visual-entropy-budget",
-      "path": "skills/visual-entropy-budget",
+      "name": "review-visuals",
+      "path": "skills/review-visuals",
       "role": "focused"
     },
     {
-      "name": "specificity-editor",
-      "path": "skills/specificity-editor",
+      "name": "edit-copy",
+      "path": "skills/edit-copy",
       "role": "focused"
     },
     {
-      "name": "motion-necessity-gate",
-      "path": "skills/motion-necessity-gate",
+      "name": "review-motion",
+      "path": "skills/review-motion",
       "role": "focused"
     },
     {
-      "name": "accessibility-simplicity-guard",
-      "path": "skills/accessibility-simplicity-guard",
+      "name": "check-accessibility",
+      "path": "skills/check-accessibility",
       "role": "focused"
     },
     {
-      "name": "prune-and-verify",
-      "path": "skills/prune-and-verify",
+      "name": "verify-changes",
+      "path": "skills/verify-changes",
       "role": "focused"
     }
   ],

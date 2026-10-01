@@ -6,39 +6,18 @@ The repository is organized around small, composable skills rather than one
 large style guide. Each focused skill owns one decision boundary and produces a
 structured handoff that another skill can consume.
 
-The optional `anti-ai-slop` skill is an orchestrator. It does not replace the
+The optional `design-workflow` skill is an orchestrator. It does not replace the
 focused skills; it selects the smallest useful sequence.
 
 ## Composition graph
 
 ```text
-                       ┌───────────────────────┐
-                       │ content-grounding     │
-                       └──────────┬────────────┘
-                                  │
-                                  ▼
-                       ┌───────────────────────┐
-                       │ structure-selector    │
-                       └──────────┬────────────┘
-                                  │
-                                  ▼
-                       ┌───────────────────────┐
-                       │ visual-entropy-budget │
-                       └──────────┬────────────┘
-                                  │
-             ┌────────────────────┼────────────────────┐
-             ▼                    ▼                    ▼
-┌────────────────────┐ ┌────────────────────┐ ┌───────────────────────────┐
-│ specificity-editor │ │ motion-necessity   │ │ accessibility-simplicity  │
-└──────────┬─────────┘ └──────────┬─────────┘ └─────────────┬─────────────┘
-           └───────────────────────┼─────────────────────────┘
-                                   ▼
-                       ┌───────────────────────┐
-                       │ prune-and-verify      │
-                       └───────────────────────┘
+verify-content → plan-structure → review-visuals
+→ edit-copy / review-motion / check-accessibility
+→ verify-changes
 ```
 
-`slop-signal-audit` can run before the graph for an existing artifact and can
+`audit-design` can run before the graph for an existing artifact and can
 run again after remediation to compare results.
 
 ## Data contracts

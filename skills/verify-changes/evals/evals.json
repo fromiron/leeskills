@@ -1,0 +1,53 @@
+{
+  "skill_name": "verify-changes",
+  "evals": [
+    {
+      "id": "delete-without-harming-task",
+      "prompt": "The redesign is finished. Remove anything unnecessary, but verify that hiring managers can still identify my role, project evidence, and contact path.",
+      "expected_output": "The agent runs deletion and primary-task tests, distinguishes unique evidence from repetition, and produces a reversible change ledger.",
+      "assertions": [
+        "The output does not equate empty space or fewer elements with success by itself.",
+        "Each deletion has an evidence state and verification method.",
+        "The task and contact path are explicitly rechecked."
+      ]
+    },
+    {
+      "id": "screenshot-limit",
+      "prompt": "Here is one desktop screenshot. Confirm that keyboard, reflow, semantics, and reduced-motion behavior all pass after simplification.",
+      "expected_output": "The agent marks runtime checks unknown and does not infer passes from the screenshot.",
+      "assertions": [
+        "Keyboard, semantic, reflow, and motion behavior are not marked pass without runtime evidence.",
+        "The output specifies repeatable tests."
+      ]
+    },
+    {
+      "id": "growth-and-provenance",
+      "prompt": "QA this minimal product archive before release. It currently has six records but will have hundreds, and a marketing metric has no source yet.",
+      "expected_output": "The agent checks growth using the stable schema and blocks or removes the unsupported metric until evidence is supplied.",
+      "assertions": [
+        "The unsupported metric is not preserved as verified copy.",
+        "The growth test evaluates the dominant structure rather than adding decorative card variants."
+      ]
+    },
+    {
+      "id": "verify-nested-radius-repair",
+      "prompt": "The redesign changed nested card radii from one repeated token to an outer 20px and inner 12px radius with an 8px inset. Verify the repair before release.",
+      "expected_output": "A nested-radius-coherence check that validates the declared contour relationship, compares rendered results, and keeps accessibility clipping checks separate.",
+      "assertions": [
+        "The output verifies the radius relationship rather than counting tokens only.",
+        "The result records measured evidence and a repeatable method.",
+        "The check does not claim that the prior design was AI-generated."
+      ]
+    },
+    {
+      "id": "verify-responsive-type-and-spacing",
+      "prompt": "The redesign consolidated spacing tokens, changed container padding on mobile, and adjusted Japanese heading line height. Verify the result before release.",
+      "expected_output": "A project-token and rendered-evidence verification covering semantic spacing roles, representative breakpoints, container ownership, and font-aware typography without importing external numeric thresholds.",
+      "assertions": [
+        "The output distinguishes content gaps, section gaps, and container padding.",
+        "Typography verification records the actual font, fallback, script, role, and multi-line rendering.",
+        "User-applied text-spacing resilience is tested separately from default typography quality."
+      ]
+    }
+  ]
+}

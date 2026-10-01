@@ -36,11 +36,11 @@ npx skills add fromiron/leeskills
 않습니다.
 
 공개 [`skills` CLI](https://skills.sh/docs/cli)가 `skills/` 디렉터리의 패키지를
-찾아 설치합니다. 먼저 목록을 보거나 `anti-ai-slop`만 골라 설치할 수도 있습니다.
+찾아 설치합니다. 먼저 목록을 보거나 `design-workflow`만 골라 설치할 수도 있습니다.
 
 ```bash
 npx skills add fromiron/leeskills --list
-npx skills add fromiron/leeskills --skill anti-ai-slop
+npx skills add fromiron/leeskills --skill design-workflow
 ```
 
 설치기는 이 GitHub 저장소를 가져옵니다. npm에 따로 배포할 필요는 없습니다.
@@ -48,7 +48,7 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 ## 쓰는 법
 
 검토할 범위가 좁다면 맞는 스킬 하나만 쓰면 됩니다. 화면 전체를 살필 때는
-`anti-ai-slop`으로 시작하세요. 결과물에 필요한 검사만 골라서 연결합니다.
+`design-workflow`으로 시작하세요. 결과물에 필요한 검사만 골라서 연결합니다.
 
 스킬 문서는 에이전트가 판단할 기준을 담고 있습니다. 파일 구조나 필수 필드처럼
 반복해서 확인할 수 있는 항목은 스키마와 외부 의존성이 없는 Python 스크립트가
@@ -58,16 +58,16 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 
 | 할 일 | 스킬 | 결과 |
 |---|---|---|
-| 전체 인터페이스 검토 | `anti-ai-slop` | 필요한 스킬 순서와 전체 결과 |
-| 기존 결과물 진단 | `slop-signal-audit` | 확인한 문제, 위험 점수, 고칠 순서 |
-| 카피의 사실 확인 | `content-grounding` | 출처가 붙은 콘텐츠 목록과 확인할 수 없는 항목 |
-| 정보 구조 선택 | `structure-selector` | 사용자 작업을 기준으로 고른 구조와 제외한 대안 |
-| 재사용 UI 규칙 정리 | `component-contract-audit` | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
-| 시각 체계 정리 | `visual-entropy-budget` | 시각 규칙과 반응형·타이포그래피·중첩된 모서리 반경 검사 |
-| 제품 문구 다듬기 | `specificity-editor` | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
-| 모션 검토 | `motion-necessity-gate` | 유지·축소·대체·삭제 판단과 모션 감소 검사 |
-| 접근성을 지키며 단순화 | `accessibility-simplicity-guard` | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
-| 수정한 결과 확인 | `prune-and-verify` | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |
+| 전체 인터페이스 검토 | `design-workflow` | 필요한 스킬 순서와 전체 결과 |
+| 기존 결과물 진단 | `audit-design` | 확인한 문제, 위험 점수, 고칠 순서 |
+| 카피의 사실 확인 | `verify-content` | 출처가 붙은 콘텐츠 목록과 확인할 수 없는 항목 |
+| 정보 구조 선택 | `plan-structure` | 사용자 작업을 기준으로 고른 구조와 제외한 대안 |
+| 재사용 UI 규칙 정리 | `review-components` | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
+| 시각 체계 정리 | `review-visuals` | 시각 규칙과 반응형·타이포그래피·중첩된 모서리 반경 검사 |
+| 제품 문구 다듬기 | `edit-copy` | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
+| 모션 검토 | `review-motion` | 유지·축소·대체·삭제 판단과 모션 감소 검사 |
+| 접근성을 지키며 단순화 | `check-accessibility` | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
+| 수정한 결과 확인 | `verify-changes` | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |
 
 카드나 그라디언트, 모션 자체를 금지하지는 않습니다. 사용자 작업에 도움이 되고
 남길 이유가 있으면 그대로 둡니다.
@@ -77,39 +77,39 @@ npx skills add fromiron/leeskills --skill anti-ai-slop
 **새 인터페이스나 랜딩 페이지**
 
 ```text
-content-grounding
-→ structure-selector
-→ visual-entropy-budget
-→ specificity-editor
-→ motion-necessity-gate
-→ accessibility-simplicity-guard
-→ prune-and-verify
+verify-content
+→ plan-structure
+→ review-visuals
+→ edit-copy
+→ review-motion
+→ check-accessibility
+→ verify-changes
 ```
 
 **기존 인터페이스 검토**
 
 ```text
-slop-signal-audit
+audit-design
 → 필요한 집중 스킬
-→ prune-and-verify
+→ verify-changes
 ```
 
 **디자인 시스템이나 재사용 컴포넌트**
 
 ```text
-component-contract-audit
-→ visual-entropy-budget
-→ accessibility-simplicity-guard
-→ prune-and-verify
+review-components
+→ review-visuals
+→ check-accessibility
+→ verify-changes
 ```
 
 **카피 검토**
 
 ```text
-content-grounding → specificity-editor → prune-and-verify
+verify-content → edit-copy → verify-changes
 ```
 
-작은 초안은 `slop-signal-audit`의 `quick-pass`로 빠르게 훑어볼 수 있습니다.
+작은 초안은 `audit-design`의 `quick-pass`로 빠르게 훑어볼 수 있습니다.
 점수나 출시 판정 없이 중요한 수정만 다섯 개 이하로 추리고, 확인하지 못한 항목도
 함께 적습니다.
 

@@ -41,7 +41,7 @@ install only the main reviewer:
 
 ```bash
 npx skills add fromiron/leeskills --list
-npx skills add fromiron/leeskills --skill anti-ai-slop
+npx skills add fromiron/leeskills --skill design-workflow
 ```
 
 The installer fetches this GitHub repository. Nothing here needs to be
@@ -50,7 +50,7 @@ published to npm.
 ## How it works
 
 Use one skill when the job is specific. For a broader review, start with
-`anti-ai-slop`; it selects the checks that fit the artifact instead of running
+`design-workflow`; it selects the checks that fit the artifact instead of running
 every skill by default.
 
 The skills describe the judgment calls in Markdown. Optional schemas and
@@ -61,16 +61,16 @@ required fields, and repository validation.
 
 | Task | Skill | Output |
 |---|---|---|
-| Review an interface end to end | `anti-ai-slop` | A scoped workflow and one combined result |
-| Diagnose an existing artifact | `slop-signal-audit` | Observed problems, risk scores, and an order for cleanup |
-| Check the facts behind the copy | `content-grounding` | A source-traced content inventory that leaves gaps visible |
-| Pick an information structure | `structure-selector` | A task-based choice with the rejected options recorded |
-| Define a reusable UI contract | `component-contract-audit` | Anatomy, states, behavior, accessibility, ownership, and parity checks |
-| Tighten the visual system | `visual-entropy-budget` | A visual budget with responsive, typography, and nested-radius checks |
-| Edit product copy | `specificity-editor` | Specific, supported copy that fits the product voice in each locale |
-| Review motion | `motion-necessity-gate` | Keep, reduce, replace, or remove decisions, including reduced-motion support |
-| Simplify without losing access | `accessibility-simplicity-guard` | Checks for semantics, keyboard use, focus, reflow, contrast, and status |
-| Check the finished work | `prune-and-verify` | Deletion, growth, reflow, provenance, and primary-task checks |
+| Review an interface end to end | `design-workflow` | A scoped workflow and one combined result |
+| Diagnose an existing artifact | `audit-design` | Observed problems, risk scores, and an order for cleanup |
+| Check the facts behind the copy | `verify-content` | A source-traced content inventory that leaves gaps visible |
+| Pick an information structure | `plan-structure` | A task-based choice with the rejected options recorded |
+| Define a reusable UI contract | `review-components` | Anatomy, states, behavior, accessibility, ownership, and parity checks |
+| Tighten the visual system | `review-visuals` | A visual budget with responsive, typography, and nested-radius checks |
+| Edit product copy | `edit-copy` | Specific, supported copy that fits the product voice in each locale |
+| Review motion | `review-motion` | Keep, reduce, replace, or remove decisions, including reduced-motion support |
+| Simplify without losing access | `check-accessibility` | Checks for semantics, keyboard use, focus, reflow, contrast, and status |
+| Check the finished work | `verify-changes` | Deletion, growth, reflow, provenance, and primary-task checks |
 
 These skills do not ban cards, gradients, motion, or expressive work. Keep them
 when they help the task and there is a clear reason to use them.
@@ -80,39 +80,39 @@ when they help the task and there is a clear reason to use them.
 **New interface or landing page**
 
 ```text
-content-grounding
-→ structure-selector
-→ visual-entropy-budget
-→ specificity-editor
-→ motion-necessity-gate
-→ accessibility-simplicity-guard
-→ prune-and-verify
+verify-content
+→ plan-structure
+→ review-visuals
+→ edit-copy
+→ review-motion
+→ check-accessibility
+→ verify-changes
 ```
 
 **Existing interface audit**
 
 ```text
-slop-signal-audit
+audit-design
 → focused remediation skills
-→ prune-and-verify
+→ verify-changes
 ```
 
 **Design system or reusable component**
 
 ```text
-component-contract-audit
-→ visual-entropy-budget
-→ accessibility-simplicity-guard
-→ prune-and-verify
+review-components
+→ review-visuals
+→ check-accessibility
+→ verify-changes
 ```
 
 **Copy review**
 
 ```text
-content-grounding → specificity-editor → prune-and-verify
+verify-content → edit-copy → verify-changes
 ```
 
-For a small draft, use the `slop-signal-audit` quick pass. It reports up to five
+For a small draft, use the `audit-design` quick pass. It reports up to five
 useful changes without a score or release verdict and names the checks it did
 not run.
 

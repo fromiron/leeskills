@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills" / "component-contract-audit"
+SKILL = ROOT / "skills" / "review-components"
 SCRIPT = SKILL / "scripts" / "validate_interaction_governance.py"
 FOUNDATIONS = ROOT / "docs" / "design-foundations.md"
 SOURCE_NOTES = ROOT / "docs" / "source-notes.md"
