@@ -28,6 +28,16 @@
         "The customer name and quote are not exposed.",
         "The output does not invent replacement social proof."
       ]
+    },
+    {
+      "id": "evidence-before-expression",
+      "prompt": "Review the content evidence only. The source note says: Users can export a CSV manually. The draft says: Always-on sync saves every team two hours a day. Identify which claims are allowed, what is missing, and how to verify the missing evidence. Do not edit the draft or invent a stronger marketing claim.",
+      "expected_output": "An evidence inventory and located recommendations that distinguish source-supported export from unsupported sync and time-saving claims, without applying copy changes.",
+      "assertions": [
+        "The manual CSV capability is traced to the source note.",
+        "Unsupported sync and quantified savings are not made publishable through softer wording.",
+        "Review findings include locations, evidence, minimal corrections, and verification methods without claiming file edits."
+      ]
     }
   ]
 }

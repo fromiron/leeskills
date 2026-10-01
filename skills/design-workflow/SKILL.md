@@ -14,6 +14,21 @@ metadata:
 Coordinate the smallest set of focused skills needed to ground, simplify, and
 verify a digital artifact.
 
+## Delivery
+
+For a review-only request, report each material issue's location, evidence,
+smallest fix, and verification method; leave the artifact files unchanged.
+
+For requested edits, follow **diagnosis → change plan → authorized patch →
+final verification**. Include the actual diff or changed-file paths. A proposal
+is not an applied fix. Report checks actually run and their outcomes, unverified
+items, and how to undo your changes while preserving unrelated work.
+
+Verify through the intended user flow where available and state environment
+limits. Report validators check declarations, not product behavior. Re-run
+affected checks after any later edit. Keep the delivery proportionate to the
+request; a small fix does not need a full report.
+
 ## Operating principle
 
 Use the smallest coherent visual, verbal, and behavioral system that preserves:
@@ -48,6 +63,13 @@ Use what the user supplied:
 When critical evidence is absent, record it as unknown. Do not invent it.
 
 ## Choose a workflow
+
+Select only the steps the request needs. Before the final `verify-changes`
+step, combine the findings into the smallest change plan and apply the edits
+the user requested. A review-only request ends with recommendations and checks
+of the current artifact; it does not imply a patch. Later edits, including
+pruning discovered during verification, require the affected checks to run
+again before the final result is reported.
 
 ### New artifact
 
@@ -130,14 +152,16 @@ review without release verification.
    quality or slop-risk score, and no verdict.
 2. Report up to five material changes with evidence labels and locations.
    Never pad the list; fewer findings are a valid result.
-3. Apply the changes only if the user asked for edits; otherwise stop at the
-   report.
-4. State plainly that accessibility, reflow, component and interaction parity,
-   design-system adoption, and reduced-motion behavior were not verified, and
+3. Apply the changes only if the user asked for edits; then recheck the affected
+   content or behavior and report unavailable checks. Otherwise stop at the
+   review report.
+4. State which accessibility, reflow, component and interaction parity,
+   design-system adoption, and reduced-motion checks were not performed, and
    offer the full workflow as the follow-up.
 
-A quick pass must still respect the decision gates below. It may skip
-verification and scoring; it may not skip evidence labeling or invent support.
+A quick pass must still respect the decision gates below. It may skip full
+release verification and scoring; it may not skip evidence labeling, invent
+support, or describe unchecked edits as verified.
 Directly observed hard failures are still reported, without a release decision.
 
 If the client supports skill invocation, activate the listed focused skills.
@@ -207,8 +231,10 @@ Include:
 10. motion decisions;
 11. accessibility findings;
 12. deletion plan ordered by impact and reversibility;
-13. verification status;
-14. unresolved unknowns.
+13. actual diff or changed-file paths when edits were requested, separated from
+    proposals and deferred work;
+14. verification methods, results, and the artifact version inspected;
+15. unresolved unknowns and rollback instructions for applied changes.
 
 ## Completion rule
 

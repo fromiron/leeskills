@@ -14,6 +14,21 @@ metadata:
 Remove the least necessary material first, then prove that the remaining
 artifact still supports its user, content, identity, and access needs.
 
+## Delivery
+
+For a review-only request, report each material issue's location, evidence,
+smallest fix, and verification method; leave the artifact files unchanged.
+
+For requested edits, follow **diagnosis → change plan → authorized patch →
+final verification**. Include the actual diff or changed-file paths. A proposal
+is not an applied fix. Report checks actually run and their outcomes, unverified
+items, and how to undo your changes while preserving unrelated work.
+
+Verify through the intended user flow where available and state environment
+limits. Report validators check declarations, not product behavior. Re-run
+affected checks after any later edit. Keep the delivery proportionate to the
+request; a small fix does not need a full report.
+
 ## Boundary
 
 This skill verifies an artifact against supplied evidence and declared project
@@ -58,9 +73,12 @@ For test status, use:
 
 1. Restate the user, task, success condition, and artifact scope.
 2. Compare the before and after versions where both exist.
-3. Inventory every proposed deletion or consolidation.
-4. Apply the deletion test: remove one element and identify the exact task,
-   evidence, identity, or accessibility value lost.
+3. Inventory proposed deletions and consolidations, with the smallest reversible
+   change plan, rollback method, and checks needed after each change.
+4. Apply the deletion test: identify the exact task, evidence, identity, or
+   accessibility value lost. When edits are requested, apply justified removals
+   or consolidations before the final checks below. For review-only requests,
+   leave files unchanged and label untested predictions as inferred or unknown.
 5. Apply the substitution test: replace names, products, or organizations with
    unrelated ones and flag copy or imagery that still appears equally valid.
 6. Check semantic resilience: confirm the reading order, headings, labels,
@@ -80,8 +98,9 @@ For test status, use:
 15. Classify each check as pass, fail, unknown, or not applicable.
 16. Block release for required failures or unknowns unless the exact risk is
     documented and explicitly accepted by an accountable owner.
-17. Produce the smallest reversible change plan and a repeatable verification
-    plan.
+17. If a check leads to another authorized edit, apply it and repeat the affected
+    checks against the changed artifact. Report applied and proposed changes
+    separately, with actual outcomes, remaining unknowns, and rollback steps.
 
 Use [references/verification-tests.md](references/verification-tests.md) for
 check definitions.

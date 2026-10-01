@@ -15,6 +15,21 @@ metadata:
 Limit the number of unrelated visual rules so content and interaction remain
 legible.
 
+## Delivery
+
+For a review-only request, report each material issue's location, evidence,
+smallest fix, and verification method; leave the artifact files unchanged.
+
+For requested edits, follow **diagnosis → change plan → authorized patch →
+final verification**. Include the actual diff or changed-file paths. A proposal
+is not an applied fix. Report checks actually run and their outcomes, unverified
+items, and how to undo your changes while preserving unrelated work.
+
+Verify through the intended user flow where available and state environment
+limits. Report validators check declarations, not product behavior. Re-run
+affected checks after any later edit. Keep the delivery proportionate to the
+request; a small fix does not need a full report.
+
 ## Definition
 
 This skill uses "entropy budget" as a practical inventory of visual variants.

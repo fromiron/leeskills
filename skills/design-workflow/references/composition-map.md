@@ -2,6 +2,16 @@
 
 Use this file when the agent client cannot invoke other skills directly.
 
+## Delivery order
+
+Preserve the entry skill's delivery convention in this path too: diagnose,
+plan, apply requested edits, then verify the changed artifact. Review-only
+requests leave artifact files unchanged and include locations, evidence,
+minimal fixes, and verification methods. For edits, include the actual diff or
+changed-file paths, checks run and results, unverified items, and rollback.
+Repeat affected checks after later edits. The JSON handoffs below keep their
+existing schemas; record delivery details in the accompanying report.
+
 ## Handoff contracts
 
 ### Content grounding
@@ -214,7 +224,12 @@ For each check, record:
 - fix;
 - verification method.
 
-### Prune and verify
+### Verify changes
+
+Keep deletion and consolidation decisions and a reversible change plan in
+scope. Apply authorized changes before final checks; leave proposals unapplied
+for review-only requests. Repeat affected checks if verification prompts an
+additional edit.
 
 Run the deletion, substitution, semantic, five-second, growth, reflow,
 keyboard, reduced-motion, and provenance tests. When nested rounded surfaces

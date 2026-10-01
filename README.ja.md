@@ -10,7 +10,7 @@
 
 <p align="center">
   コンテンツ、情報設計、コンポーネント、ビジュアル、モーション、<br>
-  アクセシビリティ、仕上げの確認を10個のスキルに分けています。
+  アクセシビリティ、仕上げの確認を1つの入口と9つの個別スキルで扱います。
 </p>
 
 <p align="center">
@@ -46,10 +46,21 @@ npx skills add fromiron/leeskills --skill design-workflow
 
 インストーラーは、この GitHub リポジトリを取得します。npm への公開は不要です。
 
+既存のインストールを更新する場合は、[名称対応表と移行手順](docs/skill-name-migration.md)
+を確認してください。ローカルの変更を残し、旧名と新名の重複登録を避ける手順です。
+
 ## 使い方
 
 範囲が狭ければ、目的に合うスキルを1つだけ使います。画面全体を見直すなら
 `design-workflow` から始めてください。成果物に必要なチェックだけを選びます。
+
+`verify-content` は主張の根拠を確認し、`edit-copy` はその表現を整えます。
+`plan-structure` はコンテンツの順序とナビゲーションを決めます。
+`verify-changes` には最終確認に加え、削除や統合の判断も含まれます。
+
+レビューでは、問題の場所、根拠、最小限の修正案、確認方法を示します。
+修正も依頼された場合は、実際に変更してから最終確認を行い、実施した検査、
+未確認の項目、元に戻す方法を報告します。
 
 判断が必要な部分は Markdown の手順に、繰り返し確認できる項目はスキーマと
 外部依存のない Python スクリプトに分けています。
@@ -83,6 +94,7 @@ verify-content
 → edit-copy
 → review-motion
 → check-accessibility
+→ 依頼された修正を適用
 → verify-changes
 ```
 
@@ -91,6 +103,7 @@ verify-content
 ```text
 audit-design
 → 必要な個別スキル
+→ 依頼された修正を適用
 → verify-changes
 ```
 
@@ -100,14 +113,18 @@ audit-design
 review-components
 → review-visuals
 → check-accessibility
+→ 依頼された修正を適用
 → verify-changes
 ```
 
 **コピーの見直し**
 
 ```text
-verify-content → edit-copy → verify-changes
+verify-content → edit-copy → 依頼された修正を適用 → verify-changes
 ```
+
+レビューのみの場合は成果物のファイルを変更せず、修正案と実際に確認した
+内容を報告します。
 
 小さな下書きなら、`audit-design` の `quick-pass` で十分です。スコアや
 リリース判定は付けず、直す価値のある点を5件以内に絞ります。確認していない
@@ -187,6 +204,7 @@ python scripts/install.py --client generic --target /path/to/skills --mode copy 
 |---|---|
 | [アーキテクチャ](docs/architecture.md) | 構成、データ契約、移植できる範囲 |
 | [連携方法](docs/integration.md) | クライアントの設定と呼び出し方 |
+| [名称の移行](docs/skill-name-migration.md) | 新旧名称の対応と既存インストールの更新 |
 | [評価](docs/evaluation.md) | 起動率の測定、出力の比較、リリース基準 |
 | [デザインの基礎](docs/design-foundations.md) | スキルが参照するプロダクトとデザインの原則 |
 | [出典ノート](docs/source-notes.md) | 出典と外部ガイドラインの扱い |

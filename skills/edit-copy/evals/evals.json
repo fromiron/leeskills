@@ -82,6 +82,17 @@
         "Dates, numbers, and units stay with their locale-aware formatters rather than becoming source-locale literals.",
         "Any uncertainty about runtime syntax is reported instead of guessed."
       ]
+    },
+    {
+      "id": "scoped-copy-edit-delivery",
+      "prompt": "Edit only the Korean save-complete message in the supplied locale file. Current value: 저장이 성공적으로 완료되었어요. Approved nearby messages use the concise 합니다 register; keep the canonical message key, all other entries, and the verified meaning that saving has completed. Apply the correction and report the changed file, the checks you ran, anything you could not verify, and how to undo only this edit.",
+      "expected_output": "A concise, voice-grounded correction applied to the actual locale entry, with unchanged runtime key and surrounding data, followed by proportionate verification and rollback.",
+      "assertions": [
+        "The file is actually edited and the output identifies the changed file or diff.",
+        "The key, unrelated entries, save-complete meaning, and approved register are preserved.",
+        "The report distinguishes checks actually run from unavailable runtime checks and gives a scoped rollback.",
+        "A simple correction does not expand into a full design audit or marketing rewrite."
+      ]
     }
   ]
 }

@@ -15,6 +15,21 @@ metadata:
 Choose one dominant content grammar that best supports the primary user task and
 can scale as content grows.
 
+## Delivery
+
+For a review-only request, report each material issue's location, evidence,
+smallest fix, and verification method; leave the artifact files unchanged.
+
+For requested edits, follow **diagnosis → change plan → authorized patch →
+final verification**. Include the actual diff or changed-file paths. A proposal
+is not an applied fix. Report checks actually run and their outcomes, unverified
+items, and how to undo your changes while preserving unrelated work.
+
+Verify through the intended user flow where available and state environment
+limits. Report validators check declarations, not product behavior. Re-run
+affected checks after any later edit. Keep the delivery proportionate to the
+request; a small fix does not need a full report.
+
 ## Prerequisite
 
 Use a grounded content inventory when available. If the primary user, task, or

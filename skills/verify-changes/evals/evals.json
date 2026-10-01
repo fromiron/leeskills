@@ -48,6 +48,17 @@
         "Typography verification records the actual font, fallback, script, role, and multi-line rendering.",
         "User-applied text-spacing resilience is tested separately from default typography quality."
       ]
+    },
+    {
+      "id": "recheck-after-consolidation",
+      "prompt": "Finish the requested simplification of the supplied settings page. Earlier keyboard checks passed before the latest edits. Two duplicate help paragraphs remain; consolidate them only if the recovery instructions survive. Apply the justified change, verify the final page through its normal settings route, and keep unrelated edits.",
+      "expected_output": "A deletion/consolidation decision, a reversible applied change if supported, and fresh affected checks after that change rather than reuse of the earlier pass.",
+      "assertions": [
+        "Deletion and consolidation decisions remain part of the skill, including reasons to retain necessary recovery content.",
+        "The output separates the actual diff or changed-file paths from unapplied proposals.",
+        "Checks affected by the latest edit are repeated or explicitly reported as unverified; earlier success is not reused as current evidence.",
+        "The closeout includes outcomes, remaining unknowns, and a rollback method preserving unrelated edits."
+      ]
     }
   ]
 }

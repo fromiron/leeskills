@@ -20,6 +20,10 @@ The CLI handles agent detection, installation scope, and skill selection. The
 bundled Python installer remains available for offline clones and explicit
 destination control.
 
+For an existing installation, use the
+[skill name migration guide](skill-name-migration.md) before switching names.
+The bundled installer does not remove old-name directories or merge local edits.
+
 ## Generic Agent Skills client
 
 Register each directory under `skills/` with a client that supports the open
@@ -27,6 +31,13 @@ Agent Skills format. The client should initially expose only each skill's
 `name`, `description`, and path, then load `SKILL.md` on activation.
 
 For clients without native discovery, `manifest.json` provides an index.
+
+Installing all ten packages does not mean loading all ten instruction bodies.
+The [Agent Skills specification](https://agentskills.io/specification) describes
+progressive disclosure: names and descriptions support discovery; selected
+instructions and resources are loaded as needed. Measure the actual target
+client's loading and activation behavior before changing installation defaults
+to reduce context cost.
 
 ## Manual system-prompt integration
 

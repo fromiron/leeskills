@@ -1,4 +1,8 @@
-# Anti-slop review: [artifact]
+# Design review: [artifact]
+
+Use only sections relevant to the request. Omit scores and release verdicts
+for quick passes. Separate proposed work from applied changes and observed
+results; a review-only request does not authorize edits.
 
 ## Decision
 
@@ -11,6 +15,9 @@
 ## Scope
 
 - Artifact:
+- Request: review only / edits requested
+- Before version:
+- Inspected version:
 - User:
 - Primary task:
 - Supplied evidence:
@@ -18,8 +25,8 @@
 
 ## Findings
 
-| Priority | Evidence state | Signal | User impact | Recommended change |
-|---|---|---|---|---|
+| Priority | Location | Evidence state and source | Signal | User impact | Minimal change | Verification method |
+|---|---|---|---|---|---|---|
 
 ## Grounded content
 
@@ -69,7 +76,7 @@ Use only when more than one locale or localized runtime messages are in scope.
 | Requirement | Status | Evidence | Fix | Verification |
 |---|---|---|---|---|
 
-## Pruning plan
+## Change plan
 
 1. Safe reversible removals
 2. Structural consolidation
@@ -77,7 +84,21 @@ Use only when more than one locale or localized runtime messages are in scope.
 4. Interaction changes
 5. Deferred decisions requiring evidence
 
+## Applied changes
+
+For requested edits, include the actual diff or changed-file paths. Mark
+unapplied recommendations as proposed or deferred.
+
+| Location | Applied change | Diff or changed file | Rollback method |
+|---|---|---|---|
+
 ## Verification
+
+Record the inspected artifact version and the checks actually run after the
+last edit. A suggested check is not a completed check.
+
+| Check or command | Result | Evidence | Unverified conditions |
+|---|---|---|---|
 
 - Deletion test:
 - Substitution test:

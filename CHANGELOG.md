@@ -15,6 +15,22 @@ All notable changes are documented here.
   and JSON contracts during the rename. Historical entries below retain their
   original names.
 
+### Delivery and evaluation
+
+- Added a shared delivery convention to each independently installable skill:
+  review findings include locations, evidence, minimal fixes, and verification;
+  requested edits include actual changes; closeout includes checks, unknowns,
+  and rollback. Apply changes before final verification and recheck later edits.
+- Retained deletion and consolidation decisions in `verify-changes`, and kept
+  content evidence, copy editing, and information structure as separate jobs.
+- Added behavioral eval cases for review-only scope, authorized edits, and
+  verification after the last change. Documented comparison across no-skill,
+  previous-version, and revised-version runs, including false positives,
+  omissions, unnecessary edits, and preserved product identity.
+- Clarified what deterministic tests and the static network-import check
+  establish, and distinguished installed packages from loaded skill bodies.
+  No new trigger-rate or design-quality measurement is claimed.
+
 ### Changed
 
 - Expanded `specificity-editor` into one integrated product-copy review for

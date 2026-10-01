@@ -10,7 +10,7 @@
 
 <p align="center">
   콘텐츠, 정보 구조, 컴포넌트, 시각 체계, 모션, 접근성, 최종 검증을<br>
-  10개 스킬로 나눴습니다.
+  진입 스킬 1개와 집중 스킬 9개로 나눴습니다.
 </p>
 
 <p align="center">
@@ -45,10 +45,22 @@ npx skills add fromiron/leeskills --skill design-workflow
 
 설치기는 이 GitHub 저장소를 가져옵니다. npm에 따로 배포할 필요는 없습니다.
 
+기존 설치본을 갱신한다면 [이름 대응표와 전환 안내](docs/skill-name-migration.md)를
+확인하세요. 사용자 수정본을 보존하고 구이름과 신이름이 중복으로 등록되지 않게
+전환하는 절차를 담았습니다.
+
 ## 쓰는 법
 
 검토할 범위가 좁다면 맞는 스킬 하나만 쓰면 됩니다. 화면 전체를 살필 때는
-`design-workflow`으로 시작하세요. 결과물에 필요한 검사만 골라서 연결합니다.
+`design-workflow`로 시작하세요. 결과물에 필요한 검사만 골라서 연결합니다.
+
+`verify-content`는 주장을 뒷받침할 근거를 확인하고, `edit-copy`는 그 주장의
+표현을 다듬습니다. `plan-structure`는 콘텐츠의 순서와 탐색 구조를 정합니다.
+`verify-changes`에는 최종 확인뿐 아니라 삭제·통합 판단도 남아 있습니다.
+
+리뷰에는 문제 위치, 근거, 최소 수정안, 확인 방법을 제시합니다. 수정도 요청하면
+실제 변경을 적용한 뒤 최종 검증하고, 실행한 검사와 미검증 항목, 되돌리는 방법을
+함께 보고합니다.
 
 스킬 문서는 에이전트가 판단할 기준을 담고 있습니다. 파일 구조나 필수 필드처럼
 반복해서 확인할 수 있는 항목은 스키마와 외부 의존성이 없는 Python 스크립트가
@@ -83,6 +95,7 @@ verify-content
 → edit-copy
 → review-motion
 → check-accessibility
+→ 요청받은 수정 적용
 → verify-changes
 ```
 
@@ -91,6 +104,7 @@ verify-content
 ```text
 audit-design
 → 필요한 집중 스킬
+→ 요청받은 수정 적용
 → verify-changes
 ```
 
@@ -100,14 +114,18 @@ audit-design
 review-components
 → review-visuals
 → check-accessibility
+→ 요청받은 수정 적용
 → verify-changes
 ```
 
 **카피 검토**
 
 ```text
-verify-content → edit-copy → verify-changes
+verify-content → edit-copy → 요청받은 수정 적용 → verify-changes
 ```
+
+리뷰만 요청한 경우에는 결과물 파일을 바꾸지 않고, 수정 제안과 실제로 확인한
+내용을 보고합니다.
 
 작은 초안은 `audit-design`의 `quick-pass`로 빠르게 훑어볼 수 있습니다.
 점수나 출시 판정 없이 중요한 수정만 다섯 개 이하로 추리고, 확인하지 못한 항목도
@@ -184,6 +202,7 @@ python scripts/install.py --client generic --target /path/to/skills --mode copy 
 |---|---|
 | [아키텍처](docs/architecture.md) | 구성, 데이터 계약, 이식 범위 |
 | [통합](docs/integration.md) | 클라이언트 설정과 호출 방식 |
+| [이름 전환](docs/skill-name-migration.md) | 구이름·신이름 대응표와 기존 설치본 전환 |
 | [평가](docs/evaluation.md) | 호출 측정, 결과 비교, 릴리스 기준 |
 | [디자인 기초](docs/design-foundations.md) | 스킬이 따르는 제품·디자인 원칙 |
 | [출처 노트](docs/source-notes.md) | 출처와 외부 지침을 다루는 방식 |

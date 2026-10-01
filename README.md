@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  Ten focused skills cover copy, information structure, components, visual systems,<br>
-  motion, accessibility, and final verification.
+  One workflow skill and nine focused skills cover copy, information structure,<br>
+  components, visual systems, motion, accessibility, and final verification.
 </p>
 
 <p align="center">
@@ -47,11 +47,24 @@ npx skills add fromiron/leeskills --skill design-workflow
 The installer fetches this GitHub repository. Nothing here needs to be
 published to npm.
 
+Upgrading an existing installation? Follow the
+[name mapping and migration guide](docs/skill-name-migration.md) to preserve
+local changes and avoid discovering both old and new packages.
+
 ## How it works
 
 Use one skill when the job is specific. For a broader review, start with
 `design-workflow`; it selects the checks that fit the artifact instead of running
 every skill by default.
+
+`verify-content` establishes which claims the evidence supports; `edit-copy`
+improves how those claims are expressed. `plan-structure` chooses content order
+and navigation. `verify-changes` retains deletion and consolidation decisions
+as well as checking the finished result.
+
+For reviews, expect locations, evidence, minimal fixes, and verification
+methods. For requested edits, expect actual changes before final verification,
+then the checks run, unverified items, and a rollback method.
 
 The skills describe the judgment calls in Markdown. Optional schemas and
 dependency-free Python scripts handle repeatable checks such as file structure,
@@ -86,6 +99,7 @@ verify-content
 → edit-copy
 → review-motion
 → check-accessibility
+→ requested edits
 → verify-changes
 ```
 
@@ -94,6 +108,7 @@ verify-content
 ```text
 audit-design
 → focused remediation skills
+→ requested edits
 → verify-changes
 ```
 
@@ -103,14 +118,18 @@ audit-design
 review-components
 → review-visuals
 → check-accessibility
+→ requested edits
 → verify-changes
 ```
 
 **Copy review**
 
 ```text
-verify-content → edit-copy → verify-changes
+verify-content → edit-copy → requested edits → verify-changes
 ```
+
+Apply edits only when requested. Review-only work leaves artifact files
+unchanged and reports recommendations and the checks actually performed.
 
 For a small draft, use the `audit-design` quick pass. It reports up to five
 useful changes without a score or release verdict and names the checks it did
@@ -189,6 +208,7 @@ Existing skills are not overwritten unless you pass `--force`.
 |---|---|
 | [Architecture](docs/architecture.md) | Composition, data contracts, and portability boundaries |
 | [Integration](docs/integration.md) | Client setup and invocation strategy |
+| [Name migration](docs/skill-name-migration.md) | Old-to-new names and safe installation updates |
 | [Evaluation](docs/evaluation.md) | Trigger measurement, output comparison, and release gates |
 | [Design foundations](docs/design-foundations.md) | Product and design principles used by the skills |
 | [Source notes](docs/source-notes.md) | Provenance and the use of outside guidance |

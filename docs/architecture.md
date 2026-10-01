@@ -12,13 +12,36 @@ focused skills; it selects the smallest useful sequence.
 ## Composition graph
 
 ```text
-verify-content → plan-structure → review-visuals
-→ edit-copy / review-motion / check-accessibility
-→ verify-changes
+design-workflow selects only the relevant steps:
+
+verify-content → plan-structure → review-components (when relevant)
+→ review-visuals → edit-copy / review-motion / check-accessibility
+→ change plan → requested edits → verify-changes
 ```
 
 `audit-design` can run before the graph for an existing artifact and can
 run again after remediation to compare results.
+
+Review-only requests leave artifact files unchanged. If verification or a
+comparison leads to another requested edit, repeat affected checks against the
+updated artifact before concluding.
+
+## Delivery contract
+
+Each skill carries this convention in its own `SKILL.md` so selective installs
+remain self-contained:
+
+| Request | Deliverable |
+|---|---|
+| Review only | Issue location, evidence, smallest fix, and verification method |
+| Edits requested | Those findings plus the actual diff or changed-file paths |
+| Changes applied | Checks actually run and outcomes, unverified items, and rollback |
+
+The order is diagnosis, change plan, authorized patch, then final verification.
+No additional implementation skill or browser/model orchestration CLI is
+required. Use the client's existing editing and execution capabilities within
+the requested scope. Keep unsupported product behavior unknown even when its
+report validates.
 
 ## Data contracts
 
@@ -70,3 +93,11 @@ language-model judgment. They:
 
 The agent remains responsible for contextual judgments such as whether a
 visual hierarchy is clear or a sentence is sufficiently specific.
+
+Repository validation statically rejects a specified set of network-related
+imports. It is not an allowlist of all standard-library modules, does not
+detect every possible network access, and does not sandbox execution. The
+standard-library and no-network requirements remain authoring rules; the
+static check detects only some violations. Unit tests also exercise actual
+helper behavior, including scoring, invalid-input rejection, and installation
+conflicts. Neither kind of check establishes agent design judgment quality.
