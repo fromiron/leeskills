@@ -11,6 +11,10 @@ All notable changes are documented here.
   together, the skill table leads with the skill name, and workflow sequences
   are listed in one table. Described the `review-visuals` token proposal page and its JSON renderer
   and moved clone-based installation next to the adapter links.
+- Added light and dark SVG banners and a localized workflow diagram in
+  `.github/assets/`, shown with `<picture>` so each follows the GitHub color
+  scheme. Collapsed secondary sections, added a format-only finding example,
+  and marked the evidence labels with colored badges.
 
 ### Skill names
 

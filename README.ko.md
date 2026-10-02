@@ -1,33 +1,32 @@
-<p align="center">
-  <a href="README.md">English</a> · <strong>한국어</strong> · <a href="README.ja.md">日本語</a>
-</p>
+<div align="center">
 
-<h1 align="center">leeskills</h1>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+  <img src=".github/assets/banner-light.svg" width="100%" alt="leeskills: 흩어진 인터페이스 조각이 검토 프레임을 지나 정돈된 목록이 되는 그림">
+</picture>
 
-<p align="center">
-  근거 없는 주장, 뻔한 카피, 사용자의 작업에 도움이 되지 않는 디자인을<br>
-  찾아내는 인터페이스 검토용 Agent Skills.
-</p>
+<h3>근거 없는 주장, 뻔한 카피, 사용자의 작업에 도움이 되지 않는 디자인을<br>찾아내는 인터페이스 검토용 Agent Skills</h3>
 
-<p align="center">
-  <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="검증 상태" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-  <img alt="버전 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
-  <img alt="공개 Agent Skills 형식" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
-  <a href="LICENSE"><img alt="MIT 라이선스" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
-</p>
+<a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="검증 상태" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
+<img alt="버전 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+<img alt="공개 Agent Skills 형식" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
+<a href="LICENSE"><img alt="MIT 라이선스" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
-<p align="center">
-  <img src=".github/assets/leeskills-hero.png" width="720" alt="복잡한 인터페이스 조각이 검토 프레임을 지나 명확한 정보 구조로 정리되는 그림">
-  <br>
-  <sub>검토 과정을 표현한 그림입니다. 실제 제품 화면은 아닙니다.</sub>
-</p>
+[English](README.md) · **한국어** · [日本語](README.ja.md)
+
+[빠르게 시작하기](#빠르게-시작하기) · [동작 방식](#동작-방식) · [스킬 목록](#스킬-목록) · [받게 되는 결과](#받게-되는-결과) · [문서](#문서)
+
+</div>
+
+<br>
 
 leeskills는 코딩·디자인 에이전트에 검토용 스킬 10개를 더합니다. 검토 범위를
 정하는 워크플로 스킬 1개와, 콘텐츠·정보 구조·컴포넌트·시각 체계·카피·모션·
 접근성·최종 검증을 맡는 집중 스킬 9개입니다. 영어, 한국어, 일본어를 지원합니다.
 
-스킬은 눈앞의 결과물만 판단합니다. 누가 만들었는지, AI를 썼는지는 추측하지
-않고, 빈 곳을 지어낸 고객명이나 수치, 후기, 성과로 채우지 않습니다.
+> [!NOTE]
+> 스킬은 눈앞의 결과물만 판단합니다. 누가 만들었는지, AI를 썼는지는 추측하지
+> 않고, 빈 곳을 지어낸 고객명이나 수치, 후기, 성과로 채우지 않습니다.
 
 ## 빠르게 시작하기
 
@@ -39,9 +38,11 @@ npx skills add fromiron/leeskills
 `skills/` 아래의 패키지를 설치합니다. npm 배포는 없습니다. 설치한 뒤에는 평소
 말하듯 요청하면 됩니다.
 
-> 이 랜딩 페이지를 leeskills로 검토해 줘. 근거 없는 카피와 필요 없는 디자인을
-> 찾되, 제품의 말투와 중요한 기능, 접근성은 그대로 둬. 직접 확인한 내용과
-> 추정한 내용을 구분하고, 꼭 필요한 만큼만 고친 뒤 핵심 흐름을 다시 확인해 줘.
+```text
+이 랜딩 페이지를 leeskills로 검토해 줘. 근거 없는 카피와 필요 없는 디자인을
+찾되, 제품의 말투와 중요한 기능, 접근성은 그대로 둬. 직접 확인한 내용과
+추정한 내용을 구분하고, 꼭 필요한 만큼만 고친 뒤 핵심 흐름을 다시 확인해 줘.
+```
 
 목록을 먼저 보거나 워크플로 스킬만 설치할 수도 있습니다.
 
@@ -50,52 +51,49 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
-`anti-ai-slop` 같은 이전 이름으로 설치했다면 [이름 전환 안내](docs/skill-name-migration.md)를
-따르세요. 직접 수정한 내용을 보존하고, 구이름과 새 이름이 함께 등록되지 않게
-하는 절차입니다.
+> [!TIP]
+> `anti-ai-slop` 같은 이전 이름으로 설치했다면 [이름 전환 안내](docs/skill-name-migration.md)를
+> 따르세요. 직접 수정한 내용을 보존하고, 구이름과 새 이름이 함께 등록되지 않게
+> 하는 절차입니다.
 
-## 받게 되는 결과
+## 동작 방식
 
-| 요청 | 결과 |
-|---|---|
-| 검토 | 문제마다 위치, 근거, 최소 수정안, 확인 방법. 결과물 파일은 바꾸지 않습니다. |
-| 수정 | 실제 변경 후 최종 확인, 실행한 검사, 확인하지 못한 항목, 되돌리는 방법 |
-| 작은 초안 훑어보기 | `audit-design`의 quick pass. 점수나 출시 판정 없이 5개 이하로 추린 지적과 건너뛴 검사 목록 |
+화면 전체를 볼 때는 `design-workflow`로 시작하세요. 결과물에 필요한 단계만 골라
+연결합니다. 그림은 새 인터페이스를 검토할 때의 전체 경로입니다. 범위가 좁으면
+맞는 집중 스킬 하나만 쓰면 됩니다.
 
-중요한 지적에는 다음 근거 표시 중 하나를 붙입니다.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/workflow-ko-dark.svg">
+  <img src=".github/assets/workflow-ko-light.svg" width="100%" alt="design-workflow가 요청을 세 단계로 연결합니다. 기존 결과물이면 audit-design, verify-content, plan-structure, review-components·review-visuals·edit-copy·review-motion, 그다음 check-accessibility, 요청받은 수정, verify-changes 순서입니다.">
+</picture>
 
-| 표시 | 뜻 |
-|---|---|
-| **Observed** | 제공된 문구, 화면, 마크업, 코드, 디자인 파일, 토큰에서 바로 확인한 내용 |
-| **Measured** | 결정적인 테스트나 계산으로 나온 값 |
-| **Inferred** | 근거로 뒷받침되지만 직접 확인하지는 못한 내용 |
-| **Unknown** | 제공된 자료만으로는 알 수 없는 내용 |
-
-확인할 수 없는 내용은 확인할 수 없다고 적습니다.
+점선 단계는 필요할 때만 실행합니다. 기존 결과물이면 `audit-design`, 재사용
+컴포넌트가 범위에 있으면 `review-components`, 수정을 요청했으면 수정 단계가
+들어갑니다. 검토만 요청하면 결과물 파일은 바꾸지 않습니다.
 
 ## 스킬 목록
 
-화면 전체를 볼 때는 `design-workflow`로 시작하세요. 결과물에 필요한 검사만 골라
-연결합니다. 범위가 좁으면 맞는 집중 스킬 하나만 쓰면 됩니다.
-
-| 스킬 | 할 일 | 결과 |
-|---|---|---|
-| `design-workflow` | 인터페이스 전체 검토 | 범위에 맞춘 스킬 순서와 하나로 정리한 결과 |
-| `audit-design` | 기존 결과물 진단 | 확인한 문제, 위험 점수, 정리 순서 |
-| `verify-content` | 출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
-| `plan-structure` | 콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
-| `review-components` | 재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
-| `review-visuals` | 시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 필요할 때 검증한 JSON으로 만드는 HTML 토큰 제안 페이지 |
-| `edit-copy` | 제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
-| `review-motion` | 애니메이션과 전환 검토 | 유지·축소·대체·삭제 판단과 모션 감소 대응 |
-| `check-accessibility` | 접근성을 지키며 단순화 | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
-| `verify-changes` | 수정한 결과 확인 | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |
+| 스킬 | 결과 |
+|---|---|
+| **`design-workflow`**<br>인터페이스 전체 검토 | 범위에 맞춘 스킬 순서와 하나로 정리한 결과 |
+| **`audit-design`**<br>기존 결과물 진단 | 확인한 문제, 위험 점수, 정리 순서 |
+| **`verify-content`**<br>출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
+| **`plan-structure`**<br>콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
+| **`review-components`**<br>재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
+| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 필요할 때 검증한 JSON으로 만드는 HTML 토큰 제안 페이지 |
+| **`edit-copy`**<br>제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
+| **`review-motion`**<br>애니메이션과 전환 검토 | 유지·축소·대체·삭제 판단과 모션 감소 대응 |
+| **`check-accessibility`**<br>접근성을 지키며 단순화 | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
+| **`verify-changes`**<br>수정한 결과 확인 | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |
 
 `verify-content`는 무엇을 말해도 되는지, `edit-copy`는 어떻게 말할지를
 정합니다. 카드나 그라디언트, 모션 자체를 금지하지는 않습니다. 사용자 작업에
 도움이 되고 남길 이유가 있으면 그대로 둡니다.
 
-## 자주 쓰는 순서
+<details>
+<summary><b>자주 쓰는 순서</b></summary>
+
+<br>
 
 | 상황 | 순서 |
 |---|---|
@@ -106,16 +104,56 @@ npx skills add fromiron/leeskills --skill design-workflow
 
 수정 단계는 변경을 요청한 경우에만 실행합니다.
 
-다른 요청 예시와 데이터 예시는 [`examples/`](examples/README.md)에 있습니다.
-[전체 검토 요청](examples/full-audit-request.md)과, 스킬 자동 탐색이 없는
-클라이언트를 위한 [수동 통합 예시](examples/manual-agent-integration.md)도
-들어 있습니다.
+</details>
 
-## 다른 설치 방법
+## 받게 되는 결과
+
+| 요청 | 결과 |
+|---|---|
+| **검토** | 문제마다 위치, 근거, 최소 수정안, 확인 방법. 결과물 파일은 바꾸지 않습니다. |
+| **수정** | 실제 변경 후 최종 확인, 실행한 검사, 확인하지 못한 항목, 되돌리는 방법 |
+| **작은 초안 훑어보기** | `audit-design`의 quick pass. 점수나 출시 판정 없이 5개 이하로 추린 지적과 건너뛴 검사 목록 |
+
+검토 결과는 다음과 같은 형식입니다. 아래 내용은 형식을 보여 주기 위한 예시이며,
+실제 제품을 검토한 결과가 아닙니다.
+
+```text
+Observed · 히어로 제목 · src/pages/index.html:14
+  근거    "업무 효율을 극대화하세요"에 대응하는 사실이 콘텐츠 목록에 없습니다.
+  수정    지원하는 내보내기 형식처럼 제공된 사실로 바꿉니다.
+  확인    verify-content를 다시 실행해 제목이 출처와 연결되는지 확인합니다.
+```
+
+중요한 지적에는 다음 근거 표시 중 하나를 붙입니다.
+
+| 표시 | 뜻 |
+|---|---|
+| ![Observed](https://img.shields.io/badge/Observed-2E7D32?style=flat-square) | 제공된 문구, 화면, 마크업, 코드, 디자인 파일, 토큰에서 바로 확인한 내용 |
+| ![Measured](https://img.shields.io/badge/Measured-007FA8?style=flat-square) | 결정적인 테스트나 계산으로 나온 값 |
+| ![Inferred](https://img.shields.io/badge/Inferred-B26A00?style=flat-square) | 근거로 뒷받침되지만 직접 확인하지는 못한 내용 |
+| ![Unknown](https://img.shields.io/badge/Unknown-6E7781?style=flat-square) | 제공된 자료만으로는 알 수 없는 내용 |
+
+확인할 수 없는 내용은 확인할 수 없다고 적습니다. 다른 요청 예시와 데이터 예시는
+[`examples/`](examples/README.md)에 있습니다.
+
+## 설치 방법
+
+<details>
+<summary><b>클라이언트별 어댑터</b></summary>
+
+<br>
 
 클라이언트별 안내는 [Codex](adapters/codex/README.md),
 [Claude Code](adapters/claude-code/README.md),
-[범용](adapters/generic/README.md) 어댑터 문서에 있습니다.
+[범용](adapters/generic/README.md) 어댑터 문서에 있습니다. 스킬 자동 탐색이 없는
+클라이언트는 [수동 통합 예시](examples/manual-agent-integration.md)를 참고하세요.
+
+</details>
+
+<details>
+<summary><b>복제한 저장소에서 설치</b></summary>
+
+<br>
 
 복제한 저장소에서 설치하거나 원하는 폴더에 설치할 때는 저장소에 포함된 설치기를
 씁니다. 실제로 파일을 쓰려면 `--dry-run`을 빼세요. `--force`를 붙이지 않으면
@@ -127,7 +165,14 @@ python scripts/install.py --client claude-code --scope repo --mode copy --dry-ru
 python scripts/install.py --client generic --target /path/to/skills --mode copy --dry-run
 ```
 
+</details>
+
 ## 패키지 구조
+
+<details>
+<summary><b>스킬 하나의 구성</b></summary>
+
+<br>
 
 ```text
 skill-name/
@@ -145,6 +190,8 @@ skill-name/
 - 트리거 평가 항목은 영어·한국어·일본어 예시와, 비슷해 보여도 호출되면 안 되는
   예시를 함께 담습니다. 평가 항목이 다루는 범위를 확인할 뿐, 실제 클라이언트의
   호출률을 측정하지는 않습니다.
+
+</details>
 
 ## 개발
 

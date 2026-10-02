@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="510" viewBox="0 0 1280 510" role="img" aria-labelledby="t d">
+<title id="t">design-workflow</title>
+<desc id="d">design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#B9B1A5"/></marker></defs>
+<rect width="1280" height="510" rx="16" fill="#F7F4EE"/>
+<rect x="40" y="40" width="170" height="52" rx="26" fill="none" stroke="#151515" stroke-width="2"/>
+<text x="125" y="73.0" text-anchor="middle" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="#151515">依頼</text>
+<path d="M214 66.0 H 240" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="248" y="40" width="210" height="52" rx="10" fill="#007FA8" stroke="#007FA8" stroke-width="2"/>
+<text x="353.0" y="73.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#FFFFFF">design-workflow</text>
+<path d="M353 96 V 136" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="1240" y="72.0" text-anchor="end" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="17" fill="#6B6660">点線：必要なときだけ</text>
+<rect x="40" y="144" width="384" height="334" rx="14" fill="#EFEAE1"/>
+<text x="62" y="184" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#007FA8">01</text>
+<text x="98" y="184" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#151515">診断と設計</text>
+<rect x="60" y="206" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#007FA8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="232.0" y="239.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">audit-design</text>
+<rect x="60" y="272" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="232.0" y="305.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">verify-content</text>
+<path d="M232.0 260 V 269" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="60" y="338" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="232.0" y="371.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">plan-structure</text>
+<path d="M232.0 326 V 335" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="448" y="144" width="384" height="334" rx="14" fill="#EFEAE1"/>
+<text x="470" y="184" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#007FA8">02</text>
+<text x="506" y="184" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#151515">形と言葉</text>
+<rect x="468" y="206" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#007FA8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="640.0" y="239.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">review-components</text>
+<rect x="468" y="272" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="640.0" y="305.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">review-visuals</text>
+<path d="M640.0 260 V 269" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="468" y="338" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="640.0" y="371.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">edit-copy</text>
+<path d="M640.0 326 V 335" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="468" y="404" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="640.0" y="437.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">review-motion</text>
+<path d="M640.0 392 V 401" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<path d="M427 232 H 444" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="856" y="144" width="384" height="334" rx="14" fill="#EFEAE1"/>
+<text x="878" y="184" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#007FA8">03</text>
+<text x="914" y="184" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#151515">アクセシビリティと仕上げ</text>
+<rect x="876" y="206" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="1048.0" y="239.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">check-accessibility</text>
+<rect x="876" y="272" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#007FA8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="1048.0" y="305.2" text-anchor="middle" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" fill="#151515">依頼された修正</text>
+<path d="M1048.0 260 V 269" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="876" y="338" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
+<text x="1048.0" y="371.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">verify-changes</text>
+<path d="M1048.0 326 V 335" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<path d="M835 232 H 852" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+</svg>

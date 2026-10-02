@@ -1,34 +1,33 @@
-<p align="center">
-  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <strong>日本語</strong>
-</p>
+<div align="center">
 
-<h1 align="center">leeskills</h1>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+  <img src=".github/assets/banner-light.svg" width="100%" alt="leeskills：散らばったインターフェースの断片がレビューフレームを通り、整った一覧になるイラスト">
+</picture>
 
-<p align="center">
-  根拠のない主張、ありきたりなコピー、ユーザーのタスクに役立たないデザインを<br>
-  見つけるための、インターフェースレビュー用 Agent Skills です。
-</p>
+<h3>根拠のない主張、ありきたりなコピー、ユーザーのタスクに役立たないデザインを<br>見つけるための、インターフェースレビュー用 Agent Skills</h3>
 
-<p align="center">
-  <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="検証ステータス" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-  <img alt="バージョン 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
-  <img alt="オープンな Agent Skills 形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
-  <a href="LICENSE"><img alt="MIT ライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
-</p>
+<a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="検証ステータス" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
+<img alt="バージョン 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+<img alt="オープンな Agent Skills 形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
+<a href="LICENSE"><img alt="MIT ライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
-<p align="center">
-  <img src=".github/assets/leeskills-hero.png" width="720" alt="雑然としたインターフェースの断片がレビューフレームを通り、明確な情報構造へ整理されるイラスト">
-  <br>
-  <sub>レビューの流れを表したイラストです。実際の製品画面ではありません。</sub>
-</p>
+[English](README.md) · [한국어](README.ko.md) · **日本語**
+
+[クイックスタート](#クイックスタート) · [仕組み](#仕組み) · [スキル一覧](#スキル一覧) · [返ってくるもの](#返ってくるもの) · [ドキュメント](#ドキュメント)
+
+</div>
+
+<br>
 
 leeskills は、コーディングやデザインを行うエージェントに10個のレビュー用スキルを
 追加します。レビュー範囲を決めるワークフロースキルが1つと、コンテンツ、情報設計、
 コンポーネント、ビジュアル、コピー、モーション、アクセシビリティ、仕上げの確認を
 担当する個別スキルが9つです。英語、韓国語、日本語に対応しています。
 
-スキルが判断するのは、目の前にある成果物だけです。誰が作ったか、AI を使ったかは
-推測せず、足りない部分を架空の顧客名、数値、引用、実績で埋めることもしません。
+> [!NOTE]
+> スキルが判断するのは、目の前にある成果物だけです。誰が作ったか、AI を使ったかは
+> 推測せず、足りない部分を架空の顧客名、数値、引用、実績で埋めることもしません。
 
 ## クイックスタート
 
@@ -40,10 +39,12 @@ npx skills add fromiron/leeskills
 取得し、`skills/` 内のパッケージをインストールします。npm への公開はありません。
 インストール後は、普段の言葉で依頼できます。
 
-> このランディングページを leeskills で見直してください。根拠のないコピーや、
-> 主なタスクに役立たないデザインを探し、製品らしい言葉、必要な操作、
-> アクセシビリティは残してください。確認したことと推測を分け、必要な範囲だけ
-> 直した後で、主な操作をもう一度確認してください。
+```text
+このランディングページを leeskills で見直してください。根拠のないコピーや、
+主なタスクに役立たないデザインを探し、製品らしい言葉、必要な操作、
+アクセシビリティは残してください。確認したことと推測を分け、必要な範囲だけ
+直した後で、主な操作をもう一度確認してください。
+```
 
 一覧を先に確認したり、ワークフロースキルだけをインストールしたりもできます。
 
@@ -52,52 +53,49 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
-`anti-ai-slop` などの旧名称でインストールしている場合は、
-[名称の移行手順](docs/skill-name-migration.md)に従ってください。ローカルの変更を
-残し、旧名と新名が両方登録されないようにする手順です。
+> [!TIP]
+> `anti-ai-slop` などの旧名称でインストールしている場合は、
+> [名称の移行手順](docs/skill-name-migration.md)に従ってください。ローカルの変更を
+> 残し、旧名と新名が両方登録されないようにする手順です。
 
-## 返ってくるもの
+## 仕組み
 
-| 依頼 | 結果 |
-|---|---|
-| レビュー | 指摘ごとの場所、根拠、最小限の修正案、確認方法。成果物のファイルは変更しません。 |
-| 修正 | 実際の変更と最終確認、実施した検査、未確認の項目、元に戻す方法 |
-| 小さな下書きの確認 | `audit-design` の quick pass。スコアやリリース判定なしで5件以内に絞った指摘と、省略した検査の一覧 |
+画面全体を見直すなら `design-workflow` から始めてください。成果物に必要な
+ステップだけを選んでつなぎます。図は新しいインターフェースをレビューするときの
+全体の流れです。範囲が狭ければ、合う個別スキルを1つだけ使います。
 
-主な指摘には、次のいずれかのラベルを付けます。
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/workflow-ja-dark.svg">
+  <img src=".github/assets/workflow-ja-light.svg" width="100%" alt="design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。">
+</picture>
 
-| ラベル | 意味 |
-|---|---|
-| **Observed** | 提供されたコピー、画面、マークアップ、コード、デザインファイル、トークンから直接確認したこと |
-| **Measured** | 決定的なテストや計算で得た値 |
-| **Inferred** | 根拠から判断できるが、直接は確認していないこと |
-| **Unknown** | 提供された資料だけでは分からないこと |
-
-確認できないことは、確認できないと書きます。
+点線のステップは必要なときだけ実行します。既存の成果物なら `audit-design`、
+再利用コンポーネントが対象なら `review-components`、修正を依頼した場合は修正の
+ステップが入ります。レビューのみの場合、成果物のファイルは変更しません。
 
 ## スキル一覧
 
-画面全体を見直すなら `design-workflow` から始めてください。成果物に必要な
-チェックだけを選んでつなぎます。範囲が狭ければ、合う個別スキルを1つだけ使います。
-
-| スキル | 用途 | 得られるもの |
-|---|---|---|
-| `design-workflow` | インターフェース全体を見直す | 範囲に合うスキルの順序と、まとめた結果 |
-| `audit-design` | 既存の成果物を診断する | 確認できた問題、リスクスコア、整理の順番 |
-| `verify-content` | 出典が裏付ける主張を確かめる | 出典付きのコンテンツ一覧と、空いたままの項目 |
-| `plan-structure` | コンテンツの順序とナビゲーションを決める | タスクを基準に選んだ構造と、不採用にした案 |
-| `review-components` | 再利用する UI の仕様をそろえる | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
-| `review-visuals` | 見た目のルールを整理する | ビジュアルの基準、レスポンシブ・文字組み・入れ子の角丸のチェック、必要に応じて検証済みの JSON から作る HTML のトークン提案ページ |
-| `edit-copy` | プロダクトのコピーを整える | 根拠があり、プロダクトの語り口と各言語に合うコピー |
-| `review-motion` | アニメーションやトランジションを見直す | 残す・減らす・置き換える・削る判断と、動きを抑える設定への対応 |
-| `check-accessibility` | アクセシビリティを保って簡素化する | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
-| `verify-changes` | 修正後の成果物を確かめる | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
+| スキル | 得られるもの |
+|---|---|
+| **`design-workflow`**<br>インターフェース全体を見直す | 範囲に合うスキルの順序と、まとめた結果 |
+| **`audit-design`**<br>既存の成果物を診断する | 確認できた問題、リスクスコア、整理の順番 |
+| **`verify-content`**<br>出典が裏付ける主張を確かめる | 出典付きのコンテンツ一覧と、空いたままの項目 |
+| **`plan-structure`**<br>コンテンツの順序とナビゲーションを決める | タスクを基準に選んだ構造と、不採用にした案 |
+| **`review-components`**<br>再利用する UI の仕様をそろえる | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
+| **`review-visuals`**<br>見た目のルールを整理する | ビジュアルの基準、レスポンシブ・文字組み・入れ子の角丸のチェック、必要に応じて検証済みの JSON から作る HTML のトークン提案ページ |
+| **`edit-copy`**<br>プロダクトのコピーを整える | 根拠があり、プロダクトの語り口と各言語に合うコピー |
+| **`review-motion`**<br>アニメーションやトランジションを見直す | 残す・減らす・置き換える・削る判断と、動きを抑える設定への対応 |
+| **`check-accessibility`**<br>アクセシビリティを保って簡素化する | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
+| **`verify-changes`**<br>修正後の成果物を確かめる | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
 
 `verify-content` は何を言ってよいかを、`edit-copy` はどう言うかを決めます。
 カードやグラデーション、モーションを一律に禁止するものではありません。
 タスクに役立ち、残す理由があるものは残します。
 
-## よく使う流れ
+<details>
+<summary><b>よく使う流れ</b></summary>
+
+<br>
 
 | 状況 | 流れ |
 |---|---|
@@ -108,16 +106,57 @@ npx skills add fromiron/leeskills --skill design-workflow
 
 修正のステップは、変更を依頼した場合にだけ実行します。
 
-ほかの依頼例やデータの例は [`examples/`](examples/README.md) にあります。
-[全体レビューの依頼例](examples/full-audit-request.md)と、スキルの自動検出に
-対応していないクライアント向けの[手動で組み込む例](examples/manual-agent-integration.md)
-も含まれています。
+</details>
 
-## その他のインストール方法
+## 返ってくるもの
+
+| 依頼 | 結果 |
+|---|---|
+| **レビュー** | 指摘ごとの場所、根拠、最小限の修正案、確認方法。成果物のファイルは変更しません。 |
+| **修正** | 実際の変更と最終確認、実施した検査、未確認の項目、元に戻す方法 |
+| **小さな下書きの確認** | `audit-design` の quick pass。スコアやリリース判定なしで5件以内に絞った指摘と、省略した検査の一覧 |
+
+指摘は次のような形式で返ります。以下は形式を示すための例で、実際の製品を
+レビューした結果ではありません。
+
+```text
+Observed · ヒーローの見出し · src/pages/index.html:14
+  根拠    「業務効率を最大化」に対応する事実がコンテンツ一覧にありません。
+  修正    対応しているエクスポート形式など、提供された事実に置き換えます。
+  確認    verify-content を再実行し、見出しが出典と結び付くことを確かめます。
+```
+
+主な指摘には、次のいずれかのラベルを付けます。
+
+| ラベル | 意味 |
+|---|---|
+| ![Observed](https://img.shields.io/badge/Observed-2E7D32?style=flat-square) | 提供されたコピー、画面、マークアップ、コード、デザインファイル、トークンから直接確認したこと |
+| ![Measured](https://img.shields.io/badge/Measured-007FA8?style=flat-square) | 決定的なテストや計算で得た値 |
+| ![Inferred](https://img.shields.io/badge/Inferred-B26A00?style=flat-square) | 根拠から判断できるが、直接は確認していないこと |
+| ![Unknown](https://img.shields.io/badge/Unknown-6E7781?style=flat-square) | 提供された資料だけでは分からないこと |
+
+確認できないことは、確認できないと書きます。ほかの依頼例やデータの例は
+[`examples/`](examples/README.md) にあります。
+
+## インストール方法
+
+<details>
+<summary><b>クライアント別のアダプター</b></summary>
+
+<br>
 
 クライアントごとの説明は、[Codex](adapters/codex/README.md)、
 [Claude Code](adapters/claude-code/README.md)、
-[汎用](adapters/generic/README.md)の各アダプターにあります。
+[汎用](adapters/generic/README.md)の各アダプターにあります。スキルの自動検出に
+対応していないクライアントは、[手動で組み込む例](examples/manual-agent-integration.md)
+を参照してください。
+
+</details>
+
+<details>
+<summary><b>クローンからインストール</b></summary>
+
+<br>
 
 クローンからインストールする場合や、場所を指定する場合は、同梱のインストーラーを
 使います。実際に書き込むには `--dry-run` を外してください。`--force` を指定しない
@@ -129,7 +168,14 @@ python scripts/install.py --client claude-code --scope repo --mode copy --dry-ru
 python scripts/install.py --client generic --target /path/to/skills --mode copy --dry-run
 ```
 
+</details>
+
 ## ディレクトリ構成
+
+<details>
+<summary><b>各スキルの中身</b></summary>
+
+<br>
 
 ```text
 skill-name/
@@ -147,6 +193,8 @@ skill-name/
 - トリガーの評価ケースは英語、韓国語、日本語に対応し、似ていても起動すべきでない
   例も含みます。評価ケースの網羅範囲を確かめるもので、実際のクライアントでの
   起動率を測るものではありません。
+
+</details>
 
 ## 開発
 
