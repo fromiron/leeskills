@@ -389,6 +389,71 @@ class CommandTests(unittest.TestCase):
             )
             self.assertNotIn('data-basis="hypothesis"', normalize.read_text(encoding="utf-8"))
 
+    def question_bank(self) -> dict[str, object]:
+        return json.loads(
+            (ROOT / "skills/review-visuals/assets/token-questions.json").read_text(encoding="utf-8")
+        )
+
+    def test_token_question_bank_is_portable_and_complete(self) -> None:
+        bank = self.question_bank()
+        core = [question for question in bank["questions"] if question["stage"] == "core"]
+        self.assertEqual(
+            [question["id"] for question in core],
+            ["color-family", "theme", "type-style", "corner-style"],
+        )
+        for question in bank["questions"]:
+            texts = [question["prompt"]] + [option["label"] for option in question["options"]]
+            if question["custom"]:
+                texts.append(question["custom"])
+            for text in texts:
+                self.assertEqual(set(text), {"en", "ko", "ja"}, msg=question["id"])
+        for question in core:
+            # Four choices fit structured question tools; plain text works anywhere.
+            self.assertLessEqual(len(question["options"]), 4)
+            self.assertEqual(question["options"][-1]["id"], "delegate")
+        approach = next(question for question in bank["questions"] if question["id"] == "approach")
+        self.assertEqual([option["id"] for option in approach["options"]], ["auto", "guided"])
+
+        with tempfile.TemporaryDirectory() as directory:
+            broken = self.question_bank()
+            broken["questions"][1]["options"].insert(0, dict(broken["questions"][1]["options"][0], id="purple"))
+            path = Path(directory) / "bank.json"
+            path.write_text(json.dumps(broken, ensure_ascii=False), encoding="utf-8")
+            completed = self.run_command(
+                "skills/review-visuals/scripts/token_questions.py", "--questions", str(path), expected=2
+            )
+        self.assertIn("at most 4 options", completed.stderr)
+
+    def test_token_questions_print_one_message_per_language(self) -> None:
+        script = "skills/review-visuals/scripts/token_questions.py"
+        bank = self.question_bank()
+        core = [question for question in bank["questions"] if question["stage"] == "core"]
+        for language in ("en", "ko", "ja"):
+            text = self.run_command(script, "--language", language).stdout
+            for question in core:
+                self.assertIn(question["prompt"][language], text)
+                for option in question["options"]:
+                    self.assertIn(option["label"][language], text)
+
+        skipped = self.run_command(script, "--language", "en", "--skip", "theme").stdout
+        self.assertNotIn(core[1]["prompt"]["en"], skipped)
+        self.assertIn("1. " + core[0]["prompt"]["en"], skipped)
+        self.assertIn("3. " + core[3]["prompt"]["en"], skipped)
+
+        document = self.run_json(script, "--language", "ko", "--format", "json")
+        self.assertEqual([item["id"] for item in document["questions"]], [q["id"] for q in core])
+        self.assertEqual(
+            [option["letter"] for option in document["questions"][0]["options"]], ["A", "B", "C", "D"]
+        )
+        approach = self.run_json(script, "--stage", "approach", "--format", "json")
+        self.assertEqual([item["id"] for item in approach["questions"]], ["approach"])
+        follow_up = self.run_command(
+            script, "--stage", "follow-up", "--only", "brand-color-value"
+        ).stdout
+        self.assertIn("oklch()", follow_up)
+        self.run_command(script, "--only", "brand-color-value", expected=2)
+        self.run_command(script, "--skip", "not-a-question", expected=2)
+
     def test_token_proposal_renders_localized_page_without_placeholders(self) -> None:
         template = (
             ROOT / "skills/review-visuals/assets/token-proposal-template.html"
@@ -1309,10 +1374,11 @@ class CommandTests(unittest.TestCase):
             components / "references" / "interaction-governance.md": components,
             components / "references" / "system-lifecycle.md": components,
             visuals / "references" / "token-proposal.md": visuals,
+            visuals / "references" / "token-questions.md": visuals,
         }
         for reference, package in conditional.items():
             text = reference.read_text(encoding="utf-8")
-            self.assertRegex(text.split("\n## ", 1)[0], r"Read this file (?:only )?when")
+            self.assertRegex(text.split("\n## ", 1)[0], r"Read this file (?:only )?(?:when|for)")
             skill = (package / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn(f"](references/{reference.name})", skill)
 

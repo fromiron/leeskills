@@ -164,10 +164,28 @@ Then read [references/token-proposal.md](references/token-proposal.md) for the
 normalize and new-system evidence gates, token decisions, the
 write → validate → render → inspect procedure, and the page requirements.
 
-These limits apply even without that file: normalized values trace to project
-or rendered evidence or stay `unknown`; new-system values are labeled design
-hypotheses with a rationale; undecided contexts stay open; and a proposal is
-not evidence that the project adopted the tokens.
+Before proposing token values, choose how to gather the direction. If the
+request does not say, ask the approach question from
+[assets/token-questions.json](assets/token-questions.json) once:
+
+- **AI proposal (`auto`)** — analyze the project or brief and propose, as in
+  the paths above;
+- **Guided (`guided`)** — ask the user a few direction questions first, then
+  propose; read
+  [references/token-questions.md](references/token-questions.md).
+
+Skip the question when the request already implies an approach: "just
+propose" means auto; "ask me first" or stated preferences mean guided. When
+no answer is possible, such as in a non-interactive run, use auto. Print the
+question in the user's language with
+`python scripts/token_questions.py --stage approach --language ko`, or ask it
+from the question bank in plain text in any client.
+
+These limits apply even without those files: normalized values trace to
+project or rendered evidence or stay `unknown`; new-system values are labeled
+design hypotheses with a rationale; a user's answer is recorded and traced,
+but it cannot lower contrast minimums; undecided contexts stay open; and a
+proposal is not evidence that the project adopted the tokens.
 
 ## Rules
 

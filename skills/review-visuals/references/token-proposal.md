@@ -26,6 +26,12 @@ validator rejects hypotheses in normalize mode and hypotheses without a
 rationale. Render the proposal and run its checks before reporting any result
 as measured.
 
+Guided proposals (`"approach": "guided"`) record the user's answers in
+`preferences` and link each value they shaped with `based_on`. An exact value
+from an answer is observed, with the answer as its evidence; a value chosen
+from a direction is a design hypothesis. Follow
+[token-questions.md](token-questions.md) for the questions and the mapping.
+
 ## Decide the tokens
 
 1. Inventory current names, raw values, usage frequency, responsive mappings,

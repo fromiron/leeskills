@@ -32,6 +32,13 @@ RELATIONSHIPS = {"shared-contour", "independent", "pill-or-circle"}
 DECISION_GROUPS = ("proposed", "retained", "rejected", "open")
 MODES = ("normalize", "new-system")
 BASES = ("observed", "hypothesis")
+LANGUAGES = ("en", "ko", "ja")
+QUESTION_BANK = Path(__file__).resolve().parent.parent / "assets" / "token-questions.json"
+QUESTION_STAGES = ("approach", "core", "follow-up")
+# Four choices fit the structured question tools some clients offer; plain
+# text works everywhere.
+MAX_OPTIONS = 4
+DELEGATE = "delegate"
 LAYOUT_DIAGRAMS = ("content-width", "page-padding")
 TOKEN_NAME = re.compile(r"^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$")
 PLACEHOLDER = re.compile(r"\{\{[A-Z0-9_]+\}\}")
@@ -61,6 +68,59 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
+
+
+def load_question_bank(path: Path = QUESTION_BANK) -> dict[str, Any]:
+    """Load the guided-proposal question bank and check its structure."""
+    bank = read_json(path)
+    questions = bank.get("questions")
+    if not isinstance(questions, list) or not questions:
+        die(f"{path}: questions must be a non-empty array")
+    messages = bank.get("messages")
+    if not isinstance(messages, dict) or not all(
+        isinstance(text, dict) and all(non_empty_string(text.get(lang)) for lang in LANGUAGES)
+        for text in messages.values()
+    ):
+        die(f"{path}: every message needs en, ko, and ja text")
+    seen: set[str] = set()
+    for index, question in enumerate(questions):
+        prefix = f"{path}: questions[{index}]"
+        if not isinstance(question, dict) or not non_empty_string(question.get("id")):
+            die(f"{prefix} must be an object with an id")
+        if question["id"] in seen:
+            die(f"{prefix}: duplicate question id {question['id']!r}")
+        seen.add(question["id"])
+        stage = question.get("stage")
+        if stage not in QUESTION_STAGES:
+            die(f"{prefix}.stage must be one of {list(QUESTION_STAGES)}")
+        texts = [question.get("prompt")]
+        if question.get("custom") is not None:
+            texts.append(question["custom"])
+        options = question.get("options")
+        if not isinstance(options, list):
+            die(f"{prefix}.options must be an array")
+        option_ids = []
+        for option in options:
+            if not isinstance(option, dict) or not non_empty_string(option.get("id")):
+                die(f"{prefix}: every option needs an id")
+            option_ids.append(option["id"])
+            texts.append(option.get("label"))
+        if len(set(option_ids)) != len(option_ids) or "custom" in option_ids:
+            die(f"{prefix}: option ids must be unique and must not be 'custom'")
+        for text in texts:
+            if not isinstance(text, dict) or not all(non_empty_string(text.get(lang)) for lang in LANGUAGES):
+                die(f"{prefix}: every prompt, label, and custom hint needs en, ko, and ja text")
+        if stage == "core" and (len(options) > MAX_OPTIONS or not options or option_ids[-1] != DELEGATE):
+            die(f"{prefix}: a core question has at most {MAX_OPTIONS} options ending with {DELEGATE!r}")
+        if stage == "follow-up" and (options or question.get("custom") is None):
+            die(f"{prefix}: a follow-up question takes a written answer and has no options")
+        if stage == "approach" and len(options) < 2:
+            die(f"{prefix}: the approach question needs at least two options")
+    core = {question["id"] for question in questions if question["stage"] == "core"}
+    for question in questions:
+        if question["stage"] == "follow-up" and question.get("after") not in core:
+            die(f"{path}: follow-up {question['id']!r} must follow a core question")
+    return bank
 
 
 def string_list(value: Any) -> bool:
