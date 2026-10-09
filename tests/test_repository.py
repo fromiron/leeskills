@@ -619,6 +619,8 @@ class CommandTests(unittest.TestCase):
         self.assertNotIn("통합 대상", new)
         self.assertNotIn('class="stats"', new)
         self.assertIn("통합 대상", existing)
+        # Current colors show a small swatch drawn from the converted rgb() value.
+        self.assertIn('<span class="mini-swatch" style="--token-value: rgb(255, 255, 255)" aria-hidden="true"></span>#fff', existing)
         self.assertIn('class="stats"', existing)
         for page in (existing, new):
             self.assertNotIn('<h3 class="tag">', page)

@@ -24,8 +24,10 @@ from validate_token_proposal import (  # noqa: E402
     FOUNDATIONS,
     TYPE_FIELDS,
     UNKNOWN,
+    color_formats,
     die,
     load_question_bank,
+    parse_color,
     read_json,
     validate,
     validate_html,
@@ -146,6 +148,24 @@ class Page:
             f'<div class="contrast-check"><span class="pair" style="{pair}" aria-hidden="true">Aa 가 あ</span>'
             f'<p class="value">{check["ratio"]}:1 · ≥ {check["minimum"]} {verdict}</p>{against}</div>'
         )
+
+    def color_listing(self, items: list[str] | None) -> str:
+        """Current colors, one per line, each with a small swatch.
+
+        Only values that parse as hex, rgb(), or oklch() get a swatch, drawn from
+        the converted rgb() value so free text never reaches a style attribute.
+        """
+        if not items:
+            return self.listing(items)
+        lines = []
+        for item in items:
+            color = parse_color(item)
+            swatch = ""
+            if color is not None:
+                value = color_formats(color)["rgb"]
+                swatch = f'<span class="mini-swatch" style="{self.style(token_value=value)}" aria-hidden="true"></span>'
+            lines.append(f"{swatch}{escape(item)}")
+        return "<br>".join(lines)
 
     def listing(self, items: list[str] | None) -> str:
         if not items:
@@ -325,7 +345,8 @@ class Page:
             converted = f'<td class="value">{self.formats(item["name"])}</td>' if formats else ""
             consolidated = ""
             if self.has_current(foundation):
-                consolidated = f'<td class="value">{self.listing(item.get("current_values"))}</td>'
+                listing = self.color_listing if foundation == "color" else self.listing
+                consolidated = f'<td class="value">{listing(item.get("current_values"))}</td>'
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{preview}'
                 f'<td class="value">{self.value(value)}</td>{converted}'
