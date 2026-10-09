@@ -591,6 +591,38 @@ class CommandTests(unittest.TestCase):
         )
         self.assertTrue(self.run_json_document(script, named_hue)["proposal"]["valid"])
 
+    def render_example(self, name: str, directory: str) -> str:
+        output = Path(directory) / f"{name}.html"
+        self.run_json(
+            "skills/review-visuals/scripts/render_token_proposal.py",
+            f"skills/review-visuals/assets/{name}.json",
+            "--output",
+            str(output),
+        )
+        return output.read_text(encoding="utf-8")
+
+    def test_token_proposal_markers_mark_only_exceptions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            existing = self.render_example("token-proposal-example", directory)
+            new = self.render_example("token-proposal-guided-example", directory)
+        # The page is a proposal, so "proposed" has no per-token marker.
+        roles = re.findall(r'<td class="role">(.*?)</td>', new)
+        self.assertTrue(roles)
+        self.assertFalse(any('class="tag"' in role for role in roles))
+        self.assertIn('<span class="tag">유지</span>', existing)
+        legend = new.split('<dl class="legend">', 1)[1].split("</dl>", 1)[0]
+        self.assertIn("새로 정한 값", legend)
+        self.assertNotIn("유지", legend)
+        # A new system consolidates nothing: no empty column or 0 → n summary.
+        self.assertNotIn("통합 대상", new)
+        self.assertNotIn('class="stats"', new)
+        self.assertIn("통합 대상", existing)
+        self.assertIn('class="stats"', existing)
+        for page in (existing, new):
+            self.assertNotIn('<h3 class="tag">', page)
+            self.assertIn('<h3 class="decision-title">남은 과제</h3>', page)
+            self.assertIn('<h3 class="decision-title">주요 결정</h3>', page)
+
     def test_guided_proposal_page_shows_choices_and_approach(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             for language, title, approach in (

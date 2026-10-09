@@ -104,8 +104,8 @@ class Page:
         """Evidence for observed values; a marked rationale for design hypotheses."""
         if item.get("basis") != "hypothesis":
             return self.evidence(item.get("evidence"))
-        marker = f'<span class="hypothesis" data-basis="hypothesis">{self.t("hypothesis")}</span>'
-        parts = [f'{marker} · {escape(item.get("rationale", ""))}']
+        marker = f'<span class="tag" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+        parts = [marker, escape(item.get("rationale", ""))]
         parts += [escape(entry) for entry in item.get("evidence") or []]
         return "<br>".join(parts)
 
@@ -190,7 +190,39 @@ class Page:
             notes += f'<p class="muted-small">{self.t("th_owner")}: {escape(item["owner"])}</p>'
         if item.get("usage"):
             notes += f'<p class="muted-small">{escape(item["usage"])}</p>'
-        return f'<td class="role"><p>{escape(item["role"])}</p>{notes}<p class="tag">{self.status(item["status"])}</p></td>'
+        # The whole page is a proposal, so only exceptions to "proposed" get a marker.
+        status = ""
+        if item["status"] == "retained":
+            status = f'<p><span class="tag">{self.status("retained")}</span></p>'
+        elif item["status"] == "unknown":
+            status = f"<p>{self.unknown()}</p>"
+        return f'<td class="role"><p>{escape(item["role"])}</p>{notes}{status}</td>'
+
+    def legend(self) -> str:
+        """Explain the markers this page actually uses."""
+        statuses = {
+            item.get("status") for block in self.foundations.values() for item in block.get("semantic", [])
+        }
+        entries = []
+        if "retained" in statuses:
+            entries.append((f'<span class="tag">{self.status("retained")}</span>', "legend_retained"))
+        if self.report["hypothesis_values"]:
+            entries.append((f'<span class="tag">{self.t("hypothesis")}</span>', "legend_hypothesis"))
+        if self.report["unknown_values"] or "unknown" in statuses:
+            entries.append((self.unknown(), "legend_unknown"))
+        if any(not item["in_srgb_gamut"] for item in self.report["color_formats"].values()):
+            entries.append((f'<span class="tag">{self.t("srgb_mapped")}</span>', "legend_srgb"))
+        rows = "".join(f"<div><dt>{marker}</dt><dd>{self.t(key)}</dd></div>" for marker, key in entries)
+        listing = f'<dl class="legend">{rows}</dl>' if rows else ""
+        return f'<div class="sub"><h3>{self.t("legend_title")}</h3><p>{self.t("legend_intro")}</p>{listing}</div>'
+
+    def has_current(self, foundation: str) -> bool:
+        """Whether any primitive in the foundation consolidates existing raw values."""
+        return any(item.get("current_values") for item in self.foundations[foundation].get("primitives", []))
+
+    def headers(self, foundation: str, keys: list[str]) -> list[str]:
+        # A new system has nothing to consolidate; drop the empty column.
+        return [key for key in keys if key != "th_consolidates" or self.has_current(foundation)]
 
     def table(self, ident: str, caption_key: str, headers: list[str], rows: list[str]) -> str:
         # Header keys are chrome strings; "=" marks literal text such as a context name.
@@ -221,6 +253,7 @@ class Page:
             f'<h2 id="overview-title">{self.t("model_title")}</h2>',
             f'<p>{self.t("model_intro")}</p>',
             model,
+            self.legend(),
         ]
         naming = self.data.get("naming") or {}
         figures = []
@@ -254,7 +287,8 @@ class Page:
                 f'<div class="stat"><dt>{self.t(foundation)}</dt>'
                 f'<dd>{counts["current_values"]} → {counts["primitives"]}</dd></div>'
             )
-        if stats:
+        # Without existing raw values there is nothing to summarize ("0 → n").
+        if stats and any(counts["current_values"] for counts in self.report["foundation_counts"].values()):
             parts.append(
                 f'<div class="sub"><h3>{self.t("summary_title")}</h3><dl class="stats">{"".join(stats)}</dl>'
                 f'<p class="muted-small">{self.t("stats_note")}</p></div>'
@@ -289,10 +323,13 @@ class Page:
                     inner = f'<span class="{preview_class}" style="{self.style(token_value=value)}" aria-hidden="true"></span>'
                 preview = f'<td class="preview">{inner}</td>'
             converted = f'<td class="value">{self.formats(item["name"])}</td>' if formats else ""
+            consolidated = ""
+            if self.has_current(foundation):
+                consolidated = f'<td class="value">{self.listing(item.get("current_values"))}</td>'
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{preview}'
                 f'<td class="value">{self.value(value)}</td>{converted}'
-                f'<td class="value">{self.listing(item.get("current_values"))}</td>'
+                f'{consolidated}'
                 f'<td class="evidence">{self.basis(item)}</td></tr>'
             )
         return rows
@@ -334,7 +371,7 @@ class Page:
             )
         primitives = "".join(ramps) + self.table(
             "color-primitives", "color_primitives_caption",
-            ["th_name", "th_preview", "th_value", "th_formats", "th_consolidates", "th_evidence"],
+            self.headers("color", ["th_name", "th_preview", "th_value", "th_formats", "th_consolidates", "th_evidence"]),
             self.primitive_rows("color", "color-swatch", formats=True),
         )
         checks: dict[str, list[dict[str, Any]]] = {}
@@ -388,7 +425,7 @@ class Page:
     def spacing(self) -> str:
         primitives = self.table(
             "space-primitives", "space_primitives_caption",
-            ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"],
+            self.headers("spacing", ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"]),
             self.primitive_rows("spacing", "space-bar"),
         )
         semantic = self.semantic_table("spacing", "space-semantic", "space_semantic_caption")
@@ -417,7 +454,7 @@ class Page:
                 f'{self.t("frame_width")} {resolve("content-width")}</div></div>'
                 f'<figcaption><strong>{escape(name)} · {self.value(breakpoint.get("min_width"))}</strong>'
                 + (
-                    f' <span class="hypothesis" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+                    f' <span class="tag" data-basis="hypothesis">{self.t("hypothesis")}</span>'
                     if breakpoint.get("basis") == "hypothesis"
                     and breakpoint.get("min_width") not in (None, "", UNKNOWN)
                     else ""
@@ -430,7 +467,7 @@ class Page:
         if block.get("primitives"):
             body += self.sub("primitives", self.table(
                 "layout-primitives", "layout_primitives_caption",
-                ["th_name", "th_value", "th_consolidates", "th_evidence"],
+                self.headers("layout", ["th_name", "th_value", "th_consolidates", "th_evidence"]),
                 self.primitive_rows("layout", None),
             ))
         body += self.sub("semantic", self.semantic_table("layout", "layout-semantic", "layout_semantic_caption", "owner"))
@@ -439,7 +476,7 @@ class Page:
     def radius(self) -> str:
         primitives = self.table(
             "radius-primitives", "radius_primitives_caption",
-            ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"],
+            self.headers("radius", ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"]),
             self.primitive_rows("radius", "radius-corner"),
         )
         semantic = self.semantic_table("radius", "radius-semantic", "radius_semantic_caption", "relationship")
@@ -466,7 +503,7 @@ class Page:
         for group in ("proposed", "retained", "rejected", "open"):
             items = decisions.get(group) or []
             body = "".join(f"<li>{escape(item)}</li>" for item in items) or f'<li>{self.t("none")}</li>'
-            cards.append(f'<div class="decision"><h3 class="tag">{self.t("decision_" + group)}</h3><ul>{body}</ul></div>')
+            cards.append(f'<div class="decision"><h3 class="decision-title">{self.t("decision_" + group)}</h3><ul>{body}</ul></div>')
         return self.section("decisions", f'<div class="sub decisions">{"".join(cards)}</div>')
 
     def shell(self) -> str:
