@@ -454,6 +454,8 @@ def validate_repository(root: Path, run_help: bool = True) -> dict[str, Any]:
                     cwd=root,
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                     timeout=10,
                     check=False,
                 )

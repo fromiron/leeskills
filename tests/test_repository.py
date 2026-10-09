@@ -46,6 +46,8 @@ class CommandTests(unittest.TestCase):
             input=input_text,
             capture_output=True,
             text=True,
+            # The scripts always write UTF-8; do not decode with the Windows code page.
+            encoding="utf-8",
             check=False,
         )
         self.assertEqual(
@@ -1702,6 +1704,7 @@ class CommandTests(unittest.TestCase):
                     cwd=workdir,
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
                     check=False,
                 )
                 self.assertEqual(completed.returncode, 0, msg=completed.stderr)
