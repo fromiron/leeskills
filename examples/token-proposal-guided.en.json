@@ -1,0 +1,362 @@
+{
+  "project": "Example workout log app",
+  "language": "en",
+  "title": "Design token proposal for a workout log app",
+  "summary": "A new app with no existing tokens. It follows the directions the user chose in the guided questions (a brand color, light and dark screens, slightly rounded corners) and leaves the typeface to the AI. This file is example data that shows the structure; it holds no measurements from a real project.",
+  "status": "proposed",
+  "mode": "new-system",
+  "approach": "guided",
+  "preferences": [
+    {
+      "question": "color-family",
+      "choice": "custom",
+      "detail": "oklch(52% 0.17 255)"
+    },
+    {
+      "question": "theme",
+      "choice": "both"
+    },
+    {
+      "question": "type-style",
+      "choice": "delegate"
+    },
+    {
+      "question": "corner-style",
+      "choice": "subtle"
+    }
+  ],
+  "prepared": "Example data",
+  "evidence_basis": [
+    "Four guided answers (example)",
+    "Product requirement: log sets one-handed during a workout (example)"
+  ],
+  "specimen_text": "You logged 3 sets today",
+  "naming": {
+    "primitive": {
+      "separator": "-",
+      "parts": [
+        {
+          "text": "gray",
+          "label": "color family"
+        },
+        {
+          "text": "900",
+          "label": "step"
+        }
+      ]
+    },
+    "semantic": {
+      "separator": "-",
+      "parts": [
+        {
+          "text": "text",
+          "label": "category"
+        },
+        {
+          "text": "primary",
+          "label": "role"
+        }
+      ]
+    }
+  },
+  "breakpoints": [],
+  "foundations": {
+    "color": {
+      "primitives": [
+        {
+          "name": "blue-60",
+          "group": "blue",
+          "step": "60",
+          "value": "oklch(52% 0.17 255)",
+          "current_values": [],
+          "evidence": [
+            "User answer (color family): brand color oklch(52% 0.17 255)"
+          ],
+          "based_on": [
+            "color-family"
+          ]
+        },
+        {
+          "name": "blue-40",
+          "group": "blue",
+          "step": "40",
+          "value": "oklch(72% 0.12 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Keeps the brand hue (255) on dark screens and raises lightness for contrast.",
+          "based_on": [
+            "color-family",
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-0",
+          "group": "gray",
+          "step": "0",
+          "value": "oklch(100% 0 0)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Default background for light screens.",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-100",
+          "group": "gray",
+          "step": "100",
+          "value": "oklch(96% 0.005 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Body text on dark screens. Tinted very slightly toward the brand hue to glare less than pure white.",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-600",
+          "group": "gray",
+          "step": "600",
+          "value": "oklch(48% 0.015 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Secondary text on light screens, aiming for at least 4.5:1 on white."
+        },
+        {
+          "name": "gray-900",
+          "group": "gray",
+          "step": "900",
+          "value": "oklch(24% 0.015 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Body text on light screens."
+        },
+        {
+          "name": "gray-950",
+          "group": "gray",
+          "step": "950",
+          "value": "oklch(17% 0.012 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Default background for dark screens; it smears less than pure black.",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "red-60",
+          "group": "red",
+          "step": "60",
+          "value": "rgb(196, 33, 58)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Error state color, kept outside the accent budget so it stays distinct from the brand color."
+        }
+      ],
+      "semantic": [
+        {
+          "name": "surface-page",
+          "role": "Page background",
+          "references": {
+            "light": "gray-0",
+            "dark": "gray-950"
+          },
+          "status": "proposed"
+        },
+        {
+          "name": "text-primary",
+          "role": "Body text and logged numbers",
+          "references": {
+            "light": "gray-900",
+            "dark": "gray-100"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "text-secondary",
+          "role": "Secondary notes and units",
+          "references": {
+            "light": "gray-600",
+            "dark": "unknown"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "action-primary",
+          "role": "Primary buttons and link text",
+          "references": {
+            "light": "blue-60",
+            "dark": "blue-40"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "status-negative",
+          "role": "Input errors",
+          "references": {
+            "light": "red-60",
+            "dark": "unknown"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        }
+      ]
+    },
+    "typography": {
+      "primitives": [
+        {
+          "name": "type-body",
+          "value": {
+            "font_family": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+            "font_size": "1rem",
+            "font_weight": "400",
+            "line_height": "1.6",
+            "letter_spacing": "unknown"
+          },
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "The typeface was left to the AI. A system stack shows Korean and English text without web fonts; letter spacing stays open until rendered."
+        }
+      ],
+      "semantic": [
+        {
+          "name": "text-body",
+          "role": "Body text and log lists",
+          "references": {
+            "default": "type-body"
+          },
+          "status": "proposed"
+        }
+      ]
+    },
+    "spacing": {
+      "primitives": [
+        {
+          "name": "space-2",
+          "value": "0.5rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Gap between a number and its unit in the log list."
+        },
+        {
+          "name": "space-4",
+          "value": "1rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Gap between related items."
+        },
+        {
+          "name": "space-6",
+          "value": "1.5rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Gap between sections, sized for one-handed use."
+        }
+      ],
+      "semantic": [
+        {
+          "name": "content-gap",
+          "role": "Between related items",
+          "references": {
+            "default": "space-2"
+          },
+          "status": "proposed"
+        },
+        {
+          "name": "section-gap",
+          "role": "Between sections",
+          "references": {
+            "default": "space-6"
+          },
+          "status": "proposed"
+        }
+      ]
+    },
+    "radius": {
+      "primitives": [
+        {
+          "name": "radius-4",
+          "value": "4px",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Following the slightly rounded answer, inputs and buttons get a small radius.",
+          "based_on": [
+            "corner-style"
+          ]
+        },
+        {
+          "name": "radius-8",
+          "value": "8px",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "Outer radius of log cards. Inner elements sit 4px inside and share the 4px radius concentrically.",
+          "based_on": [
+            "corner-style"
+          ]
+        }
+      ],
+      "semantic": [
+        {
+          "name": "control-corner",
+          "role": "Inputs and buttons",
+          "references": {
+            "default": "radius-4"
+          },
+          "relationship": "independent",
+          "status": "proposed"
+        },
+        {
+          "name": "card-corner",
+          "role": "Log cards",
+          "references": {
+            "default": "radius-8"
+          },
+          "relationship": "shared-contour",
+          "status": "proposed"
+        }
+      ]
+    }
+  },
+  "changes": [],
+  "decisions": {
+    "proposed": [
+      "Use the brand color for primary actions only; on dark screens use a lighter step of the same hue."
+    ],
+    "retained": [],
+    "rejected": [
+      "Pill-shaped buttons everywhere: they do not match the slightly rounded answer."
+    ],
+    "open": [
+      "Decide dark-screen secondary text and error colors after rendering and checking contrast.",
+      "Decide letter spacing after rendering real sentences."
+    ]
+  }
+}

@@ -14,7 +14,7 @@
 
 **English** · [한국어](README.ko.md) · [日本語](README.ja.md)
 
-[Quick start](#quick-start) · [How it works](#how-it-works) · [Skills](#skills) · [What you get back](#what-you-get-back) · [Docs](#documentation)
+[Quick start](#quick-start) · [See it in action](#see-it-in-action) · [How it works](#how-it-works) · [Skills](#skills) · [What you get back](#what-you-get-back) · [Docs](#documentation)
 
 </div>
 
@@ -63,6 +63,71 @@ pages. Install the full catalog for the complete workflow.
 > [migration guide](docs/skill-name-migration.md) so local changes are kept and
 > old and new packages are not both discovered.
 
+## See it in action
+
+Every screenshot below is a real page rendered by the bundled script from the
+example data in [`examples/`](examples/README.md). Nothing is mocked up.
+
+### Choose how tokens are proposed
+
+Before proposing design tokens, the agent asks once: analyze the project on its
+own, or ask you a few questions first. The questions come from one shared
+question bank and print as plain text, so Claude Code, Codex, and any other
+client ask exactly the same thing.
+
+```text
+1. How should the design token proposal be made?
+   A. AI proposal: analyze the project and propose
+   B. Guided: answer 4 short questions first
+
+You › B
+
+1. Which color family should lead the interface?
+   A. Blue or navy
+   B. Green or teal
+   C. Warm (red or orange)
+   D. Let the AI choose
+   Or write your own: another hue, neutral, or an existing brand color such as
+   #0f766e, rgb(15, 118, 110), or oklch(51.1% 0.086 186.4)
+… screen theme, typeface style, and corner style follow …
+
+You › 1 oklch(52% 0.17 255)  2C  3D  4B
+```
+
+### Review the proposal as one page
+
+<img src=".github/assets/showcase/token-proposal-overview-en.png" width="100%" alt="Token proposal page header with the approach 'Guided by your answers' and a 'Your choices' table listing each question, the answer, and the tokens it shaped">
+
+<sub>**Your answers stay traceable.** Each answer lists the tokens it shaped. "Let the AI choose" shapes nothing, so the AI's own choices are never passed off as yours.</sub>
+
+<img src=".github/assets/showcase/token-proposal-primitives-en.png" width="100%" alt="Color primitives table with a swatch, the value, hex, rgb(), and oklch() notations, and evidence; AI-picked values carry a 'Newly chosen' tag">
+
+<sub>**See the color, then copy the format you use.** Each color has a swatch and its hex, `rgb()`, and `oklch()` notations. Values the AI picked are tagged *Newly chosen*; the brand color you supplied keeps its source.</sub>
+
+<img src=".github/assets/showcase/token-proposal-semantic-en.png" width="100%" alt="Semantic color table with light and dark mappings and contrast results checked separately for each theme; undecided dark values marked unknown">
+
+<sub>**Contrast per theme, with gaps left visible.** Light and dark are checked separately. Dark values you have not decided stay *unknown* instead of being filled in.</sub>
+
+Render the same page yourself:
+
+```bash
+python skills/review-visuals/scripts/render_token_proposal.py examples/token-proposal-guided.en.json --output token-proposal.html
+```
+
+### Checks that know their scope
+
+A one-label change gets targeted checks. It can pass for the changed surface,
+and it still never calls the product release-ready. This is the bundled
+validator's output for that case, trimmed:
+
+```json
+{
+  "verdict": "targeted-pass",
+  "release_ready": false,
+  "not_checked": ["deletion", "glance-hierarchy", "growth", "keyboard-focus", "provenance", "reduced-motion", "substitution"]
+}
+```
+
 ## How it works
 
 Start with `design-workflow` for a broad review. It picks only the steps the
@@ -87,7 +152,7 @@ ask for them. Review-only requests leave artifact files unchanged.
 | **`verify-content`**<br>Check which claims the sources support | A source-traced content inventory with gaps left visible |
 | **`plan-structure`**<br>Choose content order and navigation | A task-based structure, with rejected options recorded |
 | **`review-components`**<br>Define a reusable UI contract | Anatomy, states, behavior, accessibility, ownership, and design-code parity |
-| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, when you ask for one, a token proposal made by AI analysis or from your answers to a few questions, rendered as an HTML page that lists each color in hex, rgb(), and oklch() |
+| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, on request, a [token proposal page](#see-it-in-action) built by AI analysis or from your answers |
 | **`edit-copy`**<br>Edit product copy | Specific, supported copy in the product's voice for each locale |
 | **`review-motion`**<br>Review animation and transitions | Keep, reduce, replace, or remove decisions, with reduced-motion support |
 | **`check-accessibility`**<br>Simplify without losing access | Semantics, keyboard, focus, reflow, contrast, and status checks |
