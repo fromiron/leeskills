@@ -21,6 +21,7 @@ results; a review-only request does not authorize edits.
 - Inspected version:
 - User:
 - Primary task:
+- Decision contexts:
 - Supplied evidence:
 - Not inspected:
 
@@ -41,6 +42,18 @@ results; a review-only request does not authorize edits.
 - Content sequence:
 - Rejected alternatives:
 - Responsive reflow:
+
+## Components and interaction
+
+Use only when reusable components, affordances, action hierarchy or
+visibility, grouping cues, or design-system lifecycle are in scope.
+
+| Component or decision context | Contract area | Evidence state | Status | Drift, unknown, or exception | Owner |
+|---|---|---|---|---|---|
+
+- Contract areas: anatomy, states, content, responsive, accessibility, tokens,
+  parity, affordance mapping, action hierarchy, action visibility, grouping
+  cues, system lifecycle
 
 ## Visual budget
 

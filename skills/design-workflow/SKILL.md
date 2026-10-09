@@ -237,28 +237,12 @@ a multi-area workflow, a release verification, or when the user asks for a full
 report. For a narrow request, report the findings, changes, checks, unknowns,
 and rollback that apply, in proportion to the request.
 
-A full report includes:
-
-1. scope and supplied evidence;
-2. primary user, task, and decision contexts;
-3. observed signals;
-4. selected structure;
-5. content gaps and prohibited inventions;
-6. component contract, state coverage, ownership, and design-code parity when in
-   scope;
-7. affordance mapping, action hierarchy, visibility, grouping cues, and
-   design-system lifecycle when in scope;
-8. visual budget, nested-radius relationships, and justified exceptions;
-9. copy decisions with locale, `correct`/`suggest`/`keep`, evidence status,
-   evidence and voice basis, unresolved information, and multilingual or
-   runtime parity when in scope;
-10. motion decisions;
-11. accessibility findings;
-12. deletion plan ordered by impact and reversibility;
-13. actual diff or changed-file paths when edits were requested, separated from
-    proposals and deferred work;
-14. verification methods, results, and the artifact version inspected;
-15. unresolved unknowns and rollback instructions for applied changes.
+The template orders the sections and marks which apply only when in scope.
+Whatever the size, keep these separate: applied diffs or changed-file paths
+versus proposals and deferred work; copy decisions as `correct`, `suggest`, or
+`keep` with locale and evidence status; verification scope, methods, results,
+and the artifact version inspected; and unresolved unknowns with rollback
+instructions for applied changes.
 
 ## Completion rule
 

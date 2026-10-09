@@ -1267,6 +1267,65 @@ class CommandTests(unittest.TestCase):
                     msg=f"{markdown} links outside its package: {target}",
                 )
 
+    def test_references_are_reachable_one_level_from_skill(self) -> None:
+        # A reference may cross-link another, but SKILL.md must link it directly
+        # so that no instruction is reachable only through a chain of references.
+        for package in sorted((ROOT / "skills").iterdir()):
+            references = package / "references"
+            if not references.is_dir():
+                continue
+            direct = {
+                target
+                for markdown, target in self.package_link_targets(package)
+                if markdown.name == "SKILL.md" and markdown.parent == package
+            }
+            for markdown, target in self.package_link_targets(references):
+                if target.parent == references.resolve():
+                    self.assertIn(
+                        target,
+                        direct,
+                        msg=f"{markdown} chains to {target.name}, which SKILL.md does not link",
+                    )
+
+    def test_optional_procedures_load_conditionally_and_keep_core_gates(self) -> None:
+        components = ROOT / "skills" / "review-components"
+        visuals = ROOT / "skills" / "review-visuals"
+        conditional = {
+            components / "references" / "interaction-governance.md": components,
+            components / "references" / "system-lifecycle.md": components,
+            visuals / "references" / "token-proposal.md": visuals,
+        }
+        for reference, package in conditional.items():
+            text = reference.read_text(encoding="utf-8")
+            self.assertRegex(text.split("\n## ", 1)[0], r"Read this file (?:only )?when")
+            skill = (package / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn(f"](references/{reference.name})", skill)
+
+        component_skill = (components / "SKILL.md").read_text(encoding="utf-8")
+        hard_gates = component_skill.split("## Hard gates", 1)[1].split("\n## ", 1)[0]
+        for phrase in (
+            "accessible name, keyboard path, or visible",
+            "competing primary actions",
+            "hidden behind disclosure",
+            "design-system lifecycle remains `fail` or `unknown`",
+        ):
+            self.assertIn(phrase, " ".join(hard_gates.split()))
+        rules = (components / "references" / "contract-rules.md").read_text(encoding="utf-8")
+        for moved in ("## Affordance mapping", "## Design-system lifecycle and adoption"):
+            self.assertNotIn(moved, rules)
+
+        visual_skill = (visuals / "SKILL.md").read_text(encoding="utf-8")
+        self.assertNotIn("### Build the page", visual_skill)
+        self.assertNotIn("render_token_proposal.py", visual_skill)
+        token_summary = " ".join(visual_skill.split("## Token proposal", 1)[1].split("\n## ", 1)[0].split())
+        for phrase in (
+            "only when the user asks",
+            "stay `unknown`",
+            "design hypotheses with a rationale",
+            "not evidence that the project adopted",
+        ):
+            self.assertIn(phrase, token_summary)
+
     def test_workflow_only_install_is_self_contained_from_another_workdir(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workdir = Path(directory) / "project"

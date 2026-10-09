@@ -91,7 +91,21 @@ Do not set universal numeric defaults for breakpoint values, spacing steps,
 letter spacing, or line height. Use the project's tokens and rendered evidence.
 
 Read [references/budget-rules.md](references/budget-rules.md) before applying
-the defaults to data-rich, editorial, expressive, or brand-led work.
+the defaults to data-rich, editorial, expressive, or brand-led work. Otherwise
+read only the sections in scope:
+
+- spacing or responsive containers:
+  [spacing roles](references/budget-rules.md#spacing-roles-and-responsive-relationships)
+  and [container ownership](references/budget-rules.md#responsive-container-ownership);
+- typography:
+  [type roles and typography context](references/budget-rules.md#type-roles-and-typography-context);
+- nested rounded surfaces:
+  [nested radius coherence](references/budget-rules.md#nested-radius-coherence);
+- CTA treatments or grouping:
+  [CTA styles](references/budget-rules.md#cta-styles-and-action-priority) and
+  [grouping cues](references/budget-rules.md#grouping-cues);
+- an overage that may be justified:
+  [legitimate exceptions](references/budget-rules.md#legitimate-exceptions).
 
 ## Workflow
 
@@ -125,9 +139,6 @@ Use:
 
 - [assets/visual-budget.schema.json](assets/visual-budget.schema.json)
 - [assets/visual-budget-example.json](assets/visual-budget-example.json)
-- [assets/token-proposal.schema.json](assets/token-proposal.schema.json)
-- [assets/token-proposal-example.json](assets/token-proposal-example.json)
-- [assets/token-proposal-template.html](assets/token-proposal-template.html)
 
 Check a structured budget:
 
@@ -143,123 +154,20 @@ The script validates count metrics and declared radius relationships. It cannot
 decide whether font-dependent typography or responsive spacing is appropriate;
 record those conclusions separately with project and rendered evidence.
 
-## Token proposal artifact
+## Token proposal
 
 Recommend a token proposal when repeated raw values, inconsistent naming,
 responsive drift, or unclear ownership indicate that a shared system is
-needed. Build the proposal files only when the user asks for token
-definitions or a proposal page, or explicitly chooses that deliverable. The
-page presents the applicable Color, Typography, Spacing, Layout, and Radius
-foundations in one self-contained HTML file.
+needed. Build the proposal JSON and HTML page only when the user asks for
+token definitions or a proposal page, or explicitly chooses that deliverable.
+Then read [references/token-proposal.md](references/token-proposal.md) for the
+normalize and new-system evidence gates, token decisions, the
+write → validate → render → inspect procedure, and the page requirements.
 
-Evidence gate for normalizing an existing system (`"mode": "normalize"`, the
-default): inspect the project's source tokens, CSS or theme values, computed
-styles, representative content, and rendered viewports before filling numeric
-proposals. If that evidence is unavailable, stop numeric design work, request
-or locate it, and provide only a name-and-role scaffold with values marked
-`unknown`. Do not invent a convenient scale merely to complete the page.
-
-New system (`"mode": "new-system"`): when the user asks for a new system and
-the project has no tokens for the scope, a value may be a design hypothesis.
-Mark it `"basis": "hypothesis"` with a `rationale` tied to the stated
-requirements, content, brand, or platform. Keep values the project already
-supplied, such as an approved brand color, as observed with evidence. The
-validator rejects hypotheses in normalize mode and hypotheses without a
-rationale. Render the proposal and run its checks before reporting any result
-as measured.
-
-### Decide the tokens
-
-1. Inventory current names, raw values, usage frequency, responsive mappings,
-   aliases, and exceptions before proposing a scale.
-2. Extend the project's naming convention when one exists. Otherwise propose a
-   consistent namespace and show its parts, for example category and step for
-   primitives and category and role for semantic tokens.
-3. Propose primitive tokens as single reusable values without component
-   meaning. Do not give a primitive per-breakpoint values.
-4. Propose semantic tokens by role, such as text primary, content gap, section
-   gap, container padding, page title, card corner, or pill corner. Map each
-   semantic token to primitives per context: `default`, a breakpoint, a
-   language, or a theme such as `light` and `dark`.
-5. Record current-to-proposed mappings, merged and renamed aliases, deletions,
-   retained exceptions, rationale, evidence, and adoption status. Label
-   unverified recommendations as `proposed` or `unknown`, never as existing
-   standards.
-6. In normalize mode, derive values by clustering the project's current system
-   and testing the rendered result. In new-system mode, derive each hypothesis
-   from the stated requirements, content, and platform, then render and test
-   it. Do not copy Codeit or another system's numbers, token names, or
-   branding unless the project explicitly adopts that system.
-7. For color, keep status, data, and validation colors separate from accents
-   and declare the background each text or status color must meet, with the
-   required contrast ratio.
-8. For typography, propose letter spacing and line height separately for the
-   actual font, fallback, script, language, size, weight, and role. Do not
-   extrapolate one font's values across unrelated roles.
-
-### Build the page
-
-Prefer the data path, which keeps the page consistent and checkable:
-
-1. Write the proposal as JSON matching
-   [assets/token-proposal.schema.json](assets/token-proposal.schema.json);
-   [assets/token-proposal-example.json](assets/token-proposal-example.json)
-   shows every field of a normalize proposal, and
-   [assets/token-proposal-new-system-example.json](assets/token-proposal-new-system-example.json)
-   shows design hypotheses in a new-system proposal. Set `language` to the
-   reader's language (`en`, `ko`, or `ja` chrome is bundled) and write titles,
-   roles, and notes in that language.
-2. Validate it. The validator rejects observed values without evidence,
-   hypotheses without a rationale or outside new-system mode, references to
-   undefined primitives, CSS values that could inject rules or load resources,
-   and computable contrast below the declared minimum:
-
-   ```bash
-   python scripts/validate_token_proposal.py proposal.json
-   ```
-
-3. Render the page from the validated JSON. The renderer reuses the
-   template's stylesheet and localized chrome, omits foundations that are not
-   in scope, and refuses invalid input:
-
-   ```bash
-   python scripts/render_token_proposal.py proposal.json --output design-token-proposal.html
-   ```
-
-4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
-   previews draw the proposed values, unknown values show the unknown marker,
-   design hypotheses show the hypothesis marker,
-   the page does not scroll horizontally, and tables scroll only inside their
-   own regions. Fix the data, not the generated markup, then render again.
-5. Check the final file and report the output path, unknown values, and open
-   decisions:
-
-   ```bash
-   python scripts/validate_token_proposal.py proposal.json --html design-token-proposal.html
-   ```
-
-Without Python, copy
-[assets/token-proposal-template.html](assets/token-proposal-template.html),
-replace or explicitly resolve every placeholder, duplicate rows, ramp steps,
-and frames as needed, delete out-of-scope sections from both the page and its
-navigation, and state that the deterministic checks were not run.
-
-The page must keep: the status badge and `data-proposal-status="proposed"`;
-previews drawn from the proposed values (color ramps and pairs, type
-specimens, spacing bars, radius corners, container frames); one column per
-mapping context; the unknown marker instead of guessed values; the
-design-hypothesis marker on new-system values; the changes and
-decisions sections; semantic headings, table captions, keyboard-scrollable
-table regions, visible focus, reflow, reduced-motion behavior, and print
-readability; and no network requests. The template's own chrome follows the
-default budget in this skill; do not add decorative gradients, glows, or
-shadows to it.
-
-When the user requested the files, write them where the user asked, or to an
-established project documentation or artifact directory; otherwise write
-`design-token-proposal.html` to the project root and report the path. The
-artifact is a review proposal, not evidence that the project has adopted the
-tokens.
+These limits apply even without that file: normalized values trace to project
+or rendered evidence or stay `unknown`; new-system values are labeled design
+hypotheses with a rationale; undecided contexts stay open; and a proposal is
+not evidence that the project adopted the tokens.
 
 ## Rules
 

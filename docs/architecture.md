@@ -67,6 +67,13 @@ Every `SKILL.md` contains only the core workflow and tells the agent when to
 load a reference or template. This reduces context use and avoids forcing
 irrelevant details into every run.
 
+Optional procedures live in conditional references that `SKILL.md` links
+directly with their loading condition, for example the token proposal build in
+`review-visuals` and the interaction-governance and design-system lifecycle
+procedures in `review-components`. Safety rules, hard gates, and the delivery
+contract stay in each `SKILL.md` so a standalone install keeps them. Measure the
+resources a client actually loads before claiming a context saving.
+
 ## Portability boundary
 
 Core skills use only fields from the open Agent Skills specification:
