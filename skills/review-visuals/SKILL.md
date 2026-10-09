@@ -1,6 +1,6 @@
 ---
 name: review-visuals
-description: Use this skill to audit or define a constrained visual system for a website, interface, landing page, portfolio, or design system. Use when layout grammars, spacing scales, responsive containers, typefaces, type roles, typography settings, colors, radii, shadows, surfaces, CTA styles, imagery, or motion need consolidation or contextual review. Treat count limits as defaults, nested-radius rules as relationship checks, and letter spacing or line height as font- and context-dependent rather than universal numeric laws.
+description: Audits or defines the visual value system of a website, interface, landing page, portfolio, or design system, including layout grammars, spacing and container roles, typefaces and type roles, typography settings, colors, radii and nested-radius relationships, shadows, surfaces, CTA styles, and imagery. Use when visual variants need consolidation, a relationship such as nested radii needs checking, or the user asks for token definitions or a token proposal page. Not for component behavior, states, or parity, motion behavior, or a full accessibility review.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

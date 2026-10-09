@@ -142,5 +142,23 @@
     "language": "ja",
     "query": "直径20ピクセルの円の半径を計算してください。",
     "should_trigger": false
+  },
+  {
+    "id": "en-negative-4",
+    "language": "en",
+    "query": "Document the loading, disabled, and error states of our Select component across design and code.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-4",
+    "language": "ko",
+    "query": "디자인과 코드에서 Select 컴포넌트의 로딩·비활성·오류 상태를 정리해 줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-4",
+    "language": "ja",
+    "query": "デザインとコードでSelectコンポーネントの読み込み中・無効・エラー状態をまとめてください。",
+    "should_trigger": false
   }
 ]

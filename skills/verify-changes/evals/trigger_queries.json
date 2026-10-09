@@ -70,5 +70,23 @@
     "language": "ja",
     "query": "新しいアーカイブの主要な情報構造を選んでください。",
     "should_trigger": false
+  },
+  {
+    "id": "en-negative-3",
+    "language": "en",
+    "query": "Give me a quick read of the biggest problems in this landing page screenshot.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-3",
+    "language": "ko",
+    "query": "이 랜딩 페이지 스크린샷에서 가장 큰 문제만 빠르게 봐 줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-3",
+    "language": "ja",
+    "query": "このランディングページのスクリーンショットで一番大きな問題だけ手短に見てください。",
+    "should_trigger": false
   }
 ]

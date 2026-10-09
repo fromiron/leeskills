@@ -1,6 +1,6 @@
 ---
 name: plan-structure
-description: Use this skill to choose the dominant information structure for a website, interface, portfolio, archive, product page, profile, institution, or task flow after the user and content are grounded. Use when deciding between a list, timeline, index, catalog, product explanation, or workflow. Do not use visual style trends or a default card grid as the primary selection criterion.
+description: Chooses the dominant information structure for a website, interface, portfolio, archive, product page, profile, institution, or task flow after the user and content are grounded. Use when deciding between a profile, list, timeline, index, catalog, product explanation, or workflow, or when a page needs restructuring. Not for visual styling, copy edits, or choosing a layout from trends or a default card grid.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

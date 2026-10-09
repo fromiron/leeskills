@@ -1,6 +1,6 @@
 ---
 name: review-components
-description: Use this skill to audit or define reusable UI component and design-system contracts across design files, documentation, Storybook, source code, and live usage. Use when anatomy, variants, states, content, responsive or accessibility behavior, semantic tokens, design-code parity, affordance mapping, action priority or visibility, grouping cues, or design-system adoption need review. Do not use it for a visual-token-only request or to copy another design system's component specifications.
+description: Audits or defines reusable UI component and design-system contracts across design files, documentation, Storybook, source code, and live usage, covering anatomy, variants, states, content, responsive and accessibility behavior, semantic token mapping, design-code parity, affordances, action priority and visibility, grouping cues, and design-system adoption. Use when the question is how a component behaves or should behave. Not for consolidating visual values such as color, spacing, type, or radius tokens, and not for copying another design system's component specifications.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

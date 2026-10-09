@@ -1,6 +1,6 @@
 ---
 name: verify-changes
-description: Use this skill after grounding, redesign, rewriting, or simplification to remove unsupported or unnecessary elements and verify that the result still preserves user tasks, evidence, identity, accessibility, responsive behavior, and reduced-motion behavior. Use it for final anti-slop QA, deletion tests, before-and-after verification, release checks, or a reversible change plan. Do not use it as a substitute for full usability research or complete accessibility conformance testing.
+description: Verifies that a specific change made after grounding, redesign, rewriting, or simplification preserves user tasks, evidence, identity, accessibility, responsive behavior, and reduced-motion behavior, with targeted checks for a narrow change and full checks when a release decision is requested. Use for before-and-after verification, deletion and consolidation tests, release QA, or a reversible change plan. Not for a first diagnosis of an artifact, full usability research, or complete accessibility conformance testing.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

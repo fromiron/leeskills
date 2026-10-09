@@ -1,6 +1,6 @@
 ---
 name: audit-design
-description: Use this skill to audit an existing website, UI, portfolio, landing page, design system, or generated visual artifact for generic, unsupported, redundant, inaccessible, or purposeless design signals. Use when the user asks for an anti-slop review, a simplification audit, a scored diagnosis, or a prioritized removal plan. Do not use it to determine whether AI authored the artifact.
+description: Diagnoses an existing website, UI, portfolio, landing page, design system, or generated visual artifact for generic, unsupported, redundant, inaccessible, or purposeless design signals and prioritizes what to remove or fix. Use for one diagnostic pass, such as a quick read of a page or screenshot, an anti-slop or simplification audit, or a scored audit when the user asks for scoring. Not for coordinating a multi-area redesign, verifying a specific change, editing copy, or deciding whether AI authored the artifact.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

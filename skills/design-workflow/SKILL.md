@@ -1,6 +1,6 @@
 ---
 name: design-workflow
-description: Use this skill to plan or run an end-to-end anti-slop review of a website, interface, portfolio, landing page, product flow, component library, design system, or generated design. Use when the user asks to simplify, de-slop, remove generic AI design, ground content, audit visual and verbal excess, correct misleading affordances or action hierarchy, or align reusable components. Do not use it for a narrow copy-only, motion-only, accessibility-only, or component-only request when a focused skill is sufficient.
+description: Plans and runs a multi-area review or build of a website, interface, landing page, portfolio, product flow, component library, or generated design by combining focused skills into one scoped sequence of content grounding, structure, components, visuals, copy, motion, accessibility, and verification. Use when a request spans several of these areas, such as an end-to-end anti-slop review, simplifying or de-slopping a whole page, or a new artifact built from verified material. Not for a single area such as a copy-only edit, a contrast-only check, a motion-only review, a component-only contract, or a one-off scored audit, where the focused skill is enough.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

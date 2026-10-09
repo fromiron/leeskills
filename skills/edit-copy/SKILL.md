@@ -1,6 +1,6 @@
 ---
 name: edit-copy
-description: Use this skill to audit and edit product, interface, landing-page, documentation, portfolio, case-study, or product-narrative copy for specificity, factual support, natural language, and consistency with the product's established voice. Use for vague or inflated claims, translation-like or stiff wording, mixed register, terminology drift, or multilingual screens. Preserve meaning and approved voice; never infer authorship from prose style.
+description: Audits and edits product, interface, landing-page, documentation, portfolio, case-study, or product-narrative copy for specificity, factual support, natural language, and consistency with the product's established voice. Use for vague or inflated claims, translation-like or stiff wording, mixed register, terminology drift, multilingual screens, or localized runtime strings. Not for deciding whether sources support a claim; preserves meaning and approved voice and never infers authorship from prose style.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

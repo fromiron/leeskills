@@ -214,6 +214,21 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertEqual(result["dominant_grammar"], "portfolio-index")
 
+    def test_descriptions_state_role_use_and_exclusion(self) -> None:
+        for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            line = next(
+                item for item in skill.read_text(encoding="utf-8").splitlines()
+                if item.startswith("description: ")
+            )
+            description = line[len("description: "):]
+            # Plain YAML scalars cannot contain ": " or " #".
+            self.assertNotIn(": ", description, msg=skill)
+            self.assertNotIn(" #", description, msg=skill)
+            first_word = description.split(" ", 1)[0]
+            self.assertTrue(first_word.endswith("s"), msg=f"{skill}: start with a third-person verb")
+            self.assertIn(" Use ", description, msg=skill)
+            self.assertIn(" Not ", description, msg=skill)
+
     def test_delivery_convention_is_identical_in_every_skill(self) -> None:
         blocks = {}
         for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):

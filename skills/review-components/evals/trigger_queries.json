@@ -88,5 +88,23 @@
     "language": "ja",
     "query": "提供された製品情報を使って、この汎用的なランディングページの見出しを書き直してください。",
     "should_trigger": false
+  },
+  {
+    "id": "en-negative-3",
+    "language": "en",
+    "query": "Check whether the nested corner radii in this card are coherent.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-3",
+    "language": "ko",
+    "query": "이 카드의 중첩된 모서리 radius가 일관적인지 확인해 줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-3",
+    "language": "ja",
+    "query": "このカードの入れ子になった角丸が整合しているか確認してください。",
+    "should_trigger": false
   }
 ]

@@ -1,6 +1,6 @@
 ---
 name: review-motion
-description: Use this skill to review animations, transitions, parallax, scroll effects, reveals, carousels, and micro-interactions in a website or interface. Keep motion only when it communicates feedback, state, causality, spatial continuity, errors, success, or a user-requested transition. Use when simplifying motion or adding reduced-motion behavior. Do not retain motion merely to make a page feel active.
+description: Reviews animations, transitions, parallax, scroll effects, reveals, carousels, and micro-interactions in a website or interface and decides for each pattern whether to keep, reduce, replace, or remove it and how it behaves with reduced motion. Use when simplifying motion, checking a specific animation, or adding reduced-motion behavior. Not for static visual styling or a full accessibility audit.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

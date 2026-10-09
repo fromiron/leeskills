@@ -1,6 +1,6 @@
 ---
 name: verify-content
-description: Use this skill before designing or rewriting a website, interface, landing page, portfolio, case study, or product narrative when claims must stay grounded in supplied source material. Use it to build a content inventory, trace evidence, identify missing facts, and prevent invented customers, metrics, quotes, outcomes, capabilities, or sections. Do not use it to fabricate placeholder marketing content.
+description: Builds an evidence-backed content inventory so claims in a website, interface, landing page, portfolio, case study, or product narrative stay grounded in supplied sources. Use before designing or rewriting, or to check whether customers, metrics, quotes, outcomes, capabilities, prices, or dates are supported, missing, or contradictory. Not for rewording a claim that is already supported, and never for generating placeholder marketing content.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:

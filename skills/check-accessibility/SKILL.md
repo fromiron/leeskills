@@ -1,6 +1,6 @@
 ---
 name: check-accessibility
-description: Use this skill to verify that simplifying a website or interface does not remove accessible names, semantics, headings, labels, errors, text alternatives, keyboard operation, visible focus, sufficient contrast, reflow, target usability, status feedback, or reduced-motion behavior. Use for accessibility-focused design audits and anti-slop work. Do not claim full WCAG conformance from screenshots or automated checks alone.
+description: Checks that a website or interface keeps accessible names, semantics, headings, labels, errors, text alternatives, keyboard operation, visible focus, sufficient contrast, reflow, target usability, status feedback, and reduced-motion behavior, especially after simplification or redesign. Use for accessibility-focused reviews, contrast or keyboard checks, and the accessibility step of anti-slop work. Not for general visual or copy critique, and not a full WCAG conformance claim from screenshots or automated checks alone.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
