@@ -343,7 +343,7 @@ class CommandTests(unittest.TestCase):
 
     def test_token_proposal_renders_design_hypothesis_markers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            for language, label in (("en", "New proposal"), ("ko", "새 제안"), ("ja", "新しい提案")):
+            for language, label in (("en", "Newly chosen"), ("ko", "새로 정한 값"), ("ja", "新たに決めた値")):
                 document = self.new_system_proposal()
                 document["language"] = language
                 source = Path(directory) / f"{language}.json"

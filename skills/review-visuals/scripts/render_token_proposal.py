@@ -105,7 +105,7 @@ class Page:
         if item.get("basis") != "hypothesis":
             return self.evidence(item.get("evidence"))
         marker = f'<span class="hypothesis" data-basis="hypothesis">{self.t("hypothesis")}</span>'
-        parts = [marker, escape(item.get("rationale", ""))]
+        parts = [f'{marker} · {escape(item.get("rationale", ""))}']
         parts += [escape(entry) for entry in item.get("evidence") or []]
         return "<br>".join(parts)
 
