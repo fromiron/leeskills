@@ -54,6 +54,10 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
+Installed alone, `design-workflow` runs a limited review: it reports which
+focused skills were missing and gives no scores, verdicts, or rendered token
+pages. Install the full catalog for the complete workflow.
+
 > [!TIP]
 > Upgrading from the previous skill names, such as `anti-ai-slop`? Follow the
 > [migration guide](docs/skill-name-migration.md) so local changes are kept and

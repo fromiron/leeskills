@@ -53,6 +53,10 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
+`design-workflow` だけをインストールした場合は限定的なレビューになります。
+不足している専門スキルを示し、スコア・判定・トークンページの生成は行いません。
+ワークフロー全体を使うにはカタログ全体をインストールしてください。
+
 > [!TIP]
 > `anti-ai-slop` などの旧名称でインストールしている場合は、
 > [名称の移行手順](docs/skill-name-migration.md)に従ってください。ローカルの変更を

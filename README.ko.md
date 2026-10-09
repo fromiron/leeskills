@@ -51,6 +51,10 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
+`design-workflow`만 설치하면 제한된 검토만 합니다. 빠진 전문 스킬을 알려 주고,
+점수·판정·토큰 페이지 렌더링은 하지 않습니다. 전체 워크플로에는 전체 카탈로그를
+설치하세요.
+
 > [!TIP]
 > `anti-ai-slop` 같은 이전 이름으로 설치했다면 [이름 전환 안내](docs/skill-name-migration.md)를
 > 따르세요. 직접 수정한 내용을 보존하고, 구이름과 새 이름이 함께 등록되지 않게

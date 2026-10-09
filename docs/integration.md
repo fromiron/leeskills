@@ -20,6 +20,14 @@ The CLI handles agent detection, installation scope, and skill selection. The
 bundled Python installer remains available for offline clones and explicit
 destination control.
 
+`design-workflow` supports three availability levels for each focused step:
+invoke the installed skill, read its sibling package at
+`../<skill-name>/SKILL.md` relative to the workflow package, or run the limited
+contract in its composition map. A workflow-only install uses the limited level:
+it reports which focused skills were missing and does not produce scores,
+verdicts, release decisions, or rendered token pages. Resolve sibling packages
+from the installed skill directory, not the user's working directory.
+
 For an existing installation, use the
 [skill name migration guide](skill-name-migration.md) before switching names.
 The bundled installer does not remove old-name directories or merge local edits.

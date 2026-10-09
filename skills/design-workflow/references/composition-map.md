@@ -1,6 +1,12 @@
 # Composition map
 
-Use this file when the agent client cannot invoke other skills directly.
+Use this file when a focused skill cannot be invoked. When the focused skill's
+package is readable at `../../<skill-name>/SKILL.md` relative to this file,
+follow that `SKILL.md` and its bundled files instead; the contracts below are
+summaries. When it is not readable, these contracts are the **limited** level:
+they keep handoffs consistent, but they do not include the focused skill's
+scoring rules, schemas, validators, or renderers. Report every limited step as
+limited, and do not claim a check or script that is not available ran.
 
 ## Delivery order
 
@@ -13,6 +19,17 @@ Repeat affected checks after later edits. The JSON handoffs below keep their
 existing schemas; record delivery details in the accompanying report.
 
 ## Handoff contracts
+
+### Audit design (`audit-design`)
+
+Limited level: run only the quick-pass contract. Record the artifact, user,
+task, and inspected material; list up to five material findings with evidence
+state (`observed`, `measured`, `inferred`, `unknown`), location, impact,
+smallest fix, and verification method; report directly observed hard failures.
+Do not produce category scores, a quality or slop-risk score, or a verdict:
+the rubric and scorer belong to `audit-design`. Mark accessibility, reflow,
+keyboard, and reduced-motion as unknown unless directly verified. Do not infer
+AI authorship from style.
 
 ### Verify content (`verify-content`)
 
@@ -186,6 +203,12 @@ viewports. Label the page as a proposal and report both paths; do not imply
 adoption. Trace numeric proposals to inspected project or rendered evidence.
 If that evidence is unavailable, leave values `unknown` instead of inventing a
 complete scale.
+
+The proposal schema, validator, renderer, and HTML template belong to the
+`review-visuals` package. At the limited level they are unavailable: present
+the proposal as a table in the report, state that the deterministic checks and
+rendering were not run, and do not hand-build a page that claims to follow the
+bundled template.
 
 ### Edit copy (`edit-copy`)
 

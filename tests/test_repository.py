@@ -1060,6 +1060,79 @@ class CommandTests(unittest.TestCase):
             )
             self.assertEqual(len(conflict["conflicts"]), 1)
 
+    @staticmethod
+    def package_link_targets(package: Path) -> list[tuple[Path, Path]]:
+        link_re = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+        targets = []
+        for markdown in sorted(package.rglob("*.md")):
+            for raw in link_re.findall(markdown.read_text(encoding="utf-8")):
+                if raw.startswith(("#", "http://", "https://", "mailto:")):
+                    continue
+                relative = raw.split("#", 1)[0]
+                if relative:
+                    targets.append((markdown, (markdown.parent / relative).resolve()))
+        return targets
+
+    def test_skill_packages_resolve_links_inside_their_own_directory(self) -> None:
+        for package in sorted((ROOT / "skills").iterdir()):
+            if not package.is_dir():
+                continue
+            for markdown, target in self.package_link_targets(package):
+                self.assertTrue(
+                    str(target).startswith(str(package.resolve())),
+                    msg=f"{markdown} links outside its package: {target}",
+                )
+
+    def test_workflow_only_install_is_self_contained_from_another_workdir(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workdir = Path(directory) / "project"
+            workdir.mkdir()
+            alone = Path(directory) / "alone"
+            catalog = Path(directory) / "catalog"
+            for target, skills in (
+                (alone, ["--skill", "design-workflow"]),
+                (catalog, []),
+            ):
+                completed = subprocess.run(
+                    [
+                        PYTHON,
+                        str(ROOT / "scripts" / "install.py"),
+                        "--client",
+                        "generic",
+                        "--target",
+                        str(target),
+                        *skills,
+                    ],
+                    cwd=workdir,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(completed.returncode, 0, msg=completed.stderr)
+            self.assertEqual([path.name for path in alone.iterdir()], ["design-workflow"])
+            self.assertEqual(list(workdir.iterdir()), [])
+
+            package = alone / "design-workflow"
+            for markdown, target in self.package_link_targets(package):
+                self.assertTrue(target.is_file(), msg=f"{markdown}: missing {target}")
+
+            workflow = (package / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("## Skill availability", workflow)
+            self.assertIn("relative to this file's directory", workflow)
+            focused = re.findall(r"`([a-z]+-[a-z]+)`", workflow)
+            focused = sorted(set(focused) & {p.name for p in (ROOT / "skills").iterdir()})
+            self.assertIn("review-visuals", focused)
+            for name in focused:
+                sibling = (catalog / "design-workflow" / ".." / name / "SKILL.md").resolve()
+                self.assertTrue(sibling.is_file(), msg=f"sibling package missing: {name}")
+                self.assertFalse((alone / name).exists())
+
+            composition = (
+                package / "references" / "composition-map.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("### Audit design (`audit-design`)", composition)
+            self.assertIn("limited level", composition)
+
     def test_repo_installer_new_catalog_preserves_custom_legacy_copy(self) -> None:
         expected_names = {
             "design-workflow", "audit-design", "verify-content", "plan-structure",

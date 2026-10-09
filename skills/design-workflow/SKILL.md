@@ -164,9 +164,25 @@ release verification and scoring; it may not skip evidence labeling, invent
 support, or describe unchecked edits as verified.
 Directly observed hard failures are still reported, without a release decision.
 
-If the client supports skill invocation, activate the listed focused skills.
-Otherwise execute the same sequence using the contracts in
-[references/composition-map.md](references/composition-map.md).
+## Skill availability
+
+This skill may be installed alone. Before each step, check what is actually
+available and use the first level that applies:
+
+1. **Invoke** — the focused skill is installed and the client can invoke it:
+   activate it.
+2. **Read** — the client cannot invoke it, but its package is readable at
+   `../<skill-name>/SKILL.md` relative to this file's directory, not the working
+   directory: read that `SKILL.md` and use its bundled references, schemas, and
+   scripts from that package.
+3. **Limited** — neither is possible: follow only the limited contract for that
+   step in [references/composition-map.md](references/composition-map.md).
+
+At the limited level, do not produce category scores, a quality or slop-risk
+score, a verdict, or release readiness, and do not claim that a missing skill,
+script, schema validator, or renderer ran. Report which steps ran at which
+level, what was skipped, and how the missing skills would change the result.
+Suggest installing the missing skills; do not install or download them.
 
 ## Evidence labels
 
