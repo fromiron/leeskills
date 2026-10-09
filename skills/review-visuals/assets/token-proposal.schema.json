@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Design token proposal",
-  "description": "Evidence-grounded token proposal rendered by scripts/render_token_proposal.py. Values without evidence must be \"unknown\".",
+  "description": "Token proposal rendered by scripts/render_token_proposal.py. In normalize mode every stated value is observed and traced to evidence. In new-system mode a value may be a design hypothesis with a rationale. Values with neither must be \"unknown\".",
   "type": "object",
   "required": [
     "project",
@@ -34,6 +34,13 @@
     },
     "status": {
       "const": "proposed"
+    },
+    "mode": {
+      "enum": [
+        "normalize",
+        "new-system"
+      ],
+      "description": "normalize (default): consolidate an existing system from evidence. new-system: the user asked for a new system without existing tokens."
     },
     "prepared": {
       "type": "string",
@@ -145,6 +152,18 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          "basis": {
+            "enum": [
+              "observed",
+              "hypothesis"
+            ],
+            "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
           }
         }
       }
@@ -201,6 +220,18 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
                   }
                 }
               }
@@ -337,6 +368,18 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
                   }
                 }
               }
@@ -432,6 +475,18 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
                   }
                 }
               }
@@ -527,6 +582,18 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
                   }
                 }
               }
@@ -633,6 +700,18 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
                   }
                 }
               }

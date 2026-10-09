@@ -193,16 +193,23 @@ the actual font, fallback, script, language, size, weight, letter spacing, line
 height, line length, project token, and rendered evidence. Do not use an
 external typography table as a pass/fail threshold.
 
-When shared tokenization is recommended, supply exact proposed names and
-values, distinguish primitive values from semantic roles, and create one
-self-contained HTML review page for the applicable Color, Typography, Spacing,
-Layout, and Radius foundations. Follow the `review-visuals` token proposal
-procedure: write the proposal JSON, validate it, render the page with the
-bundled renderer where Python is available, and inspect it at wide and narrow
-viewports. Label the page as a proposal and report both paths; do not imply
-adoption. Trace numeric proposals to inspected project or rendered evidence.
-If that evidence is unavailable, leave values `unknown` instead of inventing a
-complete scale.
+Separate four paths: auditing or normalizing an existing system, proposing a
+new system, verifying a rendered proposal, and building proposal files. When
+shared tokenization would help, recommend it with exact proposed names and
+values and distinguish primitive values from semantic roles. Create the
+proposal JSON and the self-contained HTML page only when the user asks for or
+chooses that deliverable; then follow the `review-visuals` token proposal
+procedure: write the JSON, validate it, render it with the bundled renderer
+where Python is available, inspect it at wide and narrow viewports, and report
+both paths without implying adoption.
+
+When normalizing, trace numeric proposals to inspected project or rendered
+evidence; if that evidence is unavailable, leave values `unknown` instead of
+inventing a complete scale. When the user asks for a new system and no project
+tokens exist, label each new value as a design hypothesis with its rationale,
+keep supplied project values as observed, and leave undecided contexts such as
+a dark theme as open decisions. Report contrast or reflow as measured only
+after checking the rendered proposal.
 
 The proposal schema, validator, renderer, and HTML template belong to the
 `review-visuals` package. At the limited level they are unavailable: present

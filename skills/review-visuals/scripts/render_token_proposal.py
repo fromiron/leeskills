@@ -92,6 +92,15 @@ class Page:
             return self.unknown()
         return "<br>".join(escape(item) for item in items)
 
+    def basis(self, item: dict[str, Any]) -> str:
+        """Evidence for observed values; a marked rationale for design hypotheses."""
+        if item.get("basis") != "hypothesis":
+            return self.evidence(item.get("evidence"))
+        marker = f'<span class="hypothesis" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+        parts = [marker, escape(item.get("rationale", ""))]
+        parts += [escape(entry) for entry in item.get("evidence") or []]
+        return "<br>".join(parts)
+
     def listing(self, items: list[str] | None) -> str:
         if not items:
             return f'<span class="muted-small">{self.t("none")}</span>'
@@ -227,7 +236,7 @@ class Page:
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{preview}'
                 f'<td class="value">{self.value(value)}</td>'
                 f'<td class="value">{self.listing(item.get("current_values"))}</td>'
-                f'<td class="evidence">{self.evidence(item.get("evidence"))}</td></tr>'
+                f'<td class="evidence">{self.basis(item)}</td></tr>'
             )
         return rows
 
@@ -319,7 +328,7 @@ class Page:
             specimen = escape(item.get("specimen") or default_text)
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code>'
-                f'<p class="muted-small">{self.evidence(item.get("evidence"))}</p></th>'
+                f'<p class="muted-small">{self.basis(item)}</p></th>'
                 f'<td><p class="specimen" style="{style}">{specimen}</p><dl class="type-values">{values}</dl></td></tr>'
             )
         primitives = self.table(
@@ -359,6 +368,13 @@ class Page:
                 '<figure class="frame"><div class="frame-canvas"><div class="frame-content">'
                 f'{self.t("frame_width")} {resolve("content-width")}</div></div>'
                 f'<figcaption><strong>{escape(name)} · {self.value(breakpoint.get("min_width"))}</strong>'
+                + (
+                    f' <span class="hypothesis" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+                    if breakpoint.get("basis") == "hypothesis"
+                    and breakpoint.get("min_width") not in (None, "", UNKNOWN)
+                    else ""
+                )
+                + ""
                 f'{self.t("frame_padding")} {resolve("page-padding")}</figcaption></figure>'
             )
         if frames:
@@ -412,6 +428,7 @@ class Page:
         sections += [self.changes(), self.decisions()]
         data = self.data
         basis = "<br>".join(escape(item) for item in data["evidence_basis"])
+        boundary = "boundary_text_new_system" if data.get("mode") == "new-system" else "boundary_text"
         return f"""<!-- shell:start -->
   <a class="skip-link" href="#content">{self.t("skip")}</a>
   <div class="app">
@@ -437,7 +454,7 @@ class Page:
             <div><dt>{self.t("meta_prepared")}</dt><dd>{escape(data["prepared"])}</dd></div>
             <div><dt>{self.t("meta_status")}</dt><dd>{self.t("status_value")}</dd></div>
           </dl>
-          <div class="notice"><strong>{self.t("boundary_title")}</strong><p>{self.t("boundary_text")}</p></div>
+          <div class="notice"><strong>{self.t("boundary_title")}</strong><p>{self.t(boundary)}</p></div>
         </header>
         {"".join(sections)}
         <footer class="doc-footer">{self.t("footer")}</footer>
@@ -491,6 +508,7 @@ def main() -> int:
         "rendered": page_check["valid"],
         "output": str(args.output) if page_check["valid"] else None,
         "unknown_values": report["unknown_values"],
+        "hypothesis_values": report["hypothesis_values"],
         "warnings": report["warnings"],
         "html": page_check,
     }

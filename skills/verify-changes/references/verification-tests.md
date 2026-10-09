@@ -174,8 +174,10 @@ When a shared token system or token documentation page was proposed:
    explicit responsive, language, or theme mapping;
 2. confirm that exact proposed names and values, current-to-proposed mappings,
    retained exceptions, evidence, and adoption status are present;
-3. trace every numeric proposal to inspected project or rendered evidence and
-   reject a convenient scale invented only to fill the page;
+3. trace every normalized numeric proposal to inspected project or rendered
+   evidence and reject a convenient scale invented only to fill the page; in a
+   new-system proposal, confirm that each new value is labeled a design
+   hypothesis with a rationale and that undecided contexts stay open;
 4. reject unresolved template placeholders; use an explicit `unknown` entry
    when evidence is missing;
 5. confirm that the single HTML artifact has no external runtime dependencies
@@ -183,7 +185,10 @@ When a shared token system or token documentation page was proposed:
 6. inspect headings, table captions, keyboard focus, wide and narrow reflow,
    reduced motion, and print output;
 7. confirm that the artifact labels recommendations as proposals rather than
-   adopted project standards.
+   adopted project standards, and design hypotheses as hypotheses rather than
+   existing values or measurements;
+8. confirm that the proposal files were requested; an audit alone does not
+   require them.
 
 Do not approve the artifact merely because its token tables are complete.
 Rendered specimens and project-owner adoption remain separate requirements.

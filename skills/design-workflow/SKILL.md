@@ -75,7 +75,8 @@ again before the final result is reported.
 
 1. `verify-content`
 2. `plan-structure`
-3. `review-visuals`
+3. `review-visuals`, on its new-system path when no project tokens exist:
+   proposed values are labeled design hypotheses, not existing facts
 4. `edit-copy`
 5. `review-motion`
 6. `check-accessibility`

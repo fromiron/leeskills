@@ -35,6 +35,26 @@ the request; a small fix does not need a full report.
 This skill uses "entropy budget" as a practical inventory of visual variants.
 It is not a formal information-theory calculation.
 
+## Choose a path
+
+Identify the path from the request before inspecting values. Paths can
+combine, but each keeps its own evidence rule.
+
+| Path | When | Numbers come from | Output |
+|---|---|---|---|
+| Audit or normalize an existing system | Default for an existing artifact | Project tokens, CSS or theme values, computed styles, rendered evidence | Findings and recommendations |
+| Propose a new system | The user asks for a new visual system and no project system exists for the scope | Stated requirements, content, brand, and platform constraints, labeled as design hypotheses | Proposal with rationale, assumptions, and open decisions |
+| Verify a proposal | After a proposal is rendered | Contrast, reflow, and relationship checks run on the rendered proposal | Check results; unrendered values stay unverified |
+| Build a token proposal file | Only when the user asks for, or explicitly chooses, a proposal JSON or HTML page | One of the paths above | Proposal JSON and HTML page |
+
+- Never present a design hypothesis as an existing project value, standard, or
+  measurement. Never present an unrendered value as measured.
+- Leave contexts the user has not decided, such as a dark theme, as open
+  decisions instead of filling values.
+- An audit can end with findings. When a shared system would help, recommend a
+  token proposal and offer the file; do not create files the user did not ask
+  for.
+
 ## Inputs
 
 Use as available:
@@ -125,17 +145,28 @@ record those conclusions separately with project and rendered evidence.
 
 ## Token proposal artifact
 
-Create a token proposal when repeated raw values, inconsistent naming,
+Recommend a token proposal when repeated raw values, inconsistent naming,
 responsive drift, or unclear ownership indicate that a shared system is
-needed, or when the user asks for token definitions. Present the applicable
-Color, Typography, Spacing, Layout, and Radius foundations in one
-self-contained HTML page.
+needed. Build the proposal files only when the user asks for token
+definitions or a proposal page, or explicitly chooses that deliverable. The
+page presents the applicable Color, Typography, Spacing, Layout, and Radius
+foundations in one self-contained HTML file.
 
-Evidence gate: inspect the project's source tokens, CSS or theme values,
-computed styles, representative content, and rendered viewports before filling
-numeric proposals. If that evidence is unavailable, stop numeric design work,
-request or locate it, and provide only a name-and-role scaffold with values
-marked `unknown`. Do not invent a convenient scale merely to complete the page.
+Evidence gate for normalizing an existing system (`"mode": "normalize"`, the
+default): inspect the project's source tokens, CSS or theme values, computed
+styles, representative content, and rendered viewports before filling numeric
+proposals. If that evidence is unavailable, stop numeric design work, request
+or locate it, and provide only a name-and-role scaffold with values marked
+`unknown`. Do not invent a convenient scale merely to complete the page.
+
+New system (`"mode": "new-system"`): when the user asks for a new system and
+the project has no tokens for the scope, a value may be a design hypothesis.
+Mark it `"basis": "hypothesis"` with a `rationale` tied to the stated
+requirements, content, brand, or platform. Keep values the project already
+supplied, such as an approved brand color, as observed with evidence. The
+validator rejects hypotheses in normalize mode and hypotheses without a
+rationale. Render the proposal and run its checks before reporting any result
+as measured.
 
 ### Decide the tokens
 
@@ -154,9 +185,11 @@ marked `unknown`. Do not invent a convenient scale merely to complete the page.
    retained exceptions, rationale, evidence, and adoption status. Label
    unverified recommendations as `proposed` or `unknown`, never as existing
    standards.
-6. Derive values by clustering the project's current system and testing the
-   rendered result. Do not copy Codeit or another system's numbers, token
-   names, or branding unless the project explicitly adopts that system.
+6. In normalize mode, derive values by clustering the project's current system
+   and testing the rendered result. In new-system mode, derive each hypothesis
+   from the stated requirements, content, and platform, then render and test
+   it. Do not copy Codeit or another system's numbers, token names, or
+   branding unless the project explicitly adopts that system.
 7. For color, keep status, data, and validation colors separate from accents
    and declare the background each text or status color must meet, with the
    required contrast ratio.
@@ -171,11 +204,15 @@ Prefer the data path, which keeps the page consistent and checkable:
 1. Write the proposal as JSON matching
    [assets/token-proposal.schema.json](assets/token-proposal.schema.json);
    [assets/token-proposal-example.json](assets/token-proposal-example.json)
-   shows every field. Set `language` to the reader's language (`en`, `ko`, or
-   `ja` chrome is bundled) and write titles, roles, and notes in that language.
-2. Validate it. The validator rejects stated values without evidence,
-   references to undefined primitives, CSS values that could inject rules or
-   load resources, and computable contrast below the declared minimum:
+   shows every field of a normalize proposal, and
+   [assets/token-proposal-new-system-example.json](assets/token-proposal-new-system-example.json)
+   shows design hypotheses in a new-system proposal. Set `language` to the
+   reader's language (`en`, `ko`, or `ja` chrome is bundled) and write titles,
+   roles, and notes in that language.
+2. Validate it. The validator rejects observed values without evidence,
+   hypotheses without a rationale or outside new-system mode, references to
+   undefined primitives, CSS values that could inject rules or load resources,
+   and computable contrast below the declared minimum:
 
    ```bash
    python scripts/validate_token_proposal.py proposal.json
@@ -191,6 +228,7 @@ Prefer the data path, which keeps the page consistent and checkable:
 
 4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
    previews draw the proposed values, unknown values show the unknown marker,
+   design hypotheses show the hypothesis marker,
    the page does not scroll horizontally, and tables scroll only inside their
    own regions. Fix the data, not the generated markup, then render again.
 5. Check the final file and report the output path, unknown values, and open
@@ -209,28 +247,31 @@ navigation, and state that the deterministic checks were not run.
 The page must keep: the status badge and `data-proposal-status="proposed"`;
 previews drawn from the proposed values (color ramps and pairs, type
 specimens, spacing bars, radius corners, container frames); one column per
-mapping context; the unknown marker instead of guessed values; the changes and
+mapping context; the unknown marker instead of guessed values; the
+design-hypothesis marker on new-system values; the changes and
 decisions sections; semantic headings, table captions, keyboard-scrollable
 table regions, visible focus, reflow, reduced-motion behavior, and print
 readability; and no network requests. The template's own chrome follows the
 default budget in this skill; do not add decorative gradients, glows, or
 shadows to it.
 
-Use an existing project documentation or artifact directory when one is
-clearly established; otherwise write `design-token-proposal.html` to the
-project root. The artifact is a review proposal, not evidence that the project
-has adopted the tokens.
+When the user requested the files, write them where the user asked, or to an
+established project documentation or artifact directory; otherwise write
+`design-token-proposal.html` to the project root and report the path. The
+artifact is a review proposal, not evidence that the project has adopted the
+tokens.
 
 ## Rules
 
 - Do not count text colors required for data or status as arbitrary accents.
 - Prefer project tokens and breakpoints over values imported from another
   design system.
-- When proposing a new shared system, provide concrete token names and values
-  rather than only saying to "standardize" them, but only after tracing the
-  values to project evidence.
-- Leave a proposed numeric value `unknown` when source and rendered evidence
-  cannot support it. Do not fabricate completeness.
+- When proposing a shared system, provide concrete token names and values
+  rather than only saying to "standardize" them. Trace normalized values to
+  project evidence; label new-system values as design hypotheses with a
+  rationale.
+- Leave a proposed numeric value `unknown` when neither project evidence nor a
+  requested new-system rationale supports it. Do not fabricate completeness.
 - Require spacing values to express content grouping, section separation,
   container padding, or a documented exception. Do not require a universal
   4/8 scale.

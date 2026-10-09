@@ -268,6 +268,112 @@ class CommandTests(unittest.TestCase):
             errors = "\n".join(result["proposal"]["errors"])
             self.assertIn(message, errors)
 
+    def new_system_proposal(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/review-visuals/assets/token-proposal-new-system-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_token_proposal_hypotheses_require_new_system_mode_and_rationale(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        result = self.run_json(script, "skills/review-visuals/assets/token-proposal-new-system-example.json")
+        proposal = result["proposal"]
+        self.assertEqual(proposal["mode"], "new-system")
+        self.assertIn("space-4", proposal["hypothesis_values"])
+        self.assertNotIn("teal-700", proposal["hypothesis_values"])
+        self.assertIn("type-body.letter_spacing", proposal["unknown_values"])
+
+        cases = []
+        normalize = self.new_system_proposal()
+        normalize["mode"] = "normalize"
+        cases.append((normalize, "only allowed in new-system mode"))
+
+        no_rationale = self.new_system_proposal()
+        del no_rationale["foundations"]["spacing"]["primitives"][0]["rationale"]
+        cases.append((no_rationale, "requires a rationale"))
+
+        observed_without_evidence = self.new_system_proposal()
+        observed_without_evidence["foundations"]["color"]["primitives"][0]["evidence"] = []
+        cases.append((observed_without_evidence, "requires evidence"))
+
+        unsafe = self.new_system_proposal()
+        unsafe["foundations"]["spacing"]["primitives"][0]["value"] = "url(https://example.com/x)"
+        cases.append((unsafe, "not allowed"))
+
+        low_contrast = self.new_system_proposal()
+        low_contrast["foundations"]["color"]["primitives"][2]["value"] = "#dddddd"
+        cases.append((low_contrast, "below the declared"))
+
+        bad_mode = self.new_system_proposal()
+        bad_mode["mode"] = "freeform"
+        cases.append((bad_mode, "mode must be one of"))
+
+        for document, message in cases:
+            result = self.run_json_document(script, document, expected=1)
+            self.assertIn(message, "\n".join(result["proposal"]["errors"]))
+
+        existing = self.token_proposal()
+        existing["foundations"]["spacing"]["primitives"][0]["basis"] = "hypothesis"
+        existing["foundations"]["spacing"]["primitives"][0]["rationale"] = "Guess."
+        result = self.run_json_document(script, existing, expected=1)
+        self.assertIn("only allowed in new-system mode", "\n".join(result["proposal"]["errors"]))
+
+    def test_token_proposal_renders_design_hypothesis_markers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            for language, label in (("en", "Design hypothesis"), ("ko", "설계 가설"), ("ja", "設計仮説")):
+                document = self.new_system_proposal()
+                document["language"] = language
+                source = Path(directory) / f"{language}.json"
+                output = Path(directory) / f"{language}.html"
+                source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+                rendered = self.run_json(
+                    "skills/review-visuals/scripts/render_token_proposal.py",
+                    str(source),
+                    "--output",
+                    str(output),
+                )
+                self.assertTrue(rendered["rendered"])
+                html = output.read_text(encoding="utf-8")
+                self.assertEqual(
+                    html.count('data-basis="hypothesis"'), len(rendered["hypothesis_values"])
+                )
+                self.assertIn(label, html)
+                checked = self.run_json(
+                    "skills/review-visuals/scripts/validate_token_proposal.py",
+                    str(source),
+                    "--html",
+                    str(output),
+                )
+                self.assertTrue(checked["valid"])
+
+            stripped = Path(directory) / "stripped.html"
+            stripped.write_text(
+                (Path(directory) / "en.html")
+                .read_text(encoding="utf-8")
+                .replace('data-basis="hypothesis"', ""),
+                encoding="utf-8",
+            )
+            checked = self.run_json(
+                "skills/review-visuals/scripts/validate_token_proposal.py",
+                str(Path(directory) / "en.json"),
+                "--html",
+                str(stripped),
+                expected=1,
+            )
+            self.assertIn("design hypothesis", "\n".join(checked["html"]["errors"]))
+
+            normalize = Path(directory) / "normalize.html"
+            source = Path(directory) / "normalize.json"
+            source.write_text(json.dumps(self.token_proposal(), ensure_ascii=False), encoding="utf-8")
+            self.run_json(
+                "skills/review-visuals/scripts/render_token_proposal.py",
+                str(source),
+                "--output",
+                str(normalize),
+            )
+            self.assertNotIn('data-basis="hypothesis"', normalize.read_text(encoding="utf-8"))
+
     def test_token_proposal_renders_localized_page_without_placeholders(self) -> None:
         template = (
             ROOT / "skills/review-visuals/assets/token-proposal-template.html"

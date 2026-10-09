@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Validate a design-token proposal and, optionally, its rendered HTML page.
 
-The JSON check confirms structure, references, evidence for every stated value,
-safe CSS values, and computable color contrast. The HTML check confirms that no
+The JSON check confirms structure, references, evidence for every observed value,
+a rationale for every new-system design hypothesis, safe CSS values, and
+computable color contrast. The HTML check confirms that no
 template placeholders remain and that the page still declares proposal status.
 Neither check proves that the values suit the product; render and review them.
 """
@@ -29,6 +30,8 @@ SEMANTIC_STATUSES = {"proposed", "retained", "unknown"}
 CHANGE_ACTIONS = {"merge", "rename", "delete", "retain", "add"}
 RELATIONSHIPS = {"shared-contour", "independent", "pill-or-circle"}
 DECISION_GROUPS = ("proposed", "retained", "rejected", "open")
+MODES = ("normalize", "new-system")
+BASES = ("observed", "hypothesis")
 LAYOUT_DIAGRAMS = ("content-width", "page-padding")
 TOKEN_NAME = re.compile(r"^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$")
 PLACEHOLDER = re.compile(r"\{\{[A-Z0-9_]+\}\}")
@@ -100,11 +103,49 @@ def resolve_color(name: str, primitives: dict[str, Any], semantic: dict[str, Any
     return None
 
 
+def check_basis(
+    item: dict[str, Any],
+    prefix: str,
+    label: str,
+    stated: bool,
+    mode: str,
+    errors: list[str],
+    hypotheses: list[str],
+) -> None:
+    """Observed values need evidence; design hypotheses need a rationale."""
+    basis = item.get("basis", "observed")
+    if basis not in BASES:
+        errors.append(f"{prefix}.basis must be one of {list(BASES)}")
+        return
+    evidence = item.get("evidence", [])
+    if not string_list(evidence):
+        errors.append(f"{prefix}.evidence must be an array of strings")
+        return
+    if basis == "hypothesis":
+        if mode != "new-system":
+            errors.append(
+                f"{prefix}: a design hypothesis is only allowed in new-system mode; "
+                "normalizing an existing system requires observed evidence"
+            )
+        if not non_empty_string(item.get("rationale")):
+            errors.append(f"{prefix}: a design hypothesis requires a rationale")
+        if stated:
+            hypotheses.append(label)
+    elif stated and not evidence:
+        errors.append(f"{prefix}: a stated value requires evidence; use {UNKNOWN!r} otherwise")
+
+
 def validate(data: dict[str, Any]) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
     unknown_values: list[str] = []
+    hypotheses: list[str] = []
     contrast: list[dict[str, Any]] = []
+
+    mode = data.get("mode", "normalize")
+    if mode not in MODES:
+        errors.append(f"mode must be one of {list(MODES)}")
+        mode = "normalize"
 
     for field in ("project", "language", "title", "summary", "prepared"):
         if not non_empty_string(data.get(field)):
@@ -130,8 +171,14 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"{prefix}.min_width must be a string or {UNKNOWN!r}")
         elif min_width == UNKNOWN:
             unknown_values.append(f"{prefix}.min_width")
-        elif not string_list(item.get("evidence")) or not item.get("evidence"):
+        elif item.get("basis", "observed") == "observed" and (
+            not string_list(item.get("evidence")) or not item.get("evidence")
+        ):
             errors.append(f"{prefix}: a stated min_width requires evidence")
+        else:
+            check_basis(
+                item, prefix, f"{item['name']}.min_width", True, mode, errors, hypotheses
+            )
 
     foundations = data.get("foundations")
     if not isinstance(foundations, dict) or not foundations:
@@ -202,11 +249,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
                     errors.append(f"{prefix}.value {problem}")
                 if foundation == "color" and value != UNKNOWN and not HEX_COLOR.match(value):
                     warnings.append(f"{name}: contrast is computed only for #rgb or #rrggbb values")
-            evidence = item.get("evidence", [])
-            if not string_list(evidence):
-                errors.append(f"{prefix}.evidence must be an array of strings")
-            elif stated and not evidence:
-                errors.append(f"{prefix}: a stated value requires evidence; use {UNKNOWN!r} otherwise")
+            check_basis(item, prefix, name, stated, mode, errors, hypotheses)
             current_values = item.get("current_values", [])
             if not string_list(current_values):
                 errors.append(f"{prefix}.current_values must be an array of strings")
@@ -359,10 +402,12 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "valid": not errors,
+        "mode": mode,
         "errors": errors,
         "warnings": warnings,
         "foundation_counts": counts,
         "unknown_values": sorted(set(unknown_values)),
+        "hypothesis_values": sorted(set(hypotheses)),
         "contrast": contrast,
     }
 
@@ -437,6 +482,14 @@ def main() -> int:
         except FileNotFoundError:
             die(f"file not found: {args.html}")
         result["html"] = validate_html(text)
+        hypotheses = result.get("proposal", {}).get("hypothesis_values", [])
+        marked = len(re.findall(r'data-basis="hypothesis"', text))
+        if hypotheses and marked < len(hypotheses):
+            result["html"]["errors"].append(
+                f"{len(hypotheses)} design hypothesis value(s) but only {marked} "
+                'data-basis="hypothesis" marker(s) in the page'
+            )
+            result["html"]["valid"] = False
         valid = valid and result["html"]["valid"]
     result = {"valid": valid, **result}
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
