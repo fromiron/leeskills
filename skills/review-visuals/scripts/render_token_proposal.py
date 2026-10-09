@@ -24,7 +24,6 @@ from validate_token_proposal import (  # noqa: E402
     FOUNDATIONS,
     TYPE_FIELDS,
     UNKNOWN,
-    contrast_ratio,
     die,
     read_json,
     resolve_color,
@@ -222,7 +221,17 @@ class Page:
             heading = f'<h2 id="{ident}-title">{self.t(ident)}</h2><p>{self.t(intro_key)}</p>'
         return f'<section id="{ident}" class="doc-section" aria-labelledby="{ident}-title">{heading}{body}</section>'
 
-    def primitive_rows(self, foundation: str, preview_class: str | None) -> list[str]:
+    def formats(self, name: str) -> str:
+        """The color in hex, rgb()/rgba(), and oklch(), converted by the validator."""
+        converted = self.report["color_formats"].get(name)
+        if not converted:
+            return self.unknown()
+        lines = [f'<code>{escape(converted[kind])}</code>' for kind in ("hex", "rgb", "oklch")]
+        if not converted["in_srgb_gamut"]:
+            lines.append(f'<span class="tag">{self.t("srgb_mapped")}</span>')
+        return "<br>".join(lines)
+
+    def primitive_rows(self, foundation: str, preview_class: str | None, formats: bool = False) -> list[str]:
         rows = []
         for item in self.foundations[foundation].get("primitives", []):
             value = item.get("value")
@@ -232,9 +241,10 @@ class Page:
                 if value != UNKNOWN:
                     inner = f'<span class="{preview_class}" style="{self.style(token_value=value)}" aria-hidden="true"></span>'
                 preview = f'<td class="preview">{inner}</td>'
+            converted = f'<td class="value">{self.formats(item["name"])}</td>' if formats else ""
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{preview}'
-                f'<td class="value">{self.value(value)}</td>'
+                f'<td class="value">{self.value(value)}</td>{converted}'
                 f'<td class="value">{self.listing(item.get("current_values"))}</td>'
                 f'<td class="evidence">{self.basis(item)}</td></tr>'
             )
@@ -277,8 +287,8 @@ class Page:
             )
         primitives = "".join(ramps) + self.table(
             "color-primitives", "color_primitives_caption",
-            ["th_name", "th_value", "th_consolidates", "th_evidence"],
-            self.primitive_rows("color", None),
+            ["th_name", "th_value", "th_formats", "th_consolidates", "th_evidence"],
+            self.primitive_rows("color", None, formats=True),
         )
         contrast = {item["token"]: item for item in self.report["contrast"]}
         color_primitives = {
@@ -300,7 +310,7 @@ class Page:
                     verdict = self.t("contrast_pass") if check["status"] == "pass" else self.t("contrast_fail")
                     cell = (
                         f'<span class="pair" style="{self.style(token_fg=foreground, token_bg=background)}" aria-hidden="true">Aa 가 あ</span>'
-                        f'<p class="value">{contrast_ratio(foreground, background)}:1 · ≥ {check["minimum"]} {verdict}</p>'
+                        f'<p class="value">{check["ratio"]}:1 · ≥ {check["minimum"]} {verdict}</p>'
                         f'<p class="muted-small">{escape(check["against"])}</p>'
                     )
             refs = self.ref_cells(item, columns, swatch=True)
@@ -312,7 +322,9 @@ class Page:
             "color-semantic", "color_semantic_caption",
             ["th_name"] + [f"={column}" for column in columns] + ["th_contrast", "th_role"], rows,
         )
-        return self.section("color", self.sub("primitives", primitives) + self.sub("semantic", semantic))
+        return self.section(
+            "color", self.sub("primitives", primitives, "color_formats_note") + self.sub("semantic", semantic),
+        )
 
     def typography(self) -> str:
         block = self.foundations["typography"]

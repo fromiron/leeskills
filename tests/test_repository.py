@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
@@ -388,6 +389,107 @@ class CommandTests(unittest.TestCase):
                 str(normalize),
             )
             self.assertNotIn('data-basis="hypothesis"', normalize.read_text(encoding="utf-8"))
+
+    @staticmethod
+    def token_validator_module():
+        sys.dont_write_bytecode = True
+        spec = importlib.util.spec_from_file_location(
+            "token_proposal_validator",
+            ROOT / "skills/review-visuals/scripts/validate_token_proposal.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_token_colors_convert_between_hex_rgb_and_oklch(self) -> None:
+        colors = self.token_validator_module()
+        expected = {
+            "hex": "#0f766e",
+            "rgb": "rgb(15, 118, 110)",
+            "oklch": "oklch(51.1% 0.086 186.4)",
+            "in_srgb_gamut": True,
+        }
+        for value in ("#0f766e", "rgb(15, 118, 110)", "rgb(15 118 110)", "oklch(51.1% 0.086 186.4)"):
+            self.assertEqual(colors.color_formats(colors.parse_color(value)), expected, msg=value)
+        translucent = {
+            "hex": "#0f766e80",
+            "rgb": "rgba(15, 118, 110, 0.5)",
+            "oklch": "oklch(51.1% 0.086 186.4 / 0.5)",
+            "in_srgb_gamut": True,
+        }
+        for value in ("rgba(15, 118, 110, 0.5)", "rgb(15 118 110 / 50%)", "oklch(0.511 0.086 186.4 / 0.5)"):
+            self.assertEqual(colors.color_formats(colors.parse_color(value)), translucent, msg=value)
+
+        wide = colors.parse_color("oklch(70% 0.4 30)")
+        self.assertFalse(wide.in_gamut)
+        self.assertTrue(all(0 <= channel <= 1 for channel in wide.rgb))
+        for value in ("hsl(10 50% 50%)", "red", "rgb(1, 2)", "oklch(51 0.1 200)", "unknown"):
+            self.assertIsNone(colors.parse_color(value), msg=value)
+
+        self.assertEqual(colors.contrast_ratio("#ffffff", "#000000"), 21.0)
+        self.assertEqual(
+            colors.contrast_ratio("rgb(31, 35, 40)", "#ffffff"),
+            colors.contrast_ratio("#1f2328", "rgb(255, 255, 255)"),
+        )
+        # The oklch() notation is rounded, so its ratio may differ in the last digit.
+        self.assertAlmostEqual(
+            colors.contrast_ratio("oklch(25.4% 0.011 254)", "#ffffff"),
+            colors.contrast_ratio("#1f2328", "#ffffff"),
+            delta=0.02,
+        )
+        # Translucent text is composited over its background and loses contrast.
+        self.assertLess(colors.contrast_ratio("rgba(31, 35, 40, 0.5)", "#ffffff"), 4.5)
+        self.assertIsNone(colors.contrast_ratio("#000000", "rgba(255, 255, 255, 0.5)"))
+
+    def test_token_proposal_accepts_rgb_and_oklch_colors(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        baseline = self.run_json(script, "skills/review-visuals/assets/token-proposal-example.json")
+        document = self.token_proposal()
+        primitives = document["foundations"]["color"]["primitives"]
+        primitives[0]["value"] = "oklch(100% 0 0)"
+        primitives[4]["value"] = "rgb(51, 50, 54)"
+        result = self.run_json_document(script, document)["proposal"]
+        self.assertTrue(result["valid"], msg=result["errors"])
+        self.assertEqual(result["color_formats"]["gray-0"]["hex"], "#ffffff")
+        self.assertEqual(result["color_formats"]["gray-90"]["oklch"], baseline["proposal"]["color_formats"]["gray-90"]["oklch"])
+        self.assertEqual(
+            [item["ratio"] for item in result["contrast"]],
+            [item["ratio"] for item in baseline["proposal"]["contrast"]],
+        )
+
+        translucent = self.token_proposal()
+        translucent["foundations"]["color"]["primitives"][0]["value"] = "rgba(255, 255, 255, 0.6)"
+        result = self.run_json_document(script, translucent)["proposal"]
+        self.assertIn("text-primary contrast", result["unknown_values"])
+        self.assertTrue(any("translucent background" in item for item in result["warnings"]))
+
+        wide = self.token_proposal()
+        wide["foundations"]["color"]["primitives"][5]["value"] = "oklch(55% 0.35 265)"
+        result = self.run_json_document(script, wide)["proposal"]
+        self.assertFalse(result["color_formats"]["blue-50"]["in_srgb_gamut"])
+        self.assertTrue(any("outside sRGB" in item for item in result["warnings"]))
+
+    def test_token_proposal_page_lists_each_color_in_three_notations(self) -> None:
+        document = self.token_proposal()
+        document["foundations"]["color"]["primitives"][5]["value"] = "oklch(55% 0.35 265)"
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "proposal.json"
+            output = Path(directory) / "proposal.html"
+            source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+            self.run_json(
+                "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output)
+            )
+            html = output.read_text(encoding="utf-8")
+        table = html.split('id="color-primitives-caption"', 1)[1].split("</table>", 1)[0]
+        self.assertIn("색 표기", table)
+        for notation in (
+            "<code>#66666e</code>",
+            "<code>rgb(102, 102, 110)</code>",
+            "<code>oklch(51.3% 0.012 286.0)</code>",
+            "<code>oklch(55.0% 0.350 265.0)</code>",
+        ):
+            self.assertIn(notation, table)
+        self.assertIn("sRGB로 변환", table)
 
     def question_bank(self) -> dict[str, object]:
         return json.loads(

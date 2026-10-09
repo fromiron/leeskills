@@ -56,7 +56,13 @@ from a direction is a design hypothesis. Follow
    branding unless the project explicitly adopts that system.
 7. For color, keep status, data, and validation colors separate from accents
    and declare the background each text or status color must meet, with the
-   required contrast ratio.
+   required contrast ratio. Write color values as hex, `rgb()`, `rgba()`, or
+   `oklch()`. Use the project's notation when one exists, otherwise the
+   notation the user gave, otherwise hex. The validator computes contrast for
+   all four; it composites translucent text over its background, leaves
+   contrast against a translucent background unknown, and uses the
+   sRGB-mapped color for an `oklch()` value outside sRGB. Other notations,
+   such as `hsl()` or color names, get no contrast check.
 8. For typography, propose letter spacing and line height separately for the
    actual font, fallback, script, language, size, weight, and role. Do not
    extrapolate one font's values across unrelated roles.
@@ -91,8 +97,9 @@ Prefer the data path, which keeps the page consistent and checkable:
    ```
 
 4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
-   previews draw the proposed values, unknown values show the unknown marker,
-   design hypotheses show the hypothesis marker, the page does not scroll
+   previews draw the proposed values, each color lists its hex, `rgb()`, and
+   `oklch()` notations, unknown values show the unknown marker, design
+   hypotheses show the hypothesis marker, the page does not scroll
    horizontally, and tables scroll only inside their own regions. Fix the
    data, not the generated markup, then render again.
 5. Check the final file and report the output path, unknown values, design

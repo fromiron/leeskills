@@ -193,7 +193,7 @@
                   "value": {
                     "type": "string",
                     "minLength": 1,
-                    "description": "A CSS value traced to evidence, or \"unknown\"."
+                    "description": "A CSS color in hex, rgb(), rgba(), or oklch(), or \"unknown\". Contrast and the converted notations are computed for these formats only."
                   },
                   "group": {
                     "type": "string",

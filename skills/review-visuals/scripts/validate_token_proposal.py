@@ -12,11 +12,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, NamedTuple, NoReturn
 
 # Keep UTF-8 output stable on Windows consoles with legacy code pages.
 for _stream in (sys.stdout, sys.stderr):
@@ -46,7 +47,12 @@ PLACEHOLDER = re.compile(r"\{\{[A-Z0-9_]+\}\}")
 # no declarations, blocks, at-rules, escapes, or functions that can load resources.
 SAFE_CSS = re.compile(r"^[A-Za-z0-9#%.,+\-*/()\s\"']+$")
 UNSAFE_CSS_FUNCTIONS = re.compile(r"(url|image|image-set|cross-fade|element|expression|src)\s*\(", re.I)
-HEX_COLOR = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+HEX_COLOR = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+COLOR_FUNCTION = re.compile(r"^(rgba?|oklch)\(\s*(.*?)\s*\)$", re.I)
+COLOR_COMPONENT = re.compile(r"^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%|deg|grad|rad|turn)?$", re.I)
+# CSS Color 4 gamut mapping: a just-noticeable OKLab difference and search precision.
+GAMUT_JND = 0.02
+GAMUT_EPSILON = 0.0001
 
 
 def die(message: str) -> NoReturn:
@@ -135,30 +141,221 @@ def css_value_error(value: str) -> str | None:
     return None
 
 
-def relative_luminance(hex_color: str) -> float:
-    digits = hex_color.lstrip("#")
-    if len(digits) == 3:
-        digits = "".join(char * 2 for char in digits)
-    channels = []
-    for index in (0, 2, 4):
-        channel = int(digits[index:index + 2], 16) / 255
-        channels.append(channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4)
-    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+class Color(NamedTuple):
+    """A parsed CSS color: displayable sRGB channels, alpha, and OKLCH coordinates."""
+
+    rgb: tuple  # gamma-encoded sRGB channels from 0 to 1, after gamut mapping
+    alpha: float
+    oklch: tuple  # lightness 0-1, chroma, hue in degrees
+    in_gamut: bool
 
 
-def contrast_ratio(first: str, second: str) -> float:
-    lighter, darker = sorted((relative_luminance(first), relative_luminance(second)), reverse=True)
+def _decode(channel: float) -> float:
+    return channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+
+
+def _encode(channel: float) -> float:
+    return 12.92 * channel if channel <= 0.0031308 else 1.055 * channel ** (1 / 2.4) - 0.055
+
+
+def _linear_to_oklab(red: float, green: float, blue: float) -> tuple:
+    def cube_root(value: float) -> float:
+        return math.copysign(abs(value) ** (1 / 3), value)
+
+    long = cube_root(0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue)
+    medium = cube_root(0.2119034982 * red + 0.6806995451 * green + 0.1073969566 * blue)
+    short = cube_root(0.0883024619 * red + 0.2817188376 * green + 0.6299787005 * blue)
+    return (
+        0.2104542553 * long + 0.7936177850 * medium - 0.0040720468 * short,
+        1.9779984951 * long - 2.4285922050 * medium + 0.4505937099 * short,
+        0.0259040371 * long + 0.7827717662 * medium - 0.8086757660 * short,
+    )
+
+
+def _oklch_to_linear(lightness: float, chroma: float, hue: float) -> tuple:
+    a = chroma * math.cos(math.radians(hue))
+    b = chroma * math.sin(math.radians(hue))
+    long = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    medium = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    short = (lightness - 0.0894841775 * a - 1.2914855480 * b) ** 3
+    return (
+        4.0767416621 * long - 3.3077115913 * medium + 0.2309699292 * short,
+        -1.2684380046 * long + 2.6097574011 * medium - 0.3413193965 * short,
+        -0.0041960863 * long - 0.7034186147 * medium + 1.7076147010 * short,
+    )
+
+
+def _in_srgb(linear: tuple) -> bool:
+    return all(-0.000001 <= channel <= 1.000001 for channel in linear)
+
+
+def _oklch_to_srgb(lightness: float, chroma: float, hue: float) -> tuple:
+    """Return gamma-encoded sRGB and whether the color was inside sRGB.
+
+    Out-of-gamut colors are mapped as in CSS Color 4: reduce chroma until
+    clipping changes the color by less than a just-noticeable difference.
+    """
+    if lightness >= 1:
+        return (1.0, 1.0, 1.0), chroma < 0.0005
+    if lightness <= 0:
+        return (0.0, 0.0, 0.0), chroma < 0.0005
+    linear = _oklch_to_linear(lightness, chroma, hue)
+    if _in_srgb(linear):
+        return tuple(_encode(min(1.0, max(0.0, c))) for c in linear), True
+
+    def clip(lin: tuple) -> tuple:
+        return tuple(min(1.0, max(0.0, c)) for c in lin)
+
+    def distance(lin: tuple, clipped: tuple) -> float:
+        return math.dist(_linear_to_oklab(*lin), _linear_to_oklab(*clipped))
+
+    clipped = clip(linear)
+    if distance(linear, clipped) < GAMUT_JND:
+        return tuple(_encode(c) for c in clipped), False
+    low, high, low_in_gamut = 0.0, chroma, True
+    while high - low > GAMUT_EPSILON:
+        middle = (low + high) / 2
+        current = _oklch_to_linear(lightness, middle, hue)
+        if low_in_gamut and _in_srgb(current):
+            low = middle
+            continue
+        clipped = clip(current)
+        difference = distance(current, clipped)
+        if difference < GAMUT_JND:
+            if GAMUT_JND - difference < GAMUT_EPSILON:
+                break
+            low_in_gamut = False
+            low = middle
+        else:
+            high = middle
+    return tuple(_encode(c) for c in clipped), False
+
+
+def _srgb_to_oklch(rgb: tuple) -> tuple:
+    lightness, a, b = _linear_to_oklab(*(_decode(channel) for channel in rgb))
+    chroma = math.hypot(a, b)
+    if chroma < 0.0005:
+        return lightness, 0.0, 0.0
+    return lightness, chroma, math.degrees(math.atan2(b, a)) % 360
+
+
+def _components(body: str) -> tuple:
+    """Split modern or legacy color syntax into channel strings and an alpha string."""
+    alpha = None
+    if "/" in body:
+        body, alpha = (part.strip() for part in body.split("/", 1))
+    parts = [part for part in re.split(r"[\s,]+", body.strip()) if part]
+    if alpha is None and len(parts) == 4:
+        alpha = parts.pop()
+    return parts, alpha
+
+
+def _number(part: str, *, percent: float, units: bool = False) -> float | None:
+    if part.lower() == "none":
+        return 0.0
+    match = COLOR_COMPONENT.match(part)
+    if not match:
+        return None
+    value, unit = float(match.group(1)), (match.group(2) or "").lower()
+    if unit == "%":
+        return value / 100 * percent
+    if unit and not units:
+        return None
+    return value * {"": 1, "deg": 1, "grad": 0.9, "rad": 180 / math.pi, "turn": 360}[unit]
+
+
+def parse_color(value: Any) -> Color | None:
+    """Parse hex, rgb(), rgba(), or oklch(); return None for other values."""
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if HEX_COLOR.match(value):
+        digits = value[1:]
+        if len(digits) in (3, 4):
+            digits = "".join(char * 2 for char in digits)
+        channels = [int(digits[index:index + 2], 16) / 255 for index in range(0, len(digits), 2)]
+        rgb = tuple(channels[:3])
+        alpha = channels[3] if len(channels) == 4 else 1.0
+        return Color(rgb, alpha, _srgb_to_oklch(rgb), True)
+    match = COLOR_FUNCTION.match(value)
+    if not match:
+        return None
+    kind = match.group(1).lower()
+    parts, alpha_part = _components(match.group(2))
+    if len(parts) != 3:
+        return None
+    alpha = 1.0 if alpha_part is None else _number(alpha_part, percent=1)
+    if alpha is None:
+        return None
+    alpha = min(1.0, max(0.0, alpha))
+    if kind in ("rgb", "rgba"):
+        channels = [_number(part, percent=255) for part in parts]
+        if any(channel is None for channel in channels):
+            return None
+        rgb = tuple(min(1.0, max(0.0, channel / 255)) for channel in channels)
+        return Color(rgb, alpha, _srgb_to_oklch(rgb), True)
+    lightness = _number(parts[0], percent=1)
+    chroma = _number(parts[1], percent=0.4)
+    hue = _number(parts[2], percent=1, units=True)
+    if lightness is None or chroma is None or hue is None or "%" in parts[2]:
+        return None
+    # A unitless lightness above 1 is almost always a percentage written without
+    # its sign; clamping it to white would hide the mistake.
+    if not parts[0].endswith("%") and lightness > 1:
+        return None
+    lightness, chroma, hue = min(1.0, max(0.0, lightness)), max(0.0, chroma), hue % 360
+    rgb, in_gamut = _oklch_to_srgb(lightness, chroma, hue)
+    return Color(rgb, alpha, (lightness, chroma, hue), in_gamut)
+
+
+def color_formats(color: Color) -> dict[str, Any]:
+    """The same color in hex, rgb()/rgba(), and oklch() notation, rounded."""
+    red, green, blue = (round(channel * 255) for channel in color.rgb)
+    lightness, chroma, hue = color.oklch
+    if chroma < 0.0005:
+        chroma, hue = 0.0, 0.0
+    alpha = round(color.alpha, 3)
+    opaque = alpha >= 1
+    alpha_text = f"{alpha:g}"
+    return {
+        "hex": f"#{red:02x}{green:02x}{blue:02x}" + ("" if opaque else f"{round(alpha * 255):02x}"),
+        "rgb": f"rgb({red}, {green}, {blue})" if opaque else f"rgba({red}, {green}, {blue}, {alpha_text})",
+        "oklch": f"oklch({lightness * 100:.1f}% {chroma:.3f} {hue:.1f}"
+        + ("" if opaque else f" / {alpha_text}")
+        + ")",
+        "in_srgb_gamut": color.in_gamut,
+    }
+
+
+def relative_luminance(rgb: tuple) -> float:
+    red, green, blue = (_decode(channel) for channel in rgb)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def contrast_ratio(foreground: str, background: str) -> float | None:
+    """WCAG contrast of two CSS colors, or None when it cannot be determined.
+
+    Translucent text is composited over the background in sRGB. A translucent
+    background depends on what is behind it, so its contrast stays unknown.
+    """
+    front, back = parse_color(foreground), parse_color(background)
+    if front is None or back is None or back.alpha < 1:
+        return None
+    rgb = tuple(
+        front.alpha * top + (1 - front.alpha) * bottom for top, bottom in zip(front.rgb, back.rgb)
+    )
+    lighter, darker = sorted((relative_luminance(rgb), relative_luminance(back.rgb)), reverse=True)
     return round((lighter + 0.05) / (darker + 0.05), 2)
 
 
 def resolve_color(name: str, primitives: dict[str, Any], semantic: dict[str, Any]) -> str | None:
-    """Return a hex value for a primitive or a semantic token's default mapping."""
+    """Return the CSS color of a primitive or a semantic token's default mapping."""
     if name in semantic:
         references = semantic[name].get("references")
         if isinstance(references, dict):
             name = references.get("default") or next(iter(references.values()), "")
     value = primitives.get(name)
-    if isinstance(value, str) and HEX_COLOR.match(value):
+    if parse_color(value) is not None:
         return value
     return None
 
@@ -249,6 +446,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         errors.append(f"unknown foundations: {', '.join(unexpected)}")
 
     primitive_values: dict[str, Any] = {}
+    formats: dict[str, dict[str, Any]] = {}
     primitive_foundation: dict[str, str] = {}
     semantic_tokens: dict[str, dict[str, Any]] = {}
     counts: dict[str, dict[str, int]] = {}
@@ -307,8 +505,20 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
                 problem = css_value_error(value)
                 if problem:
                     errors.append(f"{prefix}.value {problem}")
-                if foundation == "color" and value != UNKNOWN and not HEX_COLOR.match(value):
-                    warnings.append(f"{name}: contrast is computed only for #rgb or #rrggbb values")
+                if foundation == "color" and value != UNKNOWN:
+                    color = parse_color(value)
+                    if color is None:
+                        warnings.append(
+                            f"{name}: contrast and color formats are computed only for hex, "
+                            "rgb(), rgba(), and oklch() values"
+                        )
+                    else:
+                        formats[name] = color_formats(color)
+                        if not color.in_gamut:
+                            warnings.append(
+                                f"{name}: the oklch() value is outside sRGB; hex, rgb(), and "
+                                "contrast use the color mapped into sRGB"
+                            )
             check_basis(item, prefix, name, stated, mode, errors, hypotheses)
             current_values = item.get("current_values", [])
             if not string_list(current_values):
@@ -398,6 +608,11 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
             unknown_values.append(f"{name} contrast")
             continue
         ratio = contrast_ratio(foreground, background)
+        if ratio is None:
+            warnings.append(f"{name} on {against}: contrast against a translucent background is unknown")
+            contrast.append({"token": name, "against": against, "ratio": None, "minimum": minimum, "status": "unknown"})
+            unknown_values.append(f"{name} contrast")
+            continue
         passed = ratio >= minimum
         contrast.append({
             "token": name, "against": against, "ratio": ratio, "minimum": minimum,
@@ -469,6 +684,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         "unknown_values": sorted(set(unknown_values)),
         "hypothesis_values": sorted(set(hypotheses)),
         "contrast": contrast,
+        "color_formats": formats,
     }
 
 
