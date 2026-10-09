@@ -49,6 +49,17 @@ measured; the new routing and run-record evals exist to measure it.
   `basis: hypothesis` with a required rationale; the renderer marks design
   hypotheses in English, Korean, and Japanese. Existing safety checks are
   unchanged.
+- Token proposals start by choosing an approach: an AI proposal, or a guided
+  proposal that asks four direction questions (color family, screen theme,
+  type style, corner style) with follow-ups only when needed. The questions
+  live in one question bank with English, Korean, and Japanese text and
+  print as a single plain-text message from `token_questions.py`, so any
+  client can ask them. Proposals record the answers and trace each shaped
+  value with `based_on`; the page shows a 'Your choices' table.
+- Colors may be hex, `rgb()`, `rgba()`, or `oklch()`. Contrast composites
+  translucent text, maps out-of-gamut `oklch()` colors into sRGB, and is
+  checked separately in each context such as light and dark. The page lists
+  every color in hex, `rgb()`, and `oklch()`.
 
 ### Conditional references ([#10](https://github.com/fromiron/leeskills/issues/10))
 

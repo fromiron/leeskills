@@ -160,5 +160,23 @@
     "language": "ja",
     "query": "デザインとコードでSelectコンポーネントの読み込み中・無効・エラー状態をまとめてください。",
     "should_trigger": false
+  },
+  {
+    "id": "en-positive-6",
+    "language": "en",
+    "query": "Ask me a few questions about colors, dark mode, fonts, and corners, then propose design tokens for my new app.",
+    "should_trigger": true
+  },
+  {
+    "id": "ko-positive-6",
+    "language": "ko",
+    "query": "색, 다크 모드, 글꼴, 모서리에 대해 몇 가지 물어본 다음 새 앱의 디자인 토큰을 제안해 줘.",
+    "should_trigger": true
+  },
+  {
+    "id": "ja-positive-6",
+    "language": "ja",
+    "query": "色、ダークモード、フォント、角について少し質問してから、新しいアプリのデザイントークンを提案してください。",
+    "should_trigger": true
   }
 ]

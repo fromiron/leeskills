@@ -84,7 +84,7 @@ npx skills add fromiron/leeskills --skill design-workflow
 | **`verify-content`**<br>출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
 | **`plan-structure`**<br>콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
 | **`review-components`**<br>재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
-| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 검증한 JSON으로 만드는 HTML 토큰 제안 페이지 |
+| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 AI 자동 분석이나 몇 가지 질문에 대한 답으로 만든 토큰 제안과, 색을 hex·rgb()·oklch()로 함께 보여 주는 HTML 페이지 |
 | **`edit-copy`**<br>제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
 | **`review-motion`**<br>애니메이션과 전환 검토 | 유지·축소·대체·삭제 판단과 모션 감소 대응 |
 | **`check-accessibility`**<br>접근성을 지키며 단순화 | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |

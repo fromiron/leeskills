@@ -87,7 +87,7 @@ ask for them. Review-only requests leave artifact files unchanged.
 | **`verify-content`**<br>Check which claims the sources support | A source-traced content inventory with gaps left visible |
 | **`plan-structure`**<br>Choose content order and navigation | A task-based structure, with rejected options recorded |
 | **`review-components`**<br>Define a reusable UI contract | Anatomy, states, behavior, accessibility, ownership, and design-code parity |
-| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, when you ask for one, an HTML token proposal page rendered from validated JSON |
+| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, when you ask for one, a token proposal made by AI analysis or from your answers to a few questions, rendered as an HTML page that lists each color in hex, rgb(), and oklch() |
 | **`edit-copy`**<br>Edit product copy | Specific, supported copy in the product's voice for each locale |
 | **`review-motion`**<br>Review animation and transitions | Keep, reduce, replace, or remove decisions, with reduced-motion support |
 | **`check-accessibility`**<br>Simplify without losing access | Semantics, keyboard, focus, reflow, contrast, and status checks |

@@ -211,6 +211,14 @@ keep supplied project values as observed, and leave undecided contexts such as
 a dark theme as open decisions. Report contrast or reflow as measured only
 after checking the rendered proposal.
 
+Before proposing token values, ask once whether to make an AI proposal or a
+guided one, unless the request already says. A guided proposal asks the
+user's direction questions together in one message and records each answer;
+at the limited level the question bank is unavailable, so ask in plain words
+about color family, screen theme, type style, and corner style, and record the
+answers in the report. Colors may be written as hex, `rgb()`, `rgba()`, or
+`oklch()`.
+
 The proposal schema, validator, renderer, and HTML template belong to the
 `review-visuals` package. At the limited level they are unavailable: present
 the proposal as a table in the report, state that the deterministic checks and
