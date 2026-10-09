@@ -116,26 +116,30 @@ adoption must be defined.
 
 ### Copy-only request
 
-1. `verify-content`
+1. `verify-content`, scoped to the claims the change touches
 2. `edit-copy`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed copy
 
 ### Motion-only request
 
 1. `review-motion`
 2. `check-accessibility`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed motion
 
 ### Radius or visual-token request
 
 1. `review-visuals`
-2. `verify-changes`
+2. `verify-changes`, targeted to the changed relationships
 
 ### Component contract or design-code drift request
 
 1. `review-components`
 2. `check-accessibility`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed components
+
+Use release verification in `verify-changes` only when the user asks for a
+release decision or the change is broad. A targeted result is not a release
+decision.
 
 ### Accessibility-focused simplification
 
@@ -227,9 +231,12 @@ conclusion or a complete WCAG conformance determination.
 
 ## Deliverable
 
-Use [assets/full-report-template.md](assets/full-report-template.md).
+Use [assets/full-report-template.md](assets/full-report-template.md) only for
+a multi-area workflow, a release verification, or when the user asks for a full
+report. For a narrow request, report the findings, changes, checks, unknowns,
+and rollback that apply, in proportion to the request.
 
-Include:
+A full report includes:
 
 1. scope and supplied evidence;
 2. primary user, task, and decision contexts;

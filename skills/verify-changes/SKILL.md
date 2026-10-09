@@ -66,12 +66,43 @@ For test status, use:
 
 - `pass`
 - `fail`
-- `unknown`
-- `not-applicable`
+- `unknown` — checked or required, but the evidence is insufficient;
+- `not-applicable` — the artifact genuinely has no such relationship;
+- `out-of-scope` — targeted verification only: outside the changed surfaces
+  and not evaluated.
+
+## Scope
+
+Decide two things before checking, and state both:
+
+| Axis | Values | Meaning |
+|---|---|---|
+| Operation | `review` / `edit` | Whether artifact files may change. Review leaves files unchanged. |
+| Verification | `targeted` / `release` | Check the changed surfaces, or decide release readiness for the whole artifact. |
+
+Use **targeted** verification by default for a narrow change: one label, one
+string set, one CSS relationship, one component state. Check the changed
+content, contract, and behavior strictly, plus any check whose earlier evidence
+the change invalidated. For example, a button label change checks meaning,
+locale keys and placeholders, accessible name, and wrapping; a radius change
+repeats nested-radius coherence and the affected surface's reflow. Record the
+remaining checks as `out-of-scope`.
+
+Use **release** verification when the user asks for a release decision or the
+change is broad: a redesign, restructure, or shared token, component, or
+migration change. Release verification classifies every check in the required
+set below; `out-of-scope` is not allowed.
+
+Scope never hides evidence. Report a directly observed hard failure or required
+failure even outside the changed surfaces. A targeted result is not release
+readiness or WCAG conformance. Do not widen a verification request into new
+deletions or cleanup; apply the deletion test to the changed material only.
 
 ## Procedure
 
-1. Restate the user, task, success condition, and artifact scope.
+1. Restate the user, task, success condition, artifact, and the declared
+   operation and verification scope. In targeted verification, run only the
+   steps that apply to the changed surfaces.
 2. Compare the before and after versions where both exist.
 3. Inventory proposed deletions and consolidations, with the smallest reversible
    change plan, rollback method, and checks needed after each change.
@@ -107,7 +138,9 @@ check definitions.
 
 ## Required verification set
 
-Unless the artifact makes a check genuinely irrelevant, include:
+In release verification, unless the artifact makes a check genuinely
+irrelevant, include the following. In targeted verification, include the ones
+the change affects and record the rest as `out-of-scope`:
 
 - deletion;
 - substitution;
@@ -160,7 +193,10 @@ validator.
 Use:
 
 - [assets/verification.schema.json](assets/verification.schema.json)
-- [assets/verification-example.json](assets/verification-example.json)
+- [assets/verification-example.json](assets/verification-example.json) —
+  release verification
+- [assets/verification-targeted-example.json](assets/verification-targeted-example.json)
+  — targeted verification of one label change
 - [assets/change-plan-template.md](assets/change-plan-template.md)
 
 Validate a report with:
@@ -168,6 +204,11 @@ Validate a report with:
 ```bash
 python scripts/validate_verification.py path/to/verification.json
 ```
+
+A report without `scope` is validated as release verification. With
+`"verification": "targeted"`, the script lists unchecked baseline tests under
+`not_checked`, reports `targeted_pass`, and always reports
+`release_ready: false`.
 
 The script validates the report contract and required-check gates. It does not
 inspect CSS, render contours, operate disclosures, measure discoverability, or
@@ -199,7 +240,9 @@ accessibility.
 
 Conclude with:
 
-- release readiness;
+- the declared scope and its result: targeted pass or blocked for the changed
+  surfaces, or release readiness for a release verification;
+- out-of-scope checks, when targeted;
 - required failures and unknowns;
 - accepted risks;
 - deleted, consolidated, retained, and restored elements;

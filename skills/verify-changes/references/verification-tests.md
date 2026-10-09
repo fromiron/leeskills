@@ -3,6 +3,10 @@
 Use these tests as structured questions rather than aesthetic absolutes. Mark
 untested conditions as `unknown`.
 
+Read only the tests that apply to the declared scope. In targeted
+verification, run the tests the change affects and record the others as
+`out-of-scope`; in release verification, classify every baseline test.
+
 ## 1. Deletion test
 
 For every removable section, component, sentence, image, animation, and token:

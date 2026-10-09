@@ -593,6 +593,84 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(result["status_counts"]["pass"], 11)
         self.assertEqual(result["status_counts"]["unknown"], 1)
 
+    def targeted_report(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/verify-changes/assets/verification-targeted-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_verify_changes_targeted_example_is_never_release_ready(self) -> None:
+        result = self.run_json(
+            "skills/verify-changes/scripts/validate_verification.py",
+            "skills/verify-changes/assets/verification-targeted-example.json",
+        )
+        self.assertTrue(result["valid_report"])
+        self.assertTrue(result["targeted_pass"])
+        self.assertFalse(result["release_ready"])
+        self.assertEqual(result["verdict"], "targeted-pass")
+        self.assertIn("deletion", result["not_checked"])
+        self.assertEqual(result["status_counts"]["out-of-scope"], 1)
+
+    def test_verify_changes_targeted_failure_still_blocks(self) -> None:
+        report = self.targeted_report()
+        report["checks"][0]["status"] = "fail"
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", report, expected=1
+        )
+        self.assertTrue(result["valid_report"])
+        self.assertFalse(result["targeted_pass"])
+        self.assertEqual(result["verdict"], "blocked")
+
+    def test_verify_changes_scope_rules_are_enforced(self) -> None:
+        release = self.targeted_report()
+        release["scope"]["verification"] = "release"
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", release, expected=1
+        )
+        self.assertFalse(result["valid_report"])
+        self.assertTrue(any("out-of-scope is only valid" in e for e in result["errors"]))
+
+        unscoped = self.targeted_report()
+        unscoped["scope"]["changed_surfaces"] = []
+        del unscoped["scope"]["rationale"]
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", unscoped, expected=1
+        )
+        self.assertIn("targeted verification must name its changed_surfaces", result["errors"])
+        self.assertIn("targeted verification requires a scope.rationale", result["errors"])
+
+        required_out = self.targeted_report()
+        required_out["checks"][3]["required"] = True
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", required_out, expected=1
+        )
+        self.assertFalse(result["valid_report"])
+
+    def test_verify_changes_accepts_documented_conditional_checks(self) -> None:
+        skill = (ROOT / "skills/verify-changes/SKILL.md").read_text(encoding="utf-8")
+        schema = json.loads(
+            (ROOT / "skills/verify-changes/assets/verification.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        enum = schema["properties"]["checks"]["items"]["properties"]["test"]["enum"]
+        report = self.targeted_report()
+        for test in (
+            "affordance-mapping",
+            "action-hierarchy",
+            "action-visibility",
+            "grouping-cues",
+            "system-lifecycle",
+        ):
+            self.assertIn(f"`{test}`", skill)
+            self.assertIn(test, enum)
+            report["checks"][0]["test"] = test
+            result = self.run_json_document(
+                "skills/verify-changes/scripts/validate_verification.py", report
+            )
+            self.assertTrue(result["valid_report"], msg=result["errors"])
+
     def test_verify_changes_baseline_failure_cannot_be_marked_optional(self) -> None:
         baseline = {
             "deletion",

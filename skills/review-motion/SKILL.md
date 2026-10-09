@@ -125,5 +125,14 @@ Level AAA criterion; state the chosen conformance target separately.
 
 ## Completion
 
-Every motion pattern has a purpose, decision, static equivalent, and verified
-reduced-motion behavior—or is removed.
+Report which of these states was reached; each is separate:
+
+- **Review complete** — every motion pattern has a trigger, purpose, decision,
+  and static equivalent, and reduced-motion behavior is either verified or
+  recorded as `unknown`. A completed review with unknowns is not a pass for
+  the product.
+- **Changes complete** — requested edits are applied and the affected patterns
+  are rechecked on the changed artifact.
+- **Ready to pass the motion gates** — every retained pattern has verified
+  reduced-motion behavior, no hard gate fails, and removed patterns kept their
+  status or feedback.

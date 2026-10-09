@@ -53,6 +53,13 @@ similar patterns.
 
 ## Selection procedure
 
+Run the full procedure when choosing or changing the dominant grammar. For a
+small adjustment inside an existing grammar, such as reordering a section,
+adding a record field, or adjusting navigation, check the adjustment against the
+current grammar's organizing key, sequence, and reflow; record why the growth
+test and rejected alternatives were not rerun; and skip the structured decision
+file, which describes a full grammar decision.
+
 1. Restate the primary user and task.
 2. List the minimum content records needed to complete that task.
 3. Identify the natural organizing key: identity, time, title, project, offer,

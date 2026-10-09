@@ -16,6 +16,7 @@ results; a review-only request does not authorize edits.
 
 - Artifact:
 - Request: review only / edits requested
+- Verification scope: targeted (changed surfaces only) / release
 - Before version:
 - Inspected version:
 - User:
@@ -95,7 +96,9 @@ unapplied recommendations as proposed or deferred.
 ## Verification
 
 Record the inspected artifact version and the checks actually run after the
-last edit. A suggested check is not a completed check.
+last edit. A suggested check is not a completed check. In targeted
+verification, list unaffected checks as out of scope; a targeted result is not
+a release verdict.
 
 | Check or command | Result | Evidence | Unverified conditions |
 |---|---|---|---|
@@ -109,6 +112,7 @@ last edit. A suggested check is not a completed check.
 - Keyboard/focus test:
 - Reduced-motion test:
 - Provenance test:
+- Out of scope (targeted only):
 - Nested-radius coherence test, when applicable:
 
 ## Unknowns

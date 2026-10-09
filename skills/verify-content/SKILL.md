@@ -66,10 +66,19 @@ Every factual statement must have one status:
 Verified facts require a source reference. Inferences require both supporting
 sources and a plain-language rationale.
 
+## Scope
+
+Build a full inventory when designing, restructuring, or rewriting a whole
+artifact. For a narrow change, such as one sentence, label, or section, extract
+only the claims the change adds, removes, or rewords, plus supplied claims that
+contradict them, and state that the inventory is scoped to that change. A
+scoped inventory does not establish that the rest of the artifact is grounded.
+
 ## Workflow
 
-1. Define the artifact type, primary user, primary task, and success condition.
-2. Extract atomic claims from every supplied source.
+1. Define the artifact type, primary user, primary task, success condition, and
+   whether the inventory is full or scoped to a change.
+2. Extract atomic claims from every supplied source within that scope.
 3. Give each claim a stable ID and one status.
 4. Record source location, owner if known, date, and confidence.
 5. Group usable content into identity, offer, task support, proof, constraints,

@@ -258,8 +258,16 @@ scope. Apply authorized changes before final checks; leave proposals unapplied
 for review-only requests. Repeat affected checks if verification prompts an
 additional edit.
 
-Run the deletion, substitution, semantic, five-second, growth, reflow,
-keyboard, reduced-motion, and provenance tests. When nested rounded surfaces
+Declare the operation (`review` or `edit`) and the verification scope. Use
+targeted verification for a narrow change: check the changed content,
+contract, and behavior, and record unaffected checks as `out-of-scope`. A
+targeted result is never release readiness. Use release verification when a
+release decision is requested or the change is broad; it allows no
+`out-of-scope` checks. Observed hard failures are reported in either scope.
+
+In release verification, run the deletion, substitution, semantic,
+five-second, growth, reflow, keyboard, reduced-motion, and provenance tests.
+In either scope, when nested rounded surfaces
 exist or changed, also run nested-radius coherence verification. When reusable
 components changed, verify required anatomy, states, content, responsive
 behavior, accessibility, and design-code parity. When affordances, action
