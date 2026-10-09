@@ -7,7 +7,10 @@ large style guide. Each focused skill owns one decision boundary and produces a
 structured handoff that another skill can consume.
 
 The optional `design-workflow` skill is an orchestrator. It does not replace the
-focused skills; it selects the smallest useful sequence.
+focused skills; it selects the smallest useful sequence. Installed alone, it
+supports only a limited standalone review: it summarizes each focused skill's
+handoff contract but does not bundle their scoring rules, schemas, validators,
+or renderers, and it reports which steps ran at which availability level.
 
 ## Composition graph
 
@@ -63,6 +66,13 @@ human review.
 Every `SKILL.md` contains only the core workflow and tells the agent when to
 load a reference or template. This reduces context use and avoids forcing
 irrelevant details into every run.
+
+Optional procedures live in conditional references that `SKILL.md` links
+directly with their loading condition, for example the token proposal build in
+`review-visuals` and the interaction-governance and design-system lifecycle
+procedures in `review-components`. Safety rules, hard gates, and the delivery
+contract stay in each `SKILL.md` so a standalone install keeps them. Measure the
+resources a client actually loads before claiming a context saving.
 
 ## Portability boundary
 

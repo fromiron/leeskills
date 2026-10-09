@@ -50,6 +50,16 @@
         "A legacy-to-target mapping and bounded coexistence policy are explicit rather than implied by a component inventory.",
         "External spacing, type, radius, shadow, or target-size examples are not copied as universal pass/fail rules."
       ]
+    },
+    {
+      "id": "appropriate-component-keep",
+      "prompt": "Review the Save draft button in evals/fixtures/appropriate-ui.html as a reusable component. Only flag real problems.",
+      "expected_output": "A proportionate component review that records the supported states and accessible name, marks unsupplied surfaces as not inspected, and does not invent drift or require unrelated states.",
+      "assertions": [
+        "The output does not require states the component does not use.",
+        "Design, documentation, and live surfaces that were not supplied are marked not-inspected.",
+        "No change is recommended without a supported user or maintainer impact."
+      ]
     }
   ]
 }

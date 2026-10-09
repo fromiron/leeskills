@@ -1,6 +1,12 @@
 # Composition map
 
-Use this file when the agent client cannot invoke other skills directly.
+Use this file when a focused skill cannot be invoked. When the focused skill's
+package is readable at `../../<skill-name>/SKILL.md` relative to this file,
+follow that `SKILL.md` and its bundled files instead; the contracts below are
+summaries. When it is not readable, these contracts are the **limited** level:
+they keep handoffs consistent, but they do not include the focused skill's
+scoring rules, schemas, validators, or renderers. Report every limited step as
+limited, and do not claim a check or script that is not available ran.
 
 ## Delivery order
 
@@ -13,6 +19,17 @@ Repeat affected checks after later edits. The JSON handoffs below keep their
 existing schemas; record delivery details in the accompanying report.
 
 ## Handoff contracts
+
+### Audit design (`audit-design`)
+
+Limited level: run only the quick-pass contract. Record the artifact, user,
+task, and inspected material; list up to five material findings with evidence
+state (`observed`, `measured`, `inferred`, `unknown`), location, impact,
+smallest fix, and verification method; report directly observed hard failures.
+Do not produce category scores, a quality or slop-risk score, or a verdict:
+the rubric and scorer belong to `audit-design`. Mark accessibility, reflow,
+keyboard, and reduced-motion as unknown unless directly verified. Do not infer
+AI authorship from style.
 
 ### Verify content (`verify-content`)
 
@@ -176,16 +193,37 @@ the actual font, fallback, script, language, size, weight, letter spacing, line
 height, line length, project token, and rendered evidence. Do not use an
 external typography table as a pass/fail threshold.
 
-When shared tokenization is recommended, supply exact proposed names and
-values, distinguish primitive values from semantic roles, and create one
-self-contained HTML review page for the applicable Color, Typography, Spacing,
-Layout, and Radius foundations. Follow the `review-visuals` token proposal
-procedure: write the proposal JSON, validate it, render the page with the
-bundled renderer where Python is available, and inspect it at wide and narrow
-viewports. Label the page as a proposal and report both paths; do not imply
-adoption. Trace numeric proposals to inspected project or rendered evidence.
-If that evidence is unavailable, leave values `unknown` instead of inventing a
-complete scale.
+Separate four paths: auditing or normalizing an existing system, proposing a
+new system, verifying a rendered proposal, and building proposal files. When
+shared tokenization would help, recommend it with exact proposed names and
+values and distinguish primitive values from semantic roles. Create the
+proposal JSON and the self-contained HTML page only when the user asks for or
+chooses that deliverable; then follow the `review-visuals` token proposal
+procedure: write the JSON, validate it, render it with the bundled renderer
+where Python is available, inspect it at wide and narrow viewports, and report
+both paths without implying adoption.
+
+When normalizing, trace numeric proposals to inspected project or rendered
+evidence; if that evidence is unavailable, leave values `unknown` instead of
+inventing a complete scale. When the user asks for a new system and no project
+tokens exist, label each new value as a design hypothesis with its rationale,
+keep supplied project values as observed, and leave undecided contexts such as
+a dark theme as open decisions. Report contrast or reflow as measured only
+after checking the rendered proposal.
+
+Before proposing token values, ask once whether to make an AI proposal or a
+guided one, unless the request already says. A guided proposal asks the
+user's direction questions together in one message and records each answer;
+at the limited level the question bank is unavailable, so ask in plain words
+about color family, screen theme, type style, and corner style, and record the
+answers in the report. Colors may be written as hex, `rgb()`, `rgba()`, or
+`oklch()`.
+
+The proposal schema, validator, renderer, and HTML template belong to the
+`review-visuals` package. At the limited level they are unavailable: present
+the proposal as a table in the report, state that the deterministic checks and
+rendering were not run, and do not hand-build a page that claims to follow the
+bundled template.
 
 ### Edit copy (`edit-copy`)
 
@@ -235,8 +273,16 @@ scope. Apply authorized changes before final checks; leave proposals unapplied
 for review-only requests. Repeat affected checks if verification prompts an
 additional edit.
 
-Run the deletion, substitution, semantic, five-second, growth, reflow,
-keyboard, reduced-motion, and provenance tests. When nested rounded surfaces
+Declare the operation (`review` or `edit`) and the verification scope. Use
+targeted verification for a narrow change: check the changed content,
+contract, and behavior, and record unaffected checks as `out-of-scope`. A
+targeted result is never release readiness. Use release verification when a
+release decision is requested or the change is broad; it allows no
+`out-of-scope` checks. Observed hard failures are reported in either scope.
+
+In release verification, run the deletion, substitution, semantic,
+five-second, growth, reflow, keyboard, reduced-motion, and provenance tests.
+In either scope, when nested rounded surfaces
 exist or changed, also run nested-radius coherence verification. When reusable
 components changed, verify required anatomy, states, content, responsive
 behavior, accessibility, and design-code parity. When affordances, action

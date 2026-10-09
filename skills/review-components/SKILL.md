@@ -1,11 +1,11 @@
 ---
 name: review-components
-description: Use this skill to audit or define reusable UI component and design-system contracts across design files, documentation, Storybook, source code, and live usage. Use when anatomy, variants, states, content, responsive or accessibility behavior, semantic tokens, design-code parity, affordance mapping, action priority or visibility, grouping cues, or design-system adoption need review. Do not use it for a visual-token-only request or to copy another design system's component specifications.
+description: Audits or defines reusable UI component and design-system contracts across design files, documentation, Storybook, source code, and live usage, covering anatomy, variants, states, content, responsive and accessibility behavior, semantic token mapping, design-code parity, affordances, action priority and visibility, grouping cues, and design-system adoption. Use when the question is how a component behaves or should behave. Not for consolidating visual values such as color, spacing, type, or radius tokens, and not for copying another design system's component specifications.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -92,8 +92,16 @@ Review the applicable dimensions:
     coexistence, adoption, ownership, and removal gates when a design system is
     in scope.
 
-Read [references/contract-rules.md](references/contract-rules.md) before
-normalizing another system's component or governance guidance.
+Read [references/contract-rules.md](references/contract-rules.md) for the base
+contract rules (ownership, selection, anatomy, states, content, responsive and
+input behavior, semantic tokens, parity, and exceptions) before normalizing
+another system's component guidance. Read the conditional references only when
+their dimensions are in scope:
+
+- [references/interaction-governance.md](references/interaction-governance.md)
+  — dimensions 13–15: affordance mapping, action governance, or grouping cues;
+- [references/system-lifecycle.md](references/system-lifecycle.md) —
+  dimension 16: introducing, migrating, or adopting a shared design system.
 
 ## Procedure
 
@@ -115,29 +123,18 @@ normalizing another system's component or governance guidance.
    consolidation to `review-visuals`.
 10. Compare design, documentation, code, and live usage. Classify each inspected
     surface as `aligned`, `drift`, `unknown`, or `not-inspected`.
-11. Map repeated visual treatments to perceived roles and actual behavior. Check
-    both directions: similar treatments should create compatible expectations,
-    and materially different behavior should remain distinguishable.
-12. For each decision context, identify the primary, secondary, destructive, or
-    intentionally equal-priority actions. Do not impose one primary action on an
-    entire application when the contexts are independent.
-13. Record whether each important action is persistent, contextual, disclosed,
-    or unavailable. Require evidence for hiding primary, frequent, or recovery
-    actions, and record an equivalent discoverable path where one is required.
-14. For each relationship, inventory proximity, alignment, similarity, and
-    container cues. Retain a container when it communicates a real boundary,
-    state, interaction, or repeated-record need—not merely to make the region
-    appear designed.
-15. When a shared system is in scope, record its current inventory,
-    authoritative surfaces, governance model, contribution process, release and
-    changelog policy, legacy mappings, coexistence rules, adoption status,
-    roadmap, owners, and deprecation gate.
-16. Record justified identity or task exceptions with evidence, owner, and a
+11. When affordances, action priority or visibility, or grouping cues are
+    material, follow the procedure in
+    [references/interaction-governance.md](references/interaction-governance.md).
+12. When a shared design system's introduction, migration, or adoption is in
+    scope, follow the procedure in
+    [references/system-lifecycle.md](references/system-lifecycle.md).
+13. Record justified identity or task exceptions with evidence, owner, and a
     review trigger. Do not erase distinctive choices merely to match a generic
     component library.
-17. Prioritize the smallest changes that restore user-facing behavior,
+14. Prioritize the smallest changes that restore user-facing behavior,
     discoverability, and maintainer clarity.
-18. Validate the applicable structured report.
+15. Validate the applicable structured report.
 
 ## State scope
 
@@ -180,24 +177,9 @@ surfaces still need an update path; source-of-truth status does not excuse drift
 
 ## Interaction and system-governance extension
 
-Use the extension when affordances, competing actions, disclosure, grouping, or
-design-system adoption are material to the request. It is optional and does not
-invalidate an existing component-contract report that is outside this scope.
-
-Use:
-
-- [assets/interaction-governance.schema.json](assets/interaction-governance.schema.json)
-- [assets/interaction-governance-example.json](assets/interaction-governance-example.json)
-
-Validate:
-
-```bash
-python scripts/validate_interaction_governance.py path/to/interaction-governance.json
-```
-
-The validator checks the declared contract and fail-closed gates. It does not
-operate the interface, measure real discoverability, establish conversion
-impact, or prove usability.
+The optional interaction-governance report, its schema, and its validator are
+described in the conditional references above. The extension does not
+invalidate an existing component-contract report that is outside its scope.
 
 ## Hard gates
 

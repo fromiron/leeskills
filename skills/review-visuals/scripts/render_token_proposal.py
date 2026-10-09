@@ -24,10 +24,11 @@ from validate_token_proposal import (  # noqa: E402
     FOUNDATIONS,
     TYPE_FIELDS,
     UNKNOWN,
-    contrast_ratio,
+    color_formats,
     die,
+    load_question_bank,
+    parse_color,
     read_json,
-    resolve_color,
     validate,
     validate_html,
 )
@@ -52,10 +53,19 @@ SECTION_KEYS = {
 class Page:
     """Small helpers that turn proposal data into escaped markup."""
 
-    def __init__(self, data: dict[str, Any], strings: dict[str, str], report: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        data: dict[str, Any],
+        strings: dict[str, str],
+        report: dict[str, Any],
+        questions: dict[str, dict[str, Any]] | None = None,
+    ) -> None:
         self.data = data
         self.s = strings
         self.report = report
+        self.questions = questions or {}
+        language = data["language"].lower().split("-")[0]
+        self.question_language = language if language in ("en", "ko", "ja") else "en"
         self.foundations = data["foundations"]
         self.primitives: dict[str, Any] = {}
         self.semantic: dict[str, dict[str, Any]] = {}
@@ -91,6 +101,71 @@ class Page:
         if not items:
             return self.unknown()
         return "<br>".join(escape(item) for item in items)
+
+    def basis(self, item: dict[str, Any]) -> str:
+        """Evidence for observed values; a marked rationale for design hypotheses."""
+        if item.get("basis") != "hypothesis":
+            return self.evidence(item.get("evidence"))
+        marker = f'<span class="tag" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+        parts = [marker, escape(item.get("rationale", ""))]
+        parts += [escape(entry) for entry in item.get("evidence") or []]
+        return "<br>".join(parts)
+
+    def choices(self) -> str:
+        """The user's guided answers and the tokens each answer shaped."""
+        if not self.report.get("choices"):
+            return ""
+        language = self.question_language
+        rows = []
+        for question_id, answer in self.report["choices"].items():
+            question = self.questions[question_id]
+            if answer["choice"] == "custom":
+                reply = f'{self.t("choice_custom")}: {escape(answer["detail"])}'
+            else:
+                option = next(item for item in question["options"] if item["id"] == answer["choice"])
+                reply = escape(option["label"][language])
+            shaped = ", ".join(f'<code class="token">{escape(name)}</code>' for name in answer["shaped"])
+            if not shaped:
+                shaped = '<span class="muted-small">—</span>'
+            rows.append(
+                f'<tr><th scope="row">{escape(question["prompt"][language])}</th><td>{reply}</td>'
+                f'<td>{shaped}</td></tr>'
+            )
+        table = self.table("choices", "choices_caption", ["th_question", "th_answer", "th_shaped"], rows)
+        return (
+            f'<div class="sub"><h2 id="choices-title">{self.t("choices_title")}</h2>'
+            f'<p>{self.t("choices_intro")}</p>{table}</div>'
+        )
+
+    def contrast_check(self, check: dict[str, Any], show_context: bool) -> str:
+        context = f' · {escape(check["context"])}' if show_context else ""
+        against = f'<p class="muted-small">{escape(check["against"])}{context}</p>'
+        if check["status"] == "unknown":
+            return f'<div class="contrast-check">{self.unknown()}{against}</div>'
+        verdict = self.t("contrast_pass") if check["status"] == "pass" else self.t("contrast_fail")
+        pair = self.style(token_fg=check["foreground"], token_bg=check["background"])
+        return (
+            f'<div class="contrast-check"><span class="pair" style="{pair}" aria-hidden="true">Aa 가 あ</span>'
+            f'<p class="value">{check["ratio"]}:1 · ≥ {check["minimum"]} {verdict}</p>{against}</div>'
+        )
+
+    def color_listing(self, items: list[str] | None) -> str:
+        """Current colors, one per line, each with a small swatch.
+
+        Only values that parse as hex, rgb(), or oklch() get a swatch, drawn from
+        the converted rgb() value so free text never reaches a style attribute.
+        """
+        if not items:
+            return self.listing(items)
+        lines = []
+        for item in items:
+            color = parse_color(item)
+            swatch = ""
+            if color is not None:
+                value = color_formats(color)["rgb"]
+                swatch = f'<span class="mini-swatch" style="{self.style(token_value=value)}" aria-hidden="true"></span>'
+            lines.append(f"{swatch}{escape(item)}")
+        return "<br>".join(lines)
 
     def listing(self, items: list[str] | None) -> str:
         if not items:
@@ -135,7 +210,39 @@ class Page:
             notes += f'<p class="muted-small">{self.t("th_owner")}: {escape(item["owner"])}</p>'
         if item.get("usage"):
             notes += f'<p class="muted-small">{escape(item["usage"])}</p>'
-        return f'<td class="role"><p>{escape(item["role"])}</p>{notes}<p class="tag">{self.status(item["status"])}</p></td>'
+        # The whole page is a proposal, so only exceptions to "proposed" get a marker.
+        status = ""
+        if item["status"] == "retained":
+            status = f'<p><span class="tag">{self.status("retained")}</span></p>'
+        elif item["status"] == "unknown":
+            status = f"<p>{self.unknown()}</p>"
+        return f'<td class="role"><p>{escape(item["role"])}</p>{notes}{status}</td>'
+
+    def legend(self) -> str:
+        """Explain the markers this page actually uses."""
+        statuses = {
+            item.get("status") for block in self.foundations.values() for item in block.get("semantic", [])
+        }
+        entries = []
+        if "retained" in statuses:
+            entries.append((f'<span class="tag">{self.status("retained")}</span>', "legend_retained"))
+        if self.report["hypothesis_values"]:
+            entries.append((f'<span class="tag">{self.t("hypothesis")}</span>', "legend_hypothesis"))
+        if self.report["unknown_values"] or "unknown" in statuses:
+            entries.append((self.unknown(), "legend_unknown"))
+        if any(not item["in_srgb_gamut"] for item in self.report["color_formats"].values()):
+            entries.append((f'<span class="tag">{self.t("srgb_mapped")}</span>', "legend_srgb"))
+        rows = "".join(f"<div><dt>{marker}</dt><dd>{self.t(key)}</dd></div>" for marker, key in entries)
+        listing = f'<dl class="legend">{rows}</dl>' if rows else ""
+        return f'<div class="sub"><h3>{self.t("legend_title")}</h3><p>{self.t("legend_intro")}</p>{listing}</div>'
+
+    def has_current(self, foundation: str) -> bool:
+        """Whether any primitive in the foundation consolidates existing raw values."""
+        return any(item.get("current_values") for item in self.foundations[foundation].get("primitives", []))
+
+    def headers(self, foundation: str, keys: list[str]) -> list[str]:
+        # A new system has nothing to consolidate; drop the empty column.
+        return [key for key in keys if key != "th_consolidates" or self.has_current(foundation)]
 
     def table(self, ident: str, caption_key: str, headers: list[str], rows: list[str]) -> str:
         # Header keys are chrome strings; "=" marks literal text such as a context name.
@@ -166,6 +273,7 @@ class Page:
             f'<h2 id="overview-title">{self.t("model_title")}</h2>',
             f'<p>{self.t("model_intro")}</p>',
             model,
+            self.legend(),
         ]
         naming = self.data.get("naming") or {}
         figures = []
@@ -199,7 +307,8 @@ class Page:
                 f'<div class="stat"><dt>{self.t(foundation)}</dt>'
                 f'<dd>{counts["current_values"]} → {counts["primitives"]}</dd></div>'
             )
-        if stats:
+        # Without existing raw values there is nothing to summarize ("0 → n").
+        if stats and any(counts["current_values"] for counts in self.report["foundation_counts"].values()):
             parts.append(
                 f'<div class="sub"><h3>{self.t("summary_title")}</h3><dl class="stats">{"".join(stats)}</dl>'
                 f'<p class="muted-small">{self.t("stats_note")}</p></div>'
@@ -213,7 +322,17 @@ class Page:
             heading = f'<h2 id="{ident}-title">{self.t(ident)}</h2><p>{self.t(intro_key)}</p>'
         return f'<section id="{ident}" class="doc-section" aria-labelledby="{ident}-title">{heading}{body}</section>'
 
-    def primitive_rows(self, foundation: str, preview_class: str | None) -> list[str]:
+    def formats(self, name: str) -> str:
+        """The color in hex, rgb()/rgba(), and oklch(), converted by the validator."""
+        converted = self.report["color_formats"].get(name)
+        if not converted:
+            return self.unknown()
+        lines = [f'<code>{escape(converted[kind])}</code>' for kind in ("hex", "rgb", "oklch")]
+        if not converted["in_srgb_gamut"]:
+            lines.append(f'<span class="tag">{self.t("srgb_mapped")}</span>')
+        return "<br>".join(lines)
+
+    def primitive_rows(self, foundation: str, preview_class: str | None, formats: bool = False) -> list[str]:
         rows = []
         for item in self.foundations[foundation].get("primitives", []):
             value = item.get("value")
@@ -223,11 +342,16 @@ class Page:
                 if value != UNKNOWN:
                     inner = f'<span class="{preview_class}" style="{self.style(token_value=value)}" aria-hidden="true"></span>'
                 preview = f'<td class="preview">{inner}</td>'
+            converted = f'<td class="value">{self.formats(item["name"])}</td>' if formats else ""
+            consolidated = ""
+            if self.has_current(foundation):
+                listing = self.color_listing if foundation == "color" else self.listing
+                consolidated = f'<td class="value">{listing(item.get("current_values"))}</td>'
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{preview}'
-                f'<td class="value">{self.value(value)}</td>'
-                f'<td class="value">{self.listing(item.get("current_values"))}</td>'
-                f'<td class="evidence">{self.evidence(item.get("evidence"))}</td></tr>'
+                f'<td class="value">{self.value(value)}</td>{converted}'
+                f'{consolidated}'
+                f'<td class="evidence">{self.basis(item)}</td></tr>'
             )
         return rows
 
@@ -268,32 +392,21 @@ class Page:
             )
         primitives = "".join(ramps) + self.table(
             "color-primitives", "color_primitives_caption",
-            ["th_name", "th_value", "th_consolidates", "th_evidence"],
-            self.primitive_rows("color", None),
+            self.headers("color", ["th_name", "th_preview", "th_value", "th_formats", "th_consolidates", "th_evidence"]),
+            self.primitive_rows("color", "color-swatch", formats=True),
         )
-        contrast = {item["token"]: item for item in self.report["contrast"]}
-        color_primitives = {
-            item["name"]: item.get("value") for item in block.get("primitives", [])
-        }
-        color_semantic = {item["name"]: item for item in block.get("semantic", [])}
+        checks: dict[str, list[dict[str, Any]]] = {}
+        for check in self.report["contrast"]:
+            checks.setdefault(check["token"], []).append(check)
         items = block.get("semantic", [])
         columns = self.context_columns(items)
         rows = []
         for item in items:
-            check = contrast.get(item["name"])
+            token_checks = checks.get(item["name"], [])
             cell = '<span class="muted-small">—</span>'
-            if check:
-                if check["status"] == "unknown":
-                    cell = self.unknown()
-                else:
-                    foreground = resolve_color(item["name"], color_primitives, color_semantic)
-                    background = resolve_color(check["against"], color_primitives, color_semantic)
-                    verdict = self.t("contrast_pass") if check["status"] == "pass" else self.t("contrast_fail")
-                    cell = (
-                        f'<span class="pair" style="{self.style(token_fg=foreground, token_bg=background)}" aria-hidden="true">Aa 가 あ</span>'
-                        f'<p class="value">{contrast_ratio(foreground, background)}:1 · ≥ {check["minimum"]} {verdict}</p>'
-                        f'<p class="muted-small">{escape(check["against"])}</p>'
-                    )
+            if token_checks:
+                show_context = len(token_checks) > 1
+                cell = "".join(self.contrast_check(check, show_context) for check in token_checks)
             refs = self.ref_cells(item, columns, swatch=True)
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{refs}'
@@ -303,7 +416,9 @@ class Page:
             "color-semantic", "color_semantic_caption",
             ["th_name"] + [f"={column}" for column in columns] + ["th_contrast", "th_role"], rows,
         )
-        return self.section("color", self.sub("primitives", primitives) + self.sub("semantic", semantic))
+        return self.section(
+            "color", self.sub("primitives", primitives, "color_formats_note") + self.sub("semantic", semantic),
+        )
 
     def typography(self) -> str:
         block = self.foundations["typography"]
@@ -319,7 +434,7 @@ class Page:
             specimen = escape(item.get("specimen") or default_text)
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code>'
-                f'<p class="muted-small">{self.evidence(item.get("evidence"))}</p></th>'
+                f'<p class="muted-small">{self.basis(item)}</p></th>'
                 f'<td><p class="specimen" style="{style}">{specimen}</p><dl class="type-values">{values}</dl></td></tr>'
             )
         primitives = self.table(
@@ -331,7 +446,7 @@ class Page:
     def spacing(self) -> str:
         primitives = self.table(
             "space-primitives", "space_primitives_caption",
-            ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"],
+            self.headers("spacing", ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"]),
             self.primitive_rows("spacing", "space-bar"),
         )
         semantic = self.semantic_table("spacing", "space-semantic", "space_semantic_caption")
@@ -359,6 +474,13 @@ class Page:
                 '<figure class="frame"><div class="frame-canvas"><div class="frame-content">'
                 f'{self.t("frame_width")} {resolve("content-width")}</div></div>'
                 f'<figcaption><strong>{escape(name)} · {self.value(breakpoint.get("min_width"))}</strong>'
+                + (
+                    f' <span class="tag" data-basis="hypothesis">{self.t("hypothesis")}</span>'
+                    if breakpoint.get("basis") == "hypothesis"
+                    and breakpoint.get("min_width") not in (None, "", UNKNOWN)
+                    else ""
+                )
+                + ""
                 f'{self.t("frame_padding")} {resolve("page-padding")}</figcaption></figure>'
             )
         if frames:
@@ -366,7 +488,7 @@ class Page:
         if block.get("primitives"):
             body += self.sub("primitives", self.table(
                 "layout-primitives", "layout_primitives_caption",
-                ["th_name", "th_value", "th_consolidates", "th_evidence"],
+                self.headers("layout", ["th_name", "th_value", "th_consolidates", "th_evidence"]),
                 self.primitive_rows("layout", None),
             ))
         body += self.sub("semantic", self.semantic_table("layout", "layout-semantic", "layout_semantic_caption", "owner"))
@@ -375,7 +497,7 @@ class Page:
     def radius(self) -> str:
         primitives = self.table(
             "radius-primitives", "radius_primitives_caption",
-            ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"],
+            self.headers("radius", ["th_name", "th_preview", "th_value", "th_consolidates", "th_evidence"]),
             self.primitive_rows("radius", "radius-corner"),
         )
         semantic = self.semantic_table("radius", "radius-semantic", "radius_semantic_caption", "relationship")
@@ -402,7 +524,7 @@ class Page:
         for group in ("proposed", "retained", "rejected", "open"):
             items = decisions.get(group) or []
             body = "".join(f"<li>{escape(item)}</li>" for item in items) or f'<li>{self.t("none")}</li>'
-            cards.append(f'<div class="decision"><h3 class="tag">{self.t("decision_" + group)}</h3><ul>{body}</ul></div>')
+            cards.append(f'<div class="decision"><h3 class="decision-title">{self.t("decision_" + group)}</h3><ul>{body}</ul></div>')
         return self.section("decisions", f'<div class="sub decisions">{"".join(cards)}</div>')
 
     def shell(self) -> str:
@@ -412,6 +534,7 @@ class Page:
         sections += [self.changes(), self.decisions()]
         data = self.data
         basis = "<br>".join(escape(item) for item in data["evidence_basis"])
+        boundary = "boundary_text_new_system" if data.get("mode") == "new-system" else "boundary_text"
         return f"""<!-- shell:start -->
   <a class="skip-link" href="#content">{self.t("skip")}</a>
   <div class="app">
@@ -435,9 +558,11 @@ class Page:
           <dl class="meta">
             <div><dt>{self.t("meta_basis")}</dt><dd>{basis}</dd></div>
             <div><dt>{self.t("meta_prepared")}</dt><dd>{escape(data["prepared"])}</dd></div>
+            <div><dt>{self.t("meta_approach")}</dt><dd>{self.t("approach_" + self.report["approach"])}</dd></div>
             <div><dt>{self.t("meta_status")}</dt><dd>{self.t("status_value")}</dd></div>
           </dl>
-          <div class="notice"><strong>{self.t("boundary_title")}</strong><p>{self.t("boundary_text")}</p></div>
+          <div class="notice"><strong>{self.t("boundary_title")}</strong><p>{self.t(boundary)}</p></div>
+          {self.choices()}
         </header>
         {"".join(sections)}
         <footer class="doc-footer">{self.t("footer")}</footer>
@@ -454,7 +579,8 @@ def render(data: dict[str, Any], template: str, report: dict[str, Any]) -> str:
     catalog = json.loads(match.group(1))
     language = data["language"].lower().split("-")[0]
     strings = catalog.get(language, catalog["en"])
-    page = Page(data, strings, report)
+    questions = {question["id"]: question for question in load_question_bank()["questions"]}
+    page = Page(data, strings, report, questions)
     html = SHELL.sub(lambda _: page.shell(), template, count=1)
     html = html.replace("{{DOCUMENT_LANGUAGE}}", escape(data["language"], quote=True), 1)
     html = html.replace("{{DOCUMENT_TITLE}}", escape(data["title"]), 1)
@@ -491,6 +617,7 @@ def main() -> int:
         "rendered": page_check["valid"],
         "output": str(args.output) if page_check["valid"] else None,
         "unknown_values": report["unknown_values"],
+        "hypothesis_values": report["hypothesis_values"],
         "warnings": report["warnings"],
         "html": page_check,
     }

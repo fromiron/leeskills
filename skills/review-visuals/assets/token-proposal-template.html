@@ -410,17 +410,9 @@
 
     .value { white-space: nowrap; }
 
-    .unknown {
-      display: inline-block;
-      padding: 2px var(--space-2);
-      border: 1px dashed var(--c-unknown-text);
-      border-radius: var(--radius-control);
-      background: var(--c-unknown-bg);
-      color: var(--c-unknown-text);
-      font-size: var(--text-small);
-      font-weight: 600;
-      white-space: nowrap;
-    }
+    .contrast-check + .contrast-check { margin-top: var(--space-3); }
+
+
 
     /* A mapped primitive in one context column (breakpoint, language, theme). */
     .ref {
@@ -438,15 +430,27 @@
 
     .ref.is-dark { border-color: var(--c-dark); background: var(--c-dark); color: var(--c-on-dark); }
 
-    .tag {
+    /* Markers share one quiet tag shape: neutral gray, or yellow for unknown. */
+    .tag,
+    .unknown {
       display: inline-block;
-      padding: 2px var(--space-2);
+      padding: 1px var(--space-2);
       border-radius: var(--radius-control);
       background: var(--c-well);
+      color: var(--c-muted);
       font-size: var(--text-small);
-      font-weight: 600;
+      font-weight: 500;
       white-space: nowrap;
     }
+
+    .unknown { background: var(--c-unknown-bg); color: var(--c-unknown-text); }
+
+    .legend { display: grid; gap: var(--space-2); margin: 0; }
+    .legend div { display: grid; grid-template-columns: minmax(96px, max-content) minmax(0, 1fr); gap: var(--space-3); align-items: baseline; }
+    .legend dt, .legend dd { margin: 0; }
+    .legend dd { color: var(--c-muted); font-size: var(--text-small); }
+
+    .decision-title { margin: 0; font-size: var(--text-small); font-weight: 600; }
 
     .role > * + * { margin-top: var(--space-1); }
 
@@ -455,6 +459,26 @@
       flex: none;
       width: 28px;
       height: 14px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: var(--radius-control);
+      background: var(--token-value);
+    }
+
+    .mini-swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: var(--space-1);
+      border: 1px solid var(--c-border-strong);
+      border-radius: 50%;
+      background: var(--token-value);
+      vertical-align: -1px;
+    }
+
+    .color-swatch {
+      display: block;
+      width: 40px;
+      height: 28px;
       border: 1px solid var(--c-border-strong);
       border-radius: var(--radius-control);
       background: var(--token-value);
@@ -507,6 +531,8 @@
       border-right: 1px solid rgb(0 0 0 / 0.08);
       border-radius: 0 var(--radius-control) var(--radius-control) 0;
     }
+
+    .ramp-step:only-child::before { border-radius: var(--radius-control); }
 
     .ramp-step.is-unknown::before {
       background: repeating-linear-gradient(135deg, var(--c-unknown-bg) 0 6px, var(--c-panel) 6px 12px);
@@ -637,7 +663,8 @@
 
       .nav { margin: 0 calc(-1 * var(--space-4)); padding: 0 var(--space-4); overflow-x: auto; }
       .nav-group { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-      .nav ul { display: flex; gap: var(--space-4); }
+      /* Size the list to its links so the end padding stays inside the scroll area. */
+      .nav ul { display: flex; gap: var(--space-4); width: max-content; padding-inline-end: var(--space-4); }
       .nav a { padding: var(--space-2) 0 var(--space-3); white-space: nowrap; }
       .nav a::before { display: none; }
       .nav a[aria-current="location"] { box-shadow: inset 0 -2px 0 var(--c-accent); }
@@ -694,7 +721,7 @@
       <div class="brand">
         <strong>{{PROJECT_NAME}}</strong>
         <span data-i18n="brand_suffix">Design token proposal</span>
-        <span class="badge" data-i18n="status_badge">Proposed · not adopted</span>
+        <span class="badge" data-i18n="status_badge">Proposal</span>
       </div>
       <nav class="nav" aria-labelledby="nav-label">
         <p id="nav-label" class="nav-group" data-i18n="nav_label">Foundations</p>
@@ -778,9 +805,9 @@
             <div class="table-wrap" role="region" aria-labelledby="color-primitives-caption" tabindex="0">
               <table>
                 <caption id="color-primitives-caption" data-i18n="color_primitives_caption">Color primitives</caption>
-                <thead><tr><th scope="col" data-i18n="th_name">Name</th><th scope="col" data-i18n="th_value">Value</th><th scope="col" data-i18n="th_consolidates">Consolidates</th><th scope="col" data-i18n="th_evidence">Evidence</th></tr></thead>
+                <thead><tr><th scope="col" data-i18n="th_name">Name</th><th scope="col" data-i18n="th_preview">Preview</th><th scope="col" data-i18n="th_value">Value</th><th scope="col" data-i18n="th_consolidates">Consolidates</th><th scope="col" data-i18n="th_evidence">Evidence</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row"><code class="token">{{COLOR_PRIMITIVE_NAME}}</code></th><td class="value">{{COLOR_VALUE}}</td><td class="value">{{COLOR_CURRENT_VALUES}}</td><td class="evidence">{{COLOR_EVIDENCE}}</td></tr>
+                  <tr><th scope="row"><code class="token">{{COLOR_PRIMITIVE_NAME}}</code></th><td class="preview"><span class="color-swatch" style="--token-value: {{COLOR_VALUE}}" aria-hidden="true"></span></td><td class="value">{{COLOR_VALUE}}</td><td class="value">{{COLOR_CURRENT_VALUES}}</td><td class="evidence">{{COLOR_EVIDENCE}}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -932,12 +959,12 @@
 
         <section id="decisions" class="doc-section" aria-labelledby="decisions-title">
           <h2 id="decisions-title" data-i18n="decisions">Decisions</h2>
-          <p data-i18n="decisions_intro">Proposals, retained exceptions, rejected alternatives, and open questions stay separate so the page cannot imply an approved standard.</p>
+          <p data-i18n="decisions_intro">Key decisions, retained exceptions, rejected alternatives, and remaining work stay separate so the page cannot imply an approved standard.</p>
           <div class="sub decisions">
-            <div class="decision"><h3 class="tag" data-i18n="decision_proposed">Proposed</h3><ul><li>{{PROPOSED_DECISION}}</li></ul></div>
-            <div class="decision"><h3 class="tag" data-i18n="decision_retained">Retained exceptions</h3><ul><li>{{RETAINED_EXCEPTION}}</li></ul></div>
-            <div class="decision"><h3 class="tag" data-i18n="decision_rejected">Rejected</h3><ul><li>{{REJECTED_ALTERNATIVE}}</li></ul></div>
-            <div class="decision"><h3 class="tag" data-i18n="decision_open">Open questions</h3><ul><li>{{OPEN_QUESTION}}</li></ul></div>
+            <div class="decision"><h3 class="decision-title" data-i18n="decision_proposed">Key decisions</h3><ul><li>{{PROPOSED_DECISION}}</li></ul></div>
+            <div class="decision"><h3 class="decision-title" data-i18n="decision_retained">Retained exceptions</h3><ul><li>{{RETAINED_EXCEPTION}}</li></ul></div>
+            <div class="decision"><h3 class="decision-title" data-i18n="decision_rejected">Rejected</h3><ul><li>{{REJECTED_ALTERNATIVE}}</li></ul></div>
+            <div class="decision"><h3 class="decision-title" data-i18n="decision_open">Remaining work</h3><ul><li>{{OPEN_QUESTION}}</li></ul></div>
           </div>
         </section>
 
@@ -951,7 +978,7 @@
   "en": {
     "skip": "Skip to token proposal",
     "brand_suffix": "Design token proposal",
-    "status_badge": "Proposed · not adopted",
+    "status_badge": "Proposal",
     "nav_label": "Foundations",
     "overview": "Overview",
     "color": "Color",
@@ -965,6 +992,16 @@
     "meta_basis": "Evidence basis",
     "meta_prepared": "Prepared",
     "meta_status": "Status",
+    "meta_approach": "Approach",
+    "approach_auto": "AI proposal",
+    "approach_guided": "Guided by your answers",
+    "choices_title": "Your choices",
+    "choices_intro": "Answers to the guided questions and the tokens each answer shaped. Values chosen from a direction are marked Newly chosen; answers left to the AI shape no listed token.",
+    "choices_caption": "Guided answers",
+    "th_question": "Question",
+    "th_answer": "Answer",
+    "th_shaped": "Tokens shaped",
+    "choice_custom": "Written answer",
     "status_value": "Proposed, not adopted",
     "boundary_title": "Review boundary",
     "boundary_text": "These names and values are proposals derived from the inspected project. Values without source or rendered evidence stay unknown. Confirm them with implementation owners before adoption.",
@@ -985,7 +1022,7 @@
     "layout_intro": "Assign page padding and width limits to explicit containers at the project's own breakpoints. Inner elements do not need to fill the container.",
     "radius_intro": "Map reusable values to shape roles. Shared nested contours step inward; independent controls, pills, and circles are classified rather than forced into one formula.",
     "changes_intro": "Current values and aliases mapped to the proposal, including deletions and retained exceptions.",
-    "decisions_intro": "Proposals, retained exceptions, rejected alternatives, and open questions stay separate so the page cannot imply an approved standard.",
+    "decisions_intro": "Key decisions, retained exceptions, rejected alternatives, and remaining work stay separate so the page cannot imply an approved standard.",
     "color_primitives_caption": "Color primitives",
     "color_semantic_caption": "Color roles mapped to primitives",
     "type_primitives_caption": "Typography primitives",
@@ -1003,6 +1040,9 @@
     "th_preview": "Preview",
     "th_name": "Name",
     "th_value": "Value",
+    "th_formats": "Formats",
+    "srgb_mapped": "Mapped to sRGB",
+    "color_formats_note": "Hex, rgb(), and oklch() are converted from the proposed value and rounded. For an oklch() color outside sRGB, hex and rgb() show the color mapped into sRGB, and contrast uses that color.",
     "th_consolidates": "Consolidates",
     "th_evidence": "Evidence",
     "th_role": "Role",
@@ -1021,6 +1061,8 @@
     "line_height": "Line height",
     "letter_spacing": "Letter spacing",
     "unknown": "unknown",
+    "hypothesis": "Newly chosen",
+    "boundary_text_new_system": "This is a new-system proposal. Values marked Newly chosen were picked for this proposal from the stated requirements, content, brand, and platform constraints; they are not existing project values or measurements. Render and check them, and confirm open decisions with project owners before adoption.",
     "none": "None recorded",
     "status_proposed": "Proposed",
     "status_retained": "Retained",
@@ -1034,10 +1076,16 @@
     "relationship_independent": "Independent",
     "relationship_pill-or-circle": "Pill or circle",
     "contrast_fail": "below",
-    "decision_proposed": "Proposed",
+    "decision_proposed": "Key decisions",
+    "legend_title": "Markers",
+    "legend_intro": "A semantic token without a marker is proposed in this document.",
+    "legend_retained": "An existing project token, kept as it is.",
+    "legend_hypothesis": "No project value existed, so this value was newly chosen. Check it after rendering.",
+    "legend_unknown": "Not decided yet because there is no evidence.",
+    "legend_srgb": "Shown as the nearest color an sRGB screen can display.",
     "decision_retained": "Retained exceptions",
     "decision_rejected": "Rejected",
-    "decision_open": "Open questions",
+    "decision_open": "Remaining work",
     "specimen_text": "Grounded type stays readable at 1,280 px and 375 px.",
     "footer": "Review artifact. Values become authoritative only after project owners adopt them and implementation verification passes.",
     "placeholder_warning": "Template incomplete: {count} placeholder(s) remain. Replace them or mark the values unknown before sharing.",
@@ -1057,7 +1105,7 @@
   "ko": {
     "skip": "토큰 제안 본문으로 건너뛰기",
     "brand_suffix": "디자인 토큰 제안",
-    "status_badge": "제안 · 미도입",
+    "status_badge": "제안",
     "nav_label": "기초 요소",
     "overview": "개요",
     "color": "컬러",
@@ -1071,6 +1119,16 @@
     "meta_basis": "근거",
     "meta_prepared": "작성일",
     "meta_status": "상태",
+    "meta_approach": "제안 방식",
+    "approach_auto": "AI 자동 제안",
+    "approach_guided": "질의 기반 제안",
+    "choices_title": "선택한 방향",
+    "choices_intro": "질의에 답한 내용과 각 답변으로 정한 토큰입니다. 방향에서 고른 값은 '새로 정한 값'으로 표시하며, AI에게 맡긴 항목에는 토큰을 연결하지 않습니다.",
+    "choices_caption": "질의 답변",
+    "th_question": "질문",
+    "th_answer": "답변",
+    "th_shaped": "반영한 토큰",
+    "choice_custom": "직접 입력",
     "status_value": "제안 단계이며 아직 도입되지 않았습니다",
     "boundary_title": "검토 범위",
     "boundary_text": "이 문서의 이름과 값은 확인한 프로젝트 자료에서 도출한 제안입니다. 소스나 렌더링 근거가 없는 값은 '알 수 없음'으로 남겨 두었습니다. 도입 전에 구현 담당자와 함께 확인해 주세요.",
@@ -1091,7 +1149,7 @@
     "layout_intro": "페이지 여백과 최대 너비는 프로젝트의 브레이크포인트에서 명시된 컨테이너가 담당합니다. 내부 요소가 컨테이너를 가득 채울 필요는 없습니다.",
     "radius_intro": "재사용할 값을 형태 역할에 연결합니다. 윤곽을 공유하는 중첩 요소는 안쪽으로 갈수록 반경을 줄이고, 독립 컨트롤·알약형·원형은 하나의 공식에 끼워 맞추지 않고 따로 분류합니다.",
     "changes_intro": "현재 값과 별칭이 제안 토큰에 어떻게 대응하는지 정리했습니다. 삭제 항목과 유지하는 예외도 포함합니다.",
-    "decisions_intro": "제안, 유지하는 예외, 채택하지 않은 대안, 미해결 질문을 구분해 승인된 표준처럼 읽히지 않도록 합니다.",
+    "decisions_intro": "주요 결정, 유지하는 예외, 채택하지 않은 대안, 남은 과제를 구분해 승인된 표준처럼 읽히지 않도록 합니다.",
     "color_primitives_caption": "컬러 프리미티브",
     "color_semantic_caption": "컬러 역할과 참조 프리미티브",
     "type_primitives_caption": "타이포그래피 프리미티브",
@@ -1109,6 +1167,9 @@
     "th_preview": "미리보기",
     "th_name": "이름",
     "th_value": "값",
+    "th_formats": "색 표기",
+    "srgb_mapped": "sRGB로 변환",
+    "color_formats_note": "hex, rgb(), oklch() 표기는 제안 값을 변환해 반올림한 값입니다. sRGB 범위를 벗어난 oklch() 색은 hex와 rgb()에 sRGB로 변환한 색을 보여 주며, 대비도 그 색으로 계산합니다.",
     "th_consolidates": "통합 대상",
     "th_evidence": "근거",
     "th_role": "역할",
@@ -1127,6 +1188,8 @@
     "line_height": "행간",
     "letter_spacing": "자간",
     "unknown": "알 수 없음",
+    "hypothesis": "새로 정한 값",
+    "boundary_text_new_system": "신규 시스템 제안입니다. '새로 정한 값'으로 표시한 값은 제시된 요구사항·콘텐츠·브랜드·플랫폼 제약에서 이번에 새로 고른 값이며, 기존 프로젝트 값이나 측정 결과가 아닙니다. 렌더링해서 검사하고, 미확정 결정은 도입 전에 프로젝트 담당자와 확인해 주세요.",
     "none": "기록 없음",
     "status_proposed": "제안",
     "status_retained": "유지",
@@ -1140,10 +1203,16 @@
     "relationship_independent": "독립",
     "relationship_pill-or-circle": "알약형·원형",
     "contrast_fail": "기준 미달",
-    "decision_proposed": "제안",
+    "decision_proposed": "주요 결정",
+    "legend_title": "표시 안내",
+    "legend_intro": "표시가 없는 시맨틱 토큰은 이번에 제안하는 토큰입니다.",
+    "legend_retained": "현재 프로젝트 토큰을 그대로 둡니다.",
+    "legend_hypothesis": "프로젝트에 값이 없어 이번에 새로 고른 값입니다. 렌더링해서 확인해야 합니다.",
+    "legend_unknown": "근거가 없어 아직 정하지 않았습니다.",
+    "legend_srgb": "sRGB 화면에서 표시할 수 있는 가장 가까운 색으로 바꿔 보여 줍니다.",
     "decision_retained": "유지하는 예외",
     "decision_rejected": "채택하지 않은 대안",
-    "decision_open": "미해결 질문",
+    "decision_open": "남은 과제",
     "specimen_text": "근거 있는 글자는 1,280px에서도 375px에서도 잘 읽힙니다.",
     "footer": "검토용 문서입니다. 프로젝트 담당자가 도입하고 구현 검증을 통과한 뒤에만 기준 값이 됩니다.",
     "placeholder_warning": "템플릿 미완성: 자리표시자 {count}개가 남아 있습니다. 공유하기 전에 값을 채우거나 '알 수 없음'으로 표시해 주세요.",
@@ -1163,7 +1232,7 @@
   "ja": {
     "skip": "トークン提案の本文へ移動",
     "brand_suffix": "デザイントークン提案",
-    "status_badge": "提案 · 未導入",
+    "status_badge": "提案",
     "nav_label": "基礎要素",
     "overview": "概要",
     "color": "カラー",
@@ -1177,6 +1246,16 @@
     "meta_basis": "根拠",
     "meta_prepared": "作成日",
     "meta_status": "ステータス",
+    "meta_approach": "提案の方法",
+    "approach_auto": "AI自動提案",
+    "approach_guided": "質問による提案",
+    "choices_title": "選んだ方向",
+    "choices_intro": "質問への回答と、各回答から決めたトークンです。方向から選んだ値は「新たに決めた値」と示し、AIに任せた項目にはトークンを結び付けません。",
+    "choices_caption": "質問への回答",
+    "th_question": "質問",
+    "th_answer": "回答",
+    "th_shaped": "反映したトークン",
+    "choice_custom": "自由入力",
     "status_value": "提案段階で、まだ導入されていません",
     "boundary_title": "レビューの範囲",
     "boundary_text": "このページの名前と値は、確認したプロジェクト資料から導いた提案です。ソースやレンダリング結果の根拠がない値は「不明」のままにしています。導入前に実装担当者と確認してください。",
@@ -1197,7 +1276,7 @@
     "layout_intro": "ページ余白と最大幅は、プロジェクトのブレークポイントで明示したコンテナが担います。内側の要素がコンテナいっぱいに広がる必要はありません。",
     "radius_intro": "再利用する値を形の役割に対応付けます。輪郭を共有する入れ子の要素は内側ほど角丸を小さくし、独立したコントロールやピル型・円形は一つの式に当てはめず分類します。",
     "changes_intro": "現在の値やエイリアスと提案トークンの対応です。削除するものと、維持する例外も含みます。",
-    "decisions_intro": "提案、維持する例外、採用しなかった案、未解決の質問を分けて記載し、承認済みの標準と誤解されないようにします。",
+    "decisions_intro": "主な決定、維持する例外、採用しなかった案、残りの課題を分けて記載し、承認済みの標準と誤解されないようにします。",
     "color_primitives_caption": "カラーのプリミティブ",
     "color_semantic_caption": "カラーの役割と参照先",
     "type_primitives_caption": "タイポグラフィのプリミティブ",
@@ -1215,6 +1294,9 @@
     "th_preview": "プレビュー",
     "th_name": "名前",
     "th_value": "値",
+    "th_formats": "色の表記",
+    "srgb_mapped": "sRGBに変換",
+    "color_formats_note": "hex、rgb()、oklch() の表記は提案値を変換して丸めた値です。sRGB の範囲外の oklch() の色は、hex と rgb() に sRGB へ変換した色を示し、コントラストもその色で計算します。",
     "th_consolidates": "統合対象",
     "th_evidence": "根拠",
     "th_role": "役割",
@@ -1233,6 +1315,8 @@
     "line_height": "行間",
     "letter_spacing": "字間",
     "unknown": "不明",
+    "hypothesis": "新たに決めた値",
+    "boundary_text_new_system": "新規システムの提案です。「新たに決めた値」と示した値は、示された要件・コンテンツ・ブランド・プラットフォームの制約から今回新しく選んだもので、既存のプロジェクトの値や測定結果ではありません。レンダリングして確認し、未確定の判断は導入前にプロジェクト担当者と確認してください。",
     "none": "記録なし",
     "status_proposed": "提案",
     "status_retained": "維持",
@@ -1246,10 +1330,16 @@
     "relationship_independent": "独立",
     "relationship_pill-or-circle": "ピル型・円形",
     "contrast_fail": "基準未満",
-    "decision_proposed": "提案",
+    "decision_proposed": "主な決定",
+    "legend_title": "表示の見方",
+    "legend_intro": "表示のないセマンティックトークンは、今回提案するトークンです。",
+    "legend_retained": "現在のプロジェクトのトークンをそのまま残します。",
+    "legend_hypothesis": "プロジェクトに値がなかったため、今回新たに選んだ値です。レンダリングして確認する必要があります。",
+    "legend_unknown": "根拠がないため、まだ決めていません。",
+    "legend_srgb": "sRGBの画面で表示できる最も近い色に変換して示します。",
     "decision_retained": "維持する例外",
     "decision_rejected": "採用しなかった案",
-    "decision_open": "未解決の質問",
+    "decision_open": "残りの課題",
     "specimen_text": "根拠のある文字組みは、1,280pxでも375pxでも読みやすく保たれます。",
     "footer": "レビュー用の資料です。プロジェクト担当者が導入し、実装の検証を通過した後に初めて正式な値になります。",
     "placeholder_warning": "テンプレート未完成：プレースホルダーが{count}個残っています。共有する前に値を入れるか「不明」と明記してください。",
@@ -1303,19 +1393,74 @@
       const links = new Map(
         [...document.querySelectorAll('.nav a[href^="#"]')].map((link) => [link.hash.slice(1), link]),
       );
-      if (!("IntersectionObserver" in window) || links.size === 0) return;
-      const observer = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          for (const link of links.values()) link.removeAttribute("aria-current");
-          const active = links.get(entry.target.id);
-          if (active) active.setAttribute("aria-current", "location");
+      const sections = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+      if (sections.length === 0) return;
+      const nav = document.querySelector(".nav");
+      // On narrow screens the navigation scrolls sideways; keep the marked link
+      // visible by moving only the navigation, never the page.
+      const reveal = (link) => {
+        if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+        const box = nav.getBoundingClientRect();
+        const item = link.getBoundingClientRect();
+        const gutter = 16;
+        if (item.left < box.left + gutter) nav.scrollLeft -= box.left + gutter - item.left;
+        else if (item.right > box.right - gutter) nav.scrollLeft += item.right - (box.right - gutter);
+      };
+      const mark = (id) => {
+        for (const [key, link] of links) {
+          if (key === id) {
+            if (!link.hasAttribute("aria-current")) reveal(link);
+            link.setAttribute("aria-current", "location");
+          } else {
+            link.removeAttribute("aria-current");
+          }
         }
-      }, { rootMargin: "-15% 0px -75% 0px" });
-      for (const id of links.keys()) {
-        const section = document.getElementById(id);
-        if (section) observer.observe(section);
+      };
+      const sectionInView = () => {
+        // Short final sections never reach the top of the viewport, so the
+        // end of the page selects the last section.
+        const root = document.documentElement;
+        if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) {
+          return sections[sections.length - 1].id;
+        }
+        const line = window.innerHeight * 0.25;
+        let current = sections[0];
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= line) current = section;
+        }
+        return current.id;
+      };
+      // A navigation jump keeps its target marked until the reader scrolls;
+      // otherwise a short section reached at the page end would mark another.
+      let pinned = false;
+      let frame = 0;
+      const follow = () => {
+        if (pinned || frame) return;
+        frame = window.requestAnimationFrame(() => {
+          frame = 0;
+          mark(sectionInView());
+        });
+      };
+      const pin = () => {
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        if (!links.has(id)) return;
+        pinned = true;
+        mark(id);
+      };
+      const release = () => {
+        pinned = false;
+      };
+      for (const link of links.values()) {
+        link.addEventListener("click", () => window.setTimeout(pin));
       }
+      window.addEventListener("hashchange", pin);
+      for (const type of ["wheel", "touchstart", "keydown", "mousedown"]) {
+        window.addEventListener(type, release, { passive: true });
+      }
+      window.addEventListener("scroll", follow, { passive: true });
+      window.addEventListener("resize", follow, { passive: true });
+      if (links.has(decodeURIComponent(window.location.hash.slice(1)))) pin();
+      else mark(sectionInView());
     })();
   </script>
 </body>

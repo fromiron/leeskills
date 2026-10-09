@@ -1,11 +1,11 @@
 ---
 name: plan-structure
-description: Use this skill to choose the dominant information structure for a website, interface, portfolio, archive, product page, profile, institution, or task flow after the user and content are grounded. Use when deciding between a list, timeline, index, catalog, product explanation, or workflow. Do not use visual style trends or a default card grid as the primary selection criterion.
+description: Chooses the dominant information structure for a website, interface, portfolio, archive, product page, profile, institution, or task flow after the user and content are grounded. Use when deciding between a profile, list, timeline, index, catalog, product explanation, or workflow, or when a page needs restructuring. Not for visual styling, copy edits, or choosing a layout from trends or a default card grid.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -52,6 +52,13 @@ Read [references/patterns.md](references/patterns.md) when choosing among
 similar patterns.
 
 ## Selection procedure
+
+Run the full procedure when choosing or changing the dominant grammar. For a
+small adjustment inside an existing grammar, such as reordering a section,
+adding a record field, or adjusting navigation, check the adjustment against the
+current grammar's organizing key, sequence, and reflow; record why the growth
+test and rejected alternatives were not rerun; and skip the structured decision
+file, which describes a full grammar decision.
 
 1. Restate the primary user and task.
 2. List the minimum content records needed to complete that task.

@@ -1,11 +1,11 @@
 ---
 name: review-visuals
-description: Use this skill to audit or define a constrained visual system for a website, interface, landing page, portfolio, or design system. Use when layout grammars, spacing scales, responsive containers, typefaces, type roles, typography settings, colors, radii, shadows, surfaces, CTA styles, imagery, or motion need consolidation or contextual review. Treat count limits as defaults, nested-radius rules as relationship checks, and letter spacing or line height as font- and context-dependent rather than universal numeric laws.
+description: Audits or defines the visual value system of a website, interface, landing page, portfolio, or design system, including layout grammars, spacing and container roles, typefaces and type roles, typography settings, colors, radii and nested-radius relationships, shadows, surfaces, CTA styles, and imagery. Use when visual variants need consolidation, a relationship such as nested radii needs checking, or the user asks for token definitions or a token proposal page. Not for component behavior, states, or parity, motion behavior, or a full accessibility review.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -34,6 +34,26 @@ the request; a small fix does not need a full report.
 
 This skill uses "entropy budget" as a practical inventory of visual variants.
 It is not a formal information-theory calculation.
+
+## Choose a path
+
+Identify the path from the request before inspecting values. Paths can
+combine, but each keeps its own evidence rule.
+
+| Path | When | Numbers come from | Output |
+|---|---|---|---|
+| Audit or normalize an existing system | Default for an existing artifact | Project tokens, CSS or theme values, computed styles, rendered evidence | Findings and recommendations |
+| Propose a new system | The user asks for a new visual system and no project system exists for the scope | Stated requirements, content, brand, and platform constraints, labeled as design hypotheses | Proposal with rationale, assumptions, and open decisions |
+| Verify a proposal | After a proposal is rendered | Contrast, reflow, and relationship checks run on the rendered proposal | Check results; unrendered values stay unverified |
+| Build a token proposal file | Only when the user asks for, or explicitly chooses, a proposal JSON or HTML page | One of the paths above | Proposal JSON and HTML page |
+
+- Never present a design hypothesis as an existing project value, standard, or
+  measurement. Never present an unrendered value as measured.
+- Leave contexts the user has not decided, such as a dark theme, as open
+  decisions instead of filling values.
+- An audit can end with findings. When a shared system would help, recommend a
+  token proposal and offer the file; do not create files the user did not ask
+  for.
 
 ## Inputs
 
@@ -71,7 +91,21 @@ Do not set universal numeric defaults for breakpoint values, spacing steps,
 letter spacing, or line height. Use the project's tokens and rendered evidence.
 
 Read [references/budget-rules.md](references/budget-rules.md) before applying
-the defaults to data-rich, editorial, expressive, or brand-led work.
+the defaults to data-rich, editorial, expressive, or brand-led work. Otherwise
+read only the sections in scope:
+
+- spacing or responsive containers:
+  [spacing roles](references/budget-rules.md#spacing-roles-and-responsive-relationships)
+  and [container ownership](references/budget-rules.md#responsive-container-ownership);
+- typography:
+  [type roles and typography context](references/budget-rules.md#type-roles-and-typography-context);
+- nested rounded surfaces:
+  [nested radius coherence](references/budget-rules.md#nested-radius-coherence);
+- CTA treatments or grouping:
+  [CTA styles](references/budget-rules.md#cta-styles-and-action-priority) and
+  [grouping cues](references/budget-rules.md#grouping-cues);
+- an overage that may be justified:
+  [legitimate exceptions](references/budget-rules.md#legitimate-exceptions).
 
 ## Workflow
 
@@ -105,9 +139,6 @@ Use:
 
 - [assets/visual-budget.schema.json](assets/visual-budget.schema.json)
 - [assets/visual-budget-example.json](assets/visual-budget-example.json)
-- [assets/token-proposal.schema.json](assets/token-proposal.schema.json)
-- [assets/token-proposal-example.json](assets/token-proposal-example.json)
-- [assets/token-proposal-template.html](assets/token-proposal-template.html)
 
 Check a structured budget:
 
@@ -123,114 +154,50 @@ The script validates count metrics and declared radius relationships. It cannot
 decide whether font-dependent typography or responsive spacing is appropriate;
 record those conclusions separately with project and rendered evidence.
 
-## Token proposal artifact
+## Token proposal
 
-Create a token proposal when repeated raw values, inconsistent naming,
+Recommend a token proposal when repeated raw values, inconsistent naming,
 responsive drift, or unclear ownership indicate that a shared system is
-needed, or when the user asks for token definitions. Present the applicable
-Color, Typography, Spacing, Layout, and Radius foundations in one
-self-contained HTML page.
+needed. Build the proposal JSON and HTML page only when the user asks for
+token definitions or a proposal page, or explicitly chooses that deliverable.
+Then read [references/token-proposal.md](references/token-proposal.md) for the
+normalize and new-system evidence gates, token decisions, the
+write → validate → render → inspect procedure, and the page requirements.
 
-Evidence gate: inspect the project's source tokens, CSS or theme values,
-computed styles, representative content, and rendered viewports before filling
-numeric proposals. If that evidence is unavailable, stop numeric design work,
-request or locate it, and provide only a name-and-role scaffold with values
-marked `unknown`. Do not invent a convenient scale merely to complete the page.
+Before proposing token values, choose how to gather the direction. If the
+request does not say, ask the approach question from
+[assets/token-questions.json](assets/token-questions.json) once:
 
-### Decide the tokens
+- **AI proposal (`auto`)** — analyze the project or brief and propose, as in
+  the paths above;
+- **Guided (`guided`)** — ask the user a few direction questions first, then
+  propose; read
+  [references/token-questions.md](references/token-questions.md).
 
-1. Inventory current names, raw values, usage frequency, responsive mappings,
-   aliases, and exceptions before proposing a scale.
-2. Extend the project's naming convention when one exists. Otherwise propose a
-   consistent namespace and show its parts, for example category and step for
-   primitives and category and role for semantic tokens.
-3. Propose primitive tokens as single reusable values without component
-   meaning. Do not give a primitive per-breakpoint values.
-4. Propose semantic tokens by role, such as text primary, content gap, section
-   gap, container padding, page title, card corner, or pill corner. Map each
-   semantic token to primitives per context: `default`, a breakpoint, a
-   language, or a theme such as `light` and `dark`.
-5. Record current-to-proposed mappings, merged and renamed aliases, deletions,
-   retained exceptions, rationale, evidence, and adoption status. Label
-   unverified recommendations as `proposed` or `unknown`, never as existing
-   standards.
-6. Derive values by clustering the project's current system and testing the
-   rendered result. Do not copy Codeit or another system's numbers, token
-   names, or branding unless the project explicitly adopts that system.
-7. For color, keep status, data, and validation colors separate from accents
-   and declare the background each text or status color must meet, with the
-   required contrast ratio.
-8. For typography, propose letter spacing and line height separately for the
-   actual font, fallback, script, language, size, weight, and role. Do not
-   extrapolate one font's values across unrelated roles.
+Skip the question when the request already implies an approach: "just
+propose" means auto; "ask me first" or stated preferences mean guided. When
+no answer is possible, such as in a non-interactive run, use auto. Print the
+question in the user's language with
+`python scripts/token_questions.py --stage approach --language ko`, or ask it
+from the question bank in plain text in any client.
 
-### Build the page
-
-Prefer the data path, which keeps the page consistent and checkable:
-
-1. Write the proposal as JSON matching
-   [assets/token-proposal.schema.json](assets/token-proposal.schema.json);
-   [assets/token-proposal-example.json](assets/token-proposal-example.json)
-   shows every field. Set `language` to the reader's language (`en`, `ko`, or
-   `ja` chrome is bundled) and write titles, roles, and notes in that language.
-2. Validate it. The validator rejects stated values without evidence,
-   references to undefined primitives, CSS values that could inject rules or
-   load resources, and computable contrast below the declared minimum:
-
-   ```bash
-   python scripts/validate_token_proposal.py proposal.json
-   ```
-
-3. Render the page from the validated JSON. The renderer reuses the
-   template's stylesheet and localized chrome, omits foundations that are not
-   in scope, and refuses invalid input:
-
-   ```bash
-   python scripts/render_token_proposal.py proposal.json --output design-token-proposal.html
-   ```
-
-4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
-   previews draw the proposed values, unknown values show the unknown marker,
-   the page does not scroll horizontally, and tables scroll only inside their
-   own regions. Fix the data, not the generated markup, then render again.
-5. Check the final file and report the output path, unknown values, and open
-   decisions:
-
-   ```bash
-   python scripts/validate_token_proposal.py proposal.json --html design-token-proposal.html
-   ```
-
-Without Python, copy
-[assets/token-proposal-template.html](assets/token-proposal-template.html),
-replace or explicitly resolve every placeholder, duplicate rows, ramp steps,
-and frames as needed, delete out-of-scope sections from both the page and its
-navigation, and state that the deterministic checks were not run.
-
-The page must keep: the status badge and `data-proposal-status="proposed"`;
-previews drawn from the proposed values (color ramps and pairs, type
-specimens, spacing bars, radius corners, container frames); one column per
-mapping context; the unknown marker instead of guessed values; the changes and
-decisions sections; semantic headings, table captions, keyboard-scrollable
-table regions, visible focus, reflow, reduced-motion behavior, and print
-readability; and no network requests. The template's own chrome follows the
-default budget in this skill; do not add decorative gradients, glows, or
-shadows to it.
-
-Use an existing project documentation or artifact directory when one is
-clearly established; otherwise write `design-token-proposal.html` to the
-project root. The artifact is a review proposal, not evidence that the project
-has adopted the tokens.
+These limits apply even without those files: normalized values trace to
+project or rendered evidence or stay `unknown`; new-system values are labeled
+design hypotheses with a rationale; a user's answer is recorded and traced,
+but it cannot lower contrast minimums; undecided contexts stay open; and a
+proposal is not evidence that the project adopted the tokens.
 
 ## Rules
 
 - Do not count text colors required for data or status as arbitrary accents.
 - Prefer project tokens and breakpoints over values imported from another
   design system.
-- When proposing a new shared system, provide concrete token names and values
-  rather than only saying to "standardize" them, but only after tracing the
-  values to project evidence.
-- Leave a proposed numeric value `unknown` when source and rendered evidence
-  cannot support it. Do not fabricate completeness.
+- When proposing a shared system, provide concrete token names and values
+  rather than only saying to "standardize" them. Trace normalized values to
+  project evidence; label new-system values as design hypotheses with a
+  rationale.
+- Leave a proposed numeric value `unknown` when neither project evidence nor a
+  requested new-system rationale supports it. Do not fabricate completeness.
 - Require spacing values to express content grouping, section separation,
   container padding, or a documented exception. Do not require a universal
   4/8 scale.

@@ -49,8 +49,66 @@ The repository validator checks fixture coverage only. It does not measure
 client activation. Do not record a trigger rate until the target client has
 actually run the prompt.
 
+The evaluator requires three attempts per query by default
+(`--min-attempts`). A query with fewer attempts makes its language and the
+overall result `insufficient`, which is not a pass. Lower the minimum only for
+an early smoke run and label that run as smoke evidence, not release evidence.
+The output lists every individual query that missed its threshold under
+`failures`, so a language average cannot hide it. Mark a query
+`"critical": true` when its failure alone must fail the result.
+
+Results may carry a `run` object with `client_version`, `model`,
+`skill_revision`, `installed_catalog`, `run_ids`, `tokens`, and
+`elapsed_seconds`. Use `"unknown"` or `null` for values the client does not
+expose; the evaluator never fills them in.
+
 Keep a fixed validation split while revising descriptions. Do not optimize on
-all prompts at once.
+all prompts at once. In every skill and language, the `*-positive-1` and
+`*-negative-1` queries form the validation split; tune descriptions on the
+remaining queries and report validation results separately.
+
+## Catalog routing evals
+
+Per-skill trigger evals ask whether one skill loads. Real clients see the whole
+catalog, so [evals/catalog-routing.json](../evals/catalog-routing.json) also
+records, for each boundary case:
+
+- the acceptable primary skills;
+- secondary skills a client may legitimately add, such as `verify-changes`
+  after an edit;
+- forbidden actions, such as writing an unrequested HTML file, scoring a quick
+  pass, claiming an uninstalled skill ran, or following instructions embedded
+  in the reviewed artifact;
+- the install layout and tool environment the case assumes.
+
+A case does not require exactly one skill. Use ordinary prompts with the full
+catalog installed, record the skills the client actually activated, the
+resources it read, and any forbidden action that occurred, then aggregate:
+
+```bash
+python scripts/evaluate_routing_results.py \
+  evals/catalog-routing.json \
+  path/to/routing-results.json
+```
+
+The evaluator reports each case and language separately as `pass`, `review`
+(an unexpected extra skill), `insufficient`, `not-run`, or `fail` (a forbidden
+action or a missed primary skill). The worst cell sets the overall status.
+Cases with `needs_fixture` stay `not-run` until the evaluator supplies and
+records that input.
+
+## Run records
+
+Record each attempt as one object matching
+[evals/run-record.schema.json](../evals/run-record.schema.json). Records name
+the condition (`no-skill`, `baseline`, `revised`), whether the skill was
+invoked automatically or explicitly, the client version, the model identity or
+`unknown`, the skill and input revisions, the installed catalog, activated
+skills, resources read, outputs, diffs, checks run, and unverified items. A
+missing fixture, tool, permission, or environment produces a `not-run` record
+with a reason; it is never counted as a pass. See
+[evals/runs/README.md](../evals/runs/README.md) for the procedure. No client
+runs are recorded in this repository yet.
 
 ## Output evals
 
@@ -162,8 +220,11 @@ A release candidate should meet all of the following:
 - repository validator passes;
 - unit tests pass;
 - no unresolved hard failure in included sample runs;
-- positive trigger rate at least 0.67 over three runs in each language;
+- positive trigger rate at least 0.67 over at least three runs per query in
+  each language, with no failed critical query;
 - near-miss negative trigger rate at most 0.33 in each language;
+- no forbidden action in executed catalog routing cases, and `not-run` or
+  `insufficient` cases reported as missing evidence rather than passes;
 - output evals improve or match the previous version without introducing
   fabricated evidence;
 - one human reviewer checks each changed skill.

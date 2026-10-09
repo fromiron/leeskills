@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
@@ -45,6 +46,8 @@ class CommandTests(unittest.TestCase):
             input=input_text,
             capture_output=True,
             text=True,
+            # The scripts always write UTF-8; do not decode with the Windows code page.
+            encoding="utf-8",
             check=False,
         )
         self.assertEqual(
@@ -214,6 +217,21 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertEqual(result["dominant_grammar"], "portfolio-index")
 
+    def test_descriptions_state_role_use_and_exclusion(self) -> None:
+        for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            line = next(
+                item for item in skill.read_text(encoding="utf-8").splitlines()
+                if item.startswith("description: ")
+            )
+            description = line[len("description: "):]
+            # Plain YAML scalars cannot contain ": " or " #".
+            self.assertNotIn(": ", description, msg=skill)
+            self.assertNotIn(" #", description, msg=skill)
+            first_word = description.split(" ", 1)[0]
+            self.assertTrue(first_word.endswith("s"), msg=f"{skill}: start with a third-person verb")
+            self.assertIn(" Use ", description, msg=skill)
+            self.assertIn(" Not ", description, msg=skill)
+
     def test_delivery_convention_is_identical_in_every_skill(self) -> None:
         blocks = {}
         for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
@@ -237,7 +255,13 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         proposal = result["proposal"]
         self.assertIn("text-secondary@dark", proposal["unknown_values"])
-        self.assertTrue(all(item["status"] == "pass" for item in proposal["contrast"]))
+        statuses = {(item["token"], item["context"]): item["status"] for item in proposal["contrast"]}
+        self.assertNotIn("fail", statuses.values())
+        # The unmapped dark value leaves only that context's contrast unknown.
+        self.assertEqual(
+            [key for key, status in statuses.items() if status == "unknown"],
+            [("text-secondary", "dark")],
+        )
 
     def test_token_proposal_rejects_unsupported_or_unsafe_values(self) -> None:
         script = "skills/review-visuals/scripts/validate_token_proposal.py"
@@ -267,6 +291,439 @@ class CommandTests(unittest.TestCase):
             result = self.run_json_document(script, document, expected=1)
             errors = "\n".join(result["proposal"]["errors"])
             self.assertIn(message, errors)
+
+    def new_system_proposal(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/review-visuals/assets/token-proposal-new-system-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_token_proposal_hypotheses_require_new_system_mode_and_rationale(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        result = self.run_json(script, "skills/review-visuals/assets/token-proposal-new-system-example.json")
+        proposal = result["proposal"]
+        self.assertEqual(proposal["mode"], "new-system")
+        self.assertIn("space-4", proposal["hypothesis_values"])
+        self.assertNotIn("teal-700", proposal["hypothesis_values"])
+        self.assertIn("type-body.letter_spacing", proposal["unknown_values"])
+
+        cases = []
+        normalize = self.new_system_proposal()
+        normalize["mode"] = "normalize"
+        cases.append((normalize, "only allowed in new-system mode"))
+
+        no_rationale = self.new_system_proposal()
+        del no_rationale["foundations"]["spacing"]["primitives"][0]["rationale"]
+        cases.append((no_rationale, "requires a rationale"))
+
+        observed_without_evidence = self.new_system_proposal()
+        observed_without_evidence["foundations"]["color"]["primitives"][0]["evidence"] = []
+        cases.append((observed_without_evidence, "requires evidence"))
+
+        unsafe = self.new_system_proposal()
+        unsafe["foundations"]["spacing"]["primitives"][0]["value"] = "url(https://example.com/x)"
+        cases.append((unsafe, "not allowed"))
+
+        low_contrast = self.new_system_proposal()
+        low_contrast["foundations"]["color"]["primitives"][2]["value"] = "#dddddd"
+        cases.append((low_contrast, "below the declared"))
+
+        bad_mode = self.new_system_proposal()
+        bad_mode["mode"] = "freeform"
+        cases.append((bad_mode, "mode must be one of"))
+
+        for document, message in cases:
+            result = self.run_json_document(script, document, expected=1)
+            self.assertIn(message, "\n".join(result["proposal"]["errors"]))
+
+        existing = self.token_proposal()
+        existing["foundations"]["spacing"]["primitives"][0]["basis"] = "hypothesis"
+        existing["foundations"]["spacing"]["primitives"][0]["rationale"] = "Guess."
+        result = self.run_json_document(script, existing, expected=1)
+        self.assertIn("only allowed in new-system mode", "\n".join(result["proposal"]["errors"]))
+
+    def test_token_proposal_renders_design_hypothesis_markers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            for language, label in (("en", "Newly chosen"), ("ko", "새로 정한 값"), ("ja", "新たに決めた値")):
+                document = self.new_system_proposal()
+                document["language"] = language
+                source = Path(directory) / f"{language}.json"
+                output = Path(directory) / f"{language}.html"
+                source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+                rendered = self.run_json(
+                    "skills/review-visuals/scripts/render_token_proposal.py",
+                    str(source),
+                    "--output",
+                    str(output),
+                )
+                self.assertTrue(rendered["rendered"])
+                html = output.read_text(encoding="utf-8")
+                self.assertEqual(
+                    html.count('data-basis="hypothesis"'), len(rendered["hypothesis_values"])
+                )
+                self.assertIn(label, html)
+                checked = self.run_json(
+                    "skills/review-visuals/scripts/validate_token_proposal.py",
+                    str(source),
+                    "--html",
+                    str(output),
+                )
+                self.assertTrue(checked["valid"])
+
+            stripped = Path(directory) / "stripped.html"
+            stripped.write_text(
+                (Path(directory) / "en.html")
+                .read_text(encoding="utf-8")
+                .replace('data-basis="hypothesis"', ""),
+                encoding="utf-8",
+            )
+            checked = self.run_json(
+                "skills/review-visuals/scripts/validate_token_proposal.py",
+                str(Path(directory) / "en.json"),
+                "--html",
+                str(stripped),
+                expected=1,
+            )
+            self.assertIn("design hypothesis", "\n".join(checked["html"]["errors"]))
+
+            normalize = Path(directory) / "normalize.html"
+            source = Path(directory) / "normalize.json"
+            source.write_text(json.dumps(self.token_proposal(), ensure_ascii=False), encoding="utf-8")
+            self.run_json(
+                "skills/review-visuals/scripts/render_token_proposal.py",
+                str(source),
+                "--output",
+                str(normalize),
+            )
+            self.assertNotIn('data-basis="hypothesis"', normalize.read_text(encoding="utf-8"))
+
+    @staticmethod
+    def token_validator_module():
+        sys.dont_write_bytecode = True
+        spec = importlib.util.spec_from_file_location(
+            "token_proposal_validator",
+            ROOT / "skills/review-visuals/scripts/validate_token_proposal.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_token_colors_convert_between_hex_rgb_and_oklch(self) -> None:
+        colors = self.token_validator_module()
+        expected = {
+            "hex": "#0f766e",
+            "rgb": "rgb(15, 118, 110)",
+            "oklch": "oklch(51.1% 0.086 186.4)",
+            "in_srgb_gamut": True,
+        }
+        for value in ("#0f766e", "rgb(15, 118, 110)", "rgb(15 118 110)", "oklch(51.1% 0.086 186.4)"):
+            self.assertEqual(colors.color_formats(colors.parse_color(value)), expected, msg=value)
+        translucent = {
+            "hex": "#0f766e80",
+            "rgb": "rgba(15, 118, 110, 0.5)",
+            "oklch": "oklch(51.1% 0.086 186.4 / 0.5)",
+            "in_srgb_gamut": True,
+        }
+        for value in ("rgba(15, 118, 110, 0.5)", "rgb(15 118 110 / 50%)", "oklch(0.511 0.086 186.4 / 0.5)"):
+            self.assertEqual(colors.color_formats(colors.parse_color(value)), translucent, msg=value)
+
+        wide = colors.parse_color("oklch(70% 0.4 30)")
+        self.assertFalse(wide.in_gamut)
+        self.assertTrue(all(0 <= channel <= 1 for channel in wide.rgb))
+        for value in ("hsl(10 50% 50%)", "red", "rgb(1, 2)", "oklch(51 0.1 200)", "unknown"):
+            self.assertIsNone(colors.parse_color(value), msg=value)
+
+        self.assertEqual(colors.contrast_ratio("#ffffff", "#000000"), 21.0)
+        self.assertEqual(
+            colors.contrast_ratio("rgb(31, 35, 40)", "#ffffff"),
+            colors.contrast_ratio("#1f2328", "rgb(255, 255, 255)"),
+        )
+        # The oklch() notation is rounded, so its ratio may differ in the last digit.
+        self.assertAlmostEqual(
+            colors.contrast_ratio("oklch(25.4% 0.011 254)", "#ffffff"),
+            colors.contrast_ratio("#1f2328", "#ffffff"),
+            delta=0.02,
+        )
+        # Translucent text is composited over its background and loses contrast.
+        self.assertLess(colors.contrast_ratio("rgba(31, 35, 40, 0.5)", "#ffffff"), 4.5)
+        self.assertIsNone(colors.contrast_ratio("#000000", "rgba(255, 255, 255, 0.5)"))
+
+    def test_token_proposal_accepts_rgb_and_oklch_colors(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        baseline = self.run_json(script, "skills/review-visuals/assets/token-proposal-example.json")
+        document = self.token_proposal()
+        primitives = document["foundations"]["color"]["primitives"]
+        primitives[0]["value"] = "oklch(100% 0 0)"
+        primitives[4]["value"] = "rgb(51, 50, 54)"
+        result = self.run_json_document(script, document)["proposal"]
+        self.assertTrue(result["valid"], msg=result["errors"])
+        self.assertEqual(result["color_formats"]["gray-0"]["hex"], "#ffffff")
+        self.assertEqual(result["color_formats"]["gray-90"]["oklch"], baseline["proposal"]["color_formats"]["gray-90"]["oklch"])
+        self.assertEqual(
+            [item["ratio"] for item in result["contrast"]],
+            [item["ratio"] for item in baseline["proposal"]["contrast"]],
+        )
+
+        translucent = self.token_proposal()
+        translucent["foundations"]["color"]["primitives"][0]["value"] = "rgba(255, 255, 255, 0.6)"
+        result = self.run_json_document(script, translucent)["proposal"]
+        # Contrast is checked per context; only the light surface became translucent.
+        self.assertIn("text-primary contrast@light", result["unknown_values"])
+        self.assertNotIn("text-primary contrast@dark", result["unknown_values"])
+        self.assertTrue(any("translucent background" in item for item in result["warnings"]))
+
+        wide = self.token_proposal()
+        wide["foundations"]["color"]["primitives"][5]["value"] = "oklch(55% 0.35 265)"
+        result = self.run_json_document(script, wide)["proposal"]
+        self.assertFalse(result["color_formats"]["blue-50"]["in_srgb_gamut"])
+        self.assertTrue(any("outside sRGB" in item for item in result["warnings"]))
+
+    def test_token_proposal_page_lists_each_color_in_three_notations(self) -> None:
+        document = self.token_proposal()
+        document["foundations"]["color"]["primitives"][5]["value"] = "oklch(55% 0.35 265)"
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "proposal.json"
+            output = Path(directory) / "proposal.html"
+            source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+            self.run_json(
+                "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output)
+            )
+            html = output.read_text(encoding="utf-8")
+        table = html.split('id="color-primitives-caption"', 1)[1].split("</table>", 1)[0]
+        self.assertIn("색 표기", table)
+        # Every color row shows the color itself, not only its notations.
+        rows = table.split("<tbody>", 1)[1].split("</tr>")[:-1]
+        self.assertEqual(len(rows), len(document["foundations"]["color"]["primitives"]))
+        for row in rows:
+            self.assertIn('<span class="color-swatch" style="--token-value:', row)
+        for notation in (
+            "<code>#66666e</code>",
+            "<code>rgb(102, 102, 110)</code>",
+            "<code>oklch(51.3% 0.012 286.0)</code>",
+            "<code>oklch(55.0% 0.350 265.0)</code>",
+        ):
+            self.assertIn(notation, table)
+        self.assertIn("sRGB로 변환", table)
+
+    def guided_proposal(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/review-visuals/assets/token-proposal-guided-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_token_proposal_checks_contrast_in_each_context(self) -> None:
+        result = self.run_json(
+            "skills/review-visuals/scripts/validate_token_proposal.py",
+            "skills/review-visuals/assets/token-proposal-example.json",
+        )["proposal"]
+        contexts = {(item["token"], item["context"]): item["status"] for item in result["contrast"]}
+        self.assertEqual(contexts[("text-primary", "light")], "pass")
+        self.assertEqual(contexts[("text-primary", "dark")], "pass")
+        self.assertEqual(contexts[("text-secondary", "dark")], "unknown")
+
+        document = self.token_proposal()
+        # A dark surface that fails only in the dark context is still caught.
+        document["foundations"]["color"]["primitives"][4]["value"] = "#e6e6e6"
+        failed = self.run_json_document(
+            "skills/review-visuals/scripts/validate_token_proposal.py", document, expected=1
+        )["proposal"]
+        self.assertTrue(any("(dark)" in error and "below the declared" in error for error in failed["errors"]))
+
+    def test_guided_proposal_records_and_traces_answers(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        result = self.run_json(script, "skills/review-visuals/assets/token-proposal-guided-example.json")["proposal"]
+        self.assertTrue(result["valid"], msg=result["errors"])
+        self.assertEqual(result["approach"], "guided")
+        self.assertEqual(result["choices"]["corner-style"]["shaped"], ["radius-4", "radius-8"])
+        self.assertEqual(result["choices"]["type-style"]["shaped"], [])
+        self.assertIn("blue-60", result["choices"]["color-family"]["shaped"])
+        self.assertNotIn("blue-60", result["hypothesis_values"])
+
+        cases = []
+        missing = self.guided_proposal()
+        del missing["preferences"]
+        cases.append((missing, "must record the user's answers"))
+
+        auto = self.guided_proposal()
+        auto["approach"] = "auto"
+        cases.append((auto, 'set "approach": "guided"'))
+
+        unknown_question = self.guided_proposal()
+        unknown_question["preferences"][0]["question"] = "mood"
+        cases.append((unknown_question, "question ID from assets/token-questions.json"))
+
+        unknown_choice = self.guided_proposal()
+        unknown_choice["preferences"][3]["choice"] = "pill"
+        cases.append((unknown_choice, "choice must be one of"))
+
+        no_detail = self.guided_proposal()
+        del no_detail["preferences"][0]["detail"]
+        cases.append((no_detail, "needs its text in detail"))
+
+        bad_color = self.guided_proposal()
+        bad_color["preferences"][0]["detail"] = "hsl(220 60% 50%)"
+        cases.append((bad_color, "hex, rgb(), rgba(), or oklch()"))
+
+        delegated = self.guided_proposal()
+        delegated["foundations"]["typography"]["primitives"][0]["based_on"] = ["type-style"]
+        cases.append((delegated, "let the AI choose"))
+
+        unanswered = self.guided_proposal()
+        unanswered["preferences"] = [item for item in unanswered["preferences"] if item["question"] != "corner-style"]
+        cases.append((unanswered, "has no recorded answer"))
+
+        light_only = self.guided_proposal()
+        light_only["preferences"][1]["choice"] = "light"
+        cases.append((light_only, "remove that mapping instead of filling it"))
+
+        missing_dark = self.guided_proposal()
+        del missing_dark["foundations"]["color"]["semantic"][1]["references"]["dark"]
+        cases.append((missing_dark, "needs a dark mapping"))
+
+        for document, message in cases:
+            result = self.run_json_document(script, document, expected=1)
+            self.assertIn(message, "\n".join(result["proposal"]["errors"]))
+
+        named_hue = self.guided_proposal()
+        named_hue["preferences"][0]["detail"] = "보라"
+        named_hue["foundations"]["color"]["primitives"][0].update(
+            basis="hypothesis", rationale="보라 계열 답변에서 고른 색입니다.", evidence=[]
+        )
+        self.assertTrue(self.run_json_document(script, named_hue)["proposal"]["valid"])
+
+    def render_example(self, name: str, directory: str) -> str:
+        output = Path(directory) / f"{name}.html"
+        self.run_json(
+            "skills/review-visuals/scripts/render_token_proposal.py",
+            f"skills/review-visuals/assets/{name}.json",
+            "--output",
+            str(output),
+        )
+        # Only the rendered body; the embedded string catalog holds every label.
+        html = output.read_text(encoding="utf-8")
+        return html.split("<!-- shell:start -->", 1)[1].split("<!-- shell:end -->", 1)[0]
+
+    def test_token_proposal_markers_mark_only_exceptions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            existing = self.render_example("token-proposal-example", directory)
+            new = self.render_example("token-proposal-guided-example", directory)
+        # The page is a proposal, so "proposed" has no per-token marker.
+        roles = re.findall(r'<td class="role">(.*?)</td>', new)
+        self.assertTrue(roles)
+        self.assertFalse(any('class="tag"' in role for role in roles))
+        self.assertIn('<span class="tag">유지</span>', existing)
+        legend = new.split('<dl class="legend">', 1)[1].split("</dl>", 1)[0]
+        self.assertIn("새로 정한 값", legend)
+        self.assertNotIn("유지", legend)
+        # A new system consolidates nothing: no empty column or 0 → n summary.
+        self.assertNotIn("통합 대상", new)
+        self.assertNotIn('class="stats"', new)
+        self.assertIn("통합 대상", existing)
+        # Current colors show a small swatch drawn from the converted rgb() value.
+        self.assertIn('<span class="mini-swatch" style="--token-value: rgb(255, 255, 255)" aria-hidden="true"></span>#fff', existing)
+        self.assertIn('class="stats"', existing)
+        for page in (existing, new):
+            self.assertNotIn('<h3 class="tag">', page)
+            self.assertIn('<h3 class="decision-title">남은 과제</h3>', page)
+            self.assertIn('<h3 class="decision-title">주요 결정</h3>', page)
+
+    def test_guided_proposal_page_shows_choices_and_approach(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            for language, title, approach in (
+                ("ko", "선택한 방향", "질의 기반 제안"),
+                ("en", "Your choices", "Guided by your answers"),
+                ("ja", "選んだ方向", "質問による提案"),
+            ):
+                document = self.guided_proposal()
+                document["language"] = language
+                source = Path(directory) / f"{language}.json"
+                output = Path(directory) / f"{language}.html"
+                source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+                self.run_json(
+                    "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output)
+                )
+                html = output.read_text(encoding="utf-8")
+                self.assertIn(f'<h2 id="choices-title">{title}</h2>', html)
+                self.assertIn(approach, html)
+                bank = self.question_bank()
+                prompts = {q["id"]: q["prompt"][language] for q in bank["questions"]}
+                self.assertIn(prompts["corner-style"], html)
+                self.assertIn("oklch(52% 0.17 255)", html)
+
+            source = Path(directory) / "auto.json"
+            output = Path(directory) / "auto.html"
+            source.write_text(json.dumps(self.token_proposal(), ensure_ascii=False), encoding="utf-8")
+            self.run_json("skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output))
+            html = output.read_text(encoding="utf-8")
+            self.assertNotIn('id="choices-title"', html)
+            self.assertIn("AI 자동 제안", html)
+
+    def question_bank(self) -> dict[str, object]:
+        return json.loads(
+            (ROOT / "skills/review-visuals/assets/token-questions.json").read_text(encoding="utf-8")
+        )
+
+    def test_token_question_bank_is_portable_and_complete(self) -> None:
+        bank = self.question_bank()
+        core = [question for question in bank["questions"] if question["stage"] == "core"]
+        self.assertEqual(
+            [question["id"] for question in core],
+            ["color-family", "theme", "type-style", "corner-style"],
+        )
+        for question in bank["questions"]:
+            texts = [question["prompt"]] + [option["label"] for option in question["options"]]
+            if question["custom"]:
+                texts.append(question["custom"])
+            for text in texts:
+                self.assertEqual(set(text), {"en", "ko", "ja"}, msg=question["id"])
+        for question in core:
+            # Four choices fit structured question tools; plain text works anywhere.
+            self.assertLessEqual(len(question["options"]), 4)
+            self.assertEqual(question["options"][-1]["id"], "delegate")
+        approach = next(question for question in bank["questions"] if question["id"] == "approach")
+        self.assertEqual([option["id"] for option in approach["options"]], ["auto", "guided"])
+
+        with tempfile.TemporaryDirectory() as directory:
+            broken = self.question_bank()
+            broken["questions"][1]["options"].insert(0, dict(broken["questions"][1]["options"][0], id="purple"))
+            path = Path(directory) / "bank.json"
+            path.write_text(json.dumps(broken, ensure_ascii=False), encoding="utf-8")
+            completed = self.run_command(
+                "skills/review-visuals/scripts/token_questions.py", "--questions", str(path), expected=2
+            )
+        self.assertIn("at most 4 options", completed.stderr)
+
+    def test_token_questions_print_one_message_per_language(self) -> None:
+        script = "skills/review-visuals/scripts/token_questions.py"
+        bank = self.question_bank()
+        core = [question for question in bank["questions"] if question["stage"] == "core"]
+        for language in ("en", "ko", "ja"):
+            text = self.run_command(script, "--language", language).stdout
+            for question in core:
+                self.assertIn(question["prompt"][language], text)
+                for option in question["options"]:
+                    self.assertIn(option["label"][language], text)
+
+        skipped = self.run_command(script, "--language", "en", "--skip", "theme").stdout
+        self.assertNotIn(core[1]["prompt"]["en"], skipped)
+        self.assertIn("1. " + core[0]["prompt"]["en"], skipped)
+        self.assertIn("3. " + core[3]["prompt"]["en"], skipped)
+
+        document = self.run_json(script, "--language", "ko", "--format", "json")
+        self.assertEqual([item["id"] for item in document["questions"]], [q["id"] for q in core])
+        self.assertEqual(
+            [option["letter"] for option in document["questions"][0]["options"]], ["A", "B", "C", "D"]
+        )
+        approach = self.run_json(script, "--stage", "approach", "--format", "json")
+        self.assertEqual([item["id"] for item in approach["questions"]], ["approach"])
+        follow_up = self.run_command(
+            script, "--stage", "follow-up", "--only", "brand-color-value"
+        ).stdout
+        self.assertIn("oklch()", follow_up)
+        self.run_command(script, "--only", "brand-color-value", expected=2)
+        self.run_command(script, "--skip", "not-a-question", expected=2)
 
     def test_token_proposal_renders_localized_page_without_placeholders(self) -> None:
         template = (
@@ -356,6 +813,9 @@ class CommandTests(unittest.TestCase):
         self.assertNotIn("box-shadow: 0", style)
         self.assertNotRegex(style, r"(?:https?:)?//[a-z]")
         self.assertIn("prefers-reduced-motion", style)
+        # A ramp with one step keeps all four corners rounded.
+        self.assertIn(".ramp-step:only-child::before { border-radius: var(--radius-control); }", style)
+        self.assertIn('class="color-swatch"', template)
         self.assertIn("@media print", style)
         self.assertIn("html:lang(ko) body { word-break: keep-all; }", style)
 
@@ -593,6 +1053,84 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(result["status_counts"]["pass"], 11)
         self.assertEqual(result["status_counts"]["unknown"], 1)
 
+    def targeted_report(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/verify-changes/assets/verification-targeted-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_verify_changes_targeted_example_is_never_release_ready(self) -> None:
+        result = self.run_json(
+            "skills/verify-changes/scripts/validate_verification.py",
+            "skills/verify-changes/assets/verification-targeted-example.json",
+        )
+        self.assertTrue(result["valid_report"])
+        self.assertTrue(result["targeted_pass"])
+        self.assertFalse(result["release_ready"])
+        self.assertEqual(result["verdict"], "targeted-pass")
+        self.assertIn("deletion", result["not_checked"])
+        self.assertEqual(result["status_counts"]["out-of-scope"], 1)
+
+    def test_verify_changes_targeted_failure_still_blocks(self) -> None:
+        report = self.targeted_report()
+        report["checks"][0]["status"] = "fail"
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", report, expected=1
+        )
+        self.assertTrue(result["valid_report"])
+        self.assertFalse(result["targeted_pass"])
+        self.assertEqual(result["verdict"], "blocked")
+
+    def test_verify_changes_scope_rules_are_enforced(self) -> None:
+        release = self.targeted_report()
+        release["scope"]["verification"] = "release"
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", release, expected=1
+        )
+        self.assertFalse(result["valid_report"])
+        self.assertTrue(any("out-of-scope is only valid" in e for e in result["errors"]))
+
+        unscoped = self.targeted_report()
+        unscoped["scope"]["changed_surfaces"] = []
+        del unscoped["scope"]["rationale"]
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", unscoped, expected=1
+        )
+        self.assertIn("targeted verification must name its changed_surfaces", result["errors"])
+        self.assertIn("targeted verification requires a scope.rationale", result["errors"])
+
+        required_out = self.targeted_report()
+        required_out["checks"][3]["required"] = True
+        result = self.run_json_document(
+            "skills/verify-changes/scripts/validate_verification.py", required_out, expected=1
+        )
+        self.assertFalse(result["valid_report"])
+
+    def test_verify_changes_accepts_documented_conditional_checks(self) -> None:
+        skill = (ROOT / "skills/verify-changes/SKILL.md").read_text(encoding="utf-8")
+        schema = json.loads(
+            (ROOT / "skills/verify-changes/assets/verification.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        enum = schema["properties"]["checks"]["items"]["properties"]["test"]["enum"]
+        report = self.targeted_report()
+        for test in (
+            "affordance-mapping",
+            "action-hierarchy",
+            "action-visibility",
+            "grouping-cues",
+            "system-lifecycle",
+        ):
+            self.assertIn(f"`{test}`", skill)
+            self.assertIn(test, enum)
+            report["checks"][0]["test"] = test
+            result = self.run_json_document(
+                "skills/verify-changes/scripts/validate_verification.py", report
+            )
+            self.assertTrue(result["valid_report"], msg=result["errors"])
+
     def test_verify_changes_baseline_failure_cannot_be_marked_optional(self) -> None:
         baseline = {
             "deletion",
@@ -680,7 +1218,167 @@ class CommandTests(unittest.TestCase):
                 str(result_path),
             )
         self.assertTrue(result["pass"])
+        self.assertEqual(result["status"], "pass")
         self.assertEqual(set(result["languages"]), {"en", "ko", "ja"})
+        self.assertEqual(result["insufficient_attempts"], [])
+
+    def trigger_measurements(self, attempts: int) -> tuple[Path, dict[str, object]]:
+        queries_path = ROOT / "skills" / "design-workflow" / "evals" / "trigger_queries.json"
+        queries = json.loads(queries_path.read_text(encoding="utf-8"))
+        return queries_path, {
+            "client": "example-agent",
+            "skill_name": "design-workflow",
+            "results": [
+                {
+                    "id": item["id"],
+                    "attempts": attempts,
+                    "triggered": attempts if item["should_trigger"] else 0,
+                }
+                for item in queries
+            ],
+        }
+
+    def test_trigger_results_with_too_few_attempts_are_insufficient(self) -> None:
+        queries_path, measurements = self.trigger_measurements(1)
+        with tempfile.TemporaryDirectory() as directory:
+            result_path = Path(directory) / "results.json"
+            result_path.write_text(json.dumps(measurements), encoding="utf-8")
+            result = self.run_json(
+                "scripts/evaluate_trigger_results.py",
+                str(queries_path),
+                str(result_path),
+                expected=1,
+            )
+        self.assertFalse(result["pass"])
+        self.assertEqual(result["status"], "insufficient")
+        self.assertEqual(result["languages"]["en"]["status"], "insufficient")
+
+    def test_trigger_results_report_individual_and_critical_failures(self) -> None:
+        queries_path, measurements = self.trigger_measurements(3)
+        queries = json.loads(queries_path.read_text(encoding="utf-8"))
+        # One missed positive keeps the English average above the threshold.
+        missed = "en-positive-1"
+        for item in measurements["results"]:
+            if item["id"] == missed:
+                item["triggered"] = 0
+        with tempfile.TemporaryDirectory() as directory:
+            result_path = Path(directory) / "results.json"
+            result_path.write_text(json.dumps(measurements), encoding="utf-8")
+            averaged = self.run_json(
+                "scripts/evaluate_trigger_results.py", str(queries_path), str(result_path)
+            )
+            self.assertEqual(averaged["status"], "pass")
+            self.assertEqual([item["id"] for item in averaged["failures"]], [missed])
+
+            for item in queries:
+                if item["id"] == missed:
+                    item["critical"] = True
+            critical_path = Path(directory) / "queries.json"
+            critical_path.write_text(json.dumps(queries), encoding="utf-8")
+            critical = self.run_json(
+                "scripts/evaluate_trigger_results.py",
+                str(critical_path),
+                str(result_path),
+                expected=1,
+            )
+        self.assertEqual(critical["status"], "fail")
+        self.assertTrue(critical["failures"][0]["critical"])
+
+    def routing_record(
+        self, case_id: str, language: str, attempt: int, **fields: object
+    ) -> dict[str, object]:
+        record: dict[str, object] = {
+            "eval_kind": "routing",
+            "eval_id": case_id,
+            "language": language,
+            "attempt": attempt,
+            "status": "executed",
+        }
+        record.update(fields)
+        return record
+
+    def test_catalog_routing_cases_reference_catalog_skills(self) -> None:
+        manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+        names = {item["name"] for item in manifest["skills"]}
+        document = json.loads(
+            (ROOT / "evals" / "catalog-routing.json").read_text(encoding="utf-8")
+        )
+        ids = {case["id"] for case in document["cases"]}
+        self.assertTrue(
+            {
+                "single-button-copy",
+                "screenshot-quick-pass",
+                "radius-only-no-html",
+                "new-system-no-tokens",
+                "workflow-only-install",
+                "no-python-no-browser",
+                "already-appropriate-keep",
+                "locale-runtime-edit",
+                "instructions-in-artifact",
+                "install-dir-differs",
+            }.issubset(ids)
+        )
+        for case in document["cases"]:
+            self.assertEqual(set(case["queries"]), {"en", "ko", "ja"})
+            self.assertTrue(set(case["primary_skills"]) <= names)
+            self.assertTrue(set(case["allowed_secondary"]) <= names)
+
+    def test_routing_results_separate_not_run_forbidden_and_extra_skills(self) -> None:
+        cases_path = ROOT / "evals" / "catalog-routing.json"
+        document = json.loads(cases_path.read_text(encoding="utf-8"))
+        single = {"cases": [c for c in document["cases"] if c["id"] == "radius-only-no-html"]}
+        clean = [
+            self.routing_record(
+                "radius-only-no-html", language, attempt, activated_skills=["review-visuals"]
+            )
+            for language in ("en", "ko", "ja")
+            for attempt in (1, 2, 3)
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            cases_file = Path(directory) / "cases.json"
+            cases_file.write_text(json.dumps(single), encoding="utf-8")
+            results_file = Path(directory) / "results.json"
+
+            def run(records: list[dict[str, object]], expected: int) -> dict[str, object]:
+                results_file.write_text(
+                    json.dumps({"client": "example-agent", "records": records}),
+                    encoding="utf-8",
+                )
+                return self.run_json(
+                    "scripts/evaluate_routing_results.py",
+                    str(cases_file),
+                    str(results_file),
+                    expected=expected,
+                )
+
+            self.assertEqual(run(clean, 0)["status"], "pass")
+
+            not_run = [r for r in clean if r["language"] != "ja"] + [
+                self.routing_record(
+                    "radius-only-no-html", "ja", 1, status="not-run",
+                    not_run_reason="fixture unavailable",
+                )
+            ]
+            result = run(not_run, 1)
+            self.assertEqual(result["status"], "not-run")
+            self.assertEqual(
+                result["cases"]["radius-only-no-html"]["languages"]["ja"]["status"], "not-run"
+            )
+
+            forbidden = [dict(r) for r in clean]
+            forbidden[0]["observed_actions"] = ["create-html"]
+            result = run(forbidden, 1)
+            self.assertEqual(result["status"], "fail")
+            self.assertEqual(
+                result["cases"]["radius-only-no-html"]["languages"]["en"][
+                    "forbidden_actions_observed"
+                ],
+                ["create-html"],
+            )
+
+            extra = [dict(r) for r in clean]
+            extra[0]["activated_skills"] = ["review-visuals", "design-workflow"]
+            self.assertEqual(run(extra, 1)["status"], "review")
 
     def test_edit_copy_integrates_voice_and_locale_review(self) -> None:
         skill_dir = ROOT / "skills" / "edit-copy"
@@ -899,6 +1597,140 @@ class CommandTests(unittest.TestCase):
                 expected=1,
             )
             self.assertEqual(len(conflict["conflicts"]), 1)
+
+    @staticmethod
+    def package_link_targets(package: Path) -> list[tuple[Path, Path]]:
+        link_re = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+        targets = []
+        for markdown in sorted(package.rglob("*.md")):
+            for raw in link_re.findall(markdown.read_text(encoding="utf-8")):
+                if raw.startswith(("#", "http://", "https://", "mailto:")):
+                    continue
+                relative = raw.split("#", 1)[0]
+                if relative:
+                    targets.append((markdown, (markdown.parent / relative).resolve()))
+        return targets
+
+    def test_skill_packages_resolve_links_inside_their_own_directory(self) -> None:
+        for package in sorted((ROOT / "skills").iterdir()):
+            if not package.is_dir():
+                continue
+            for markdown, target in self.package_link_targets(package):
+                self.assertTrue(
+                    str(target).startswith(str(package.resolve())),
+                    msg=f"{markdown} links outside its package: {target}",
+                )
+
+    def test_references_are_reachable_one_level_from_skill(self) -> None:
+        # A reference may cross-link another, but SKILL.md must link it directly
+        # so that no instruction is reachable only through a chain of references.
+        for package in sorted((ROOT / "skills").iterdir()):
+            references = package / "references"
+            if not references.is_dir():
+                continue
+            direct = {
+                target
+                for markdown, target in self.package_link_targets(package)
+                if markdown.name == "SKILL.md" and markdown.parent == package
+            }
+            for markdown, target in self.package_link_targets(references):
+                if target.parent == references.resolve():
+                    self.assertIn(
+                        target,
+                        direct,
+                        msg=f"{markdown} chains to {target.name}, which SKILL.md does not link",
+                    )
+
+    def test_optional_procedures_load_conditionally_and_keep_core_gates(self) -> None:
+        components = ROOT / "skills" / "review-components"
+        visuals = ROOT / "skills" / "review-visuals"
+        conditional = {
+            components / "references" / "interaction-governance.md": components,
+            components / "references" / "system-lifecycle.md": components,
+            visuals / "references" / "token-proposal.md": visuals,
+            visuals / "references" / "token-questions.md": visuals,
+        }
+        for reference, package in conditional.items():
+            text = reference.read_text(encoding="utf-8")
+            self.assertRegex(text.split("\n## ", 1)[0], r"Read this file (?:only )?(?:when|for)")
+            skill = (package / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn(f"](references/{reference.name})", skill)
+
+        component_skill = (components / "SKILL.md").read_text(encoding="utf-8")
+        hard_gates = component_skill.split("## Hard gates", 1)[1].split("\n## ", 1)[0]
+        for phrase in (
+            "accessible name, keyboard path, or visible",
+            "competing primary actions",
+            "hidden behind disclosure",
+            "design-system lifecycle remains `fail` or `unknown`",
+        ):
+            self.assertIn(phrase, " ".join(hard_gates.split()))
+        rules = (components / "references" / "contract-rules.md").read_text(encoding="utf-8")
+        for moved in ("## Affordance mapping", "## Design-system lifecycle and adoption"):
+            self.assertNotIn(moved, rules)
+
+        visual_skill = (visuals / "SKILL.md").read_text(encoding="utf-8")
+        self.assertNotIn("### Build the page", visual_skill)
+        self.assertNotIn("render_token_proposal.py", visual_skill)
+        token_summary = " ".join(visual_skill.split("## Token proposal", 1)[1].split("\n## ", 1)[0].split())
+        for phrase in (
+            "only when the user asks",
+            "stay `unknown`",
+            "design hypotheses with a rationale",
+            "not evidence that the project adopted",
+        ):
+            self.assertIn(phrase, token_summary)
+
+    def test_workflow_only_install_is_self_contained_from_another_workdir(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workdir = Path(directory) / "project"
+            workdir.mkdir()
+            alone = Path(directory) / "alone"
+            catalog = Path(directory) / "catalog"
+            for target, skills in (
+                (alone, ["--skill", "design-workflow"]),
+                (catalog, []),
+            ):
+                completed = subprocess.run(
+                    [
+                        PYTHON,
+                        str(ROOT / "scripts" / "install.py"),
+                        "--client",
+                        "generic",
+                        "--target",
+                        str(target),
+                        *skills,
+                    ],
+                    cwd=workdir,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    check=False,
+                )
+                self.assertEqual(completed.returncode, 0, msg=completed.stderr)
+            self.assertEqual([path.name for path in alone.iterdir()], ["design-workflow"])
+            self.assertEqual(list(workdir.iterdir()), [])
+
+            package = alone / "design-workflow"
+            for markdown, target in self.package_link_targets(package):
+                self.assertTrue(target.is_file(), msg=f"{markdown}: missing {target}")
+
+            workflow = (package / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("## Skill availability", workflow)
+            self.assertIn("relative to this file's directory", workflow)
+            focused = re.findall(r"`([a-z]+-[a-z]+)`", workflow)
+            focused = sorted(set(focused) & {p.name for p in (ROOT / "skills").iterdir()})
+            self.assertIn("review-visuals", focused)
+            for name in focused:
+                sibling = (catalog / "design-workflow" / ".." / name / "SKILL.md").resolve()
+                self.assertTrue(sibling.is_file(), msg=f"sibling package missing: {name}")
+                self.assertFalse((alone / name).exists())
+
+            composition = (
+                package / "references" / "composition-map.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("### Audit design (`audit-design`)", composition)
+            self.assertIn("limited level", composition)
 
     def test_repo_installer_new_catalog_preserves_custom_legacy_copy(self) -> None:
         expected_names = {

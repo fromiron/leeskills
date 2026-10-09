@@ -1,11 +1,11 @@
 ---
 name: design-workflow
-description: Use this skill to plan or run an end-to-end anti-slop review of a website, interface, portfolio, landing page, product flow, component library, design system, or generated design. Use when the user asks to simplify, de-slop, remove generic AI design, ground content, audit visual and verbal excess, correct misleading affordances or action hierarchy, or align reusable components. Do not use it for a narrow copy-only, motion-only, accessibility-only, or component-only request when a focused skill is sufficient.
+description: Plans and runs a multi-area review or build of a website, interface, landing page, portfolio, product flow, component library, or generated design by combining focused skills into one scoped sequence of content grounding, structure, components, visuals, copy, motion, accessibility, and verification. Use when a request spans several of these areas, such as an end-to-end anti-slop review, simplifying or de-slopping a whole page, or a new artifact built from verified material. Not for a single area such as a copy-only edit, a contrast-only check, a motion-only review, a component-only contract, or a one-off scored audit, where the focused skill is enough.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -75,7 +75,8 @@ again before the final result is reported.
 
 1. `verify-content`
 2. `plan-structure`
-3. `review-visuals`
+3. `review-visuals`, on its new-system path when no project tokens exist:
+   proposed values are labeled design hypotheses, not existing facts
 4. `edit-copy`
 5. `review-motion`
 6. `check-accessibility`
@@ -116,26 +117,30 @@ adoption must be defined.
 
 ### Copy-only request
 
-1. `verify-content`
+1. `verify-content`, scoped to the claims the change touches
 2. `edit-copy`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed copy
 
 ### Motion-only request
 
 1. `review-motion`
 2. `check-accessibility`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed motion
 
 ### Radius or visual-token request
 
 1. `review-visuals`
-2. `verify-changes`
+2. `verify-changes`, targeted to the changed relationships
 
 ### Component contract or design-code drift request
 
 1. `review-components`
 2. `check-accessibility`
-3. `verify-changes`
+3. `verify-changes`, targeted to the changed components
+
+Use release verification in `verify-changes` only when the user asks for a
+release decision or the change is broad. A targeted result is not a release
+decision.
 
 ### Accessibility-focused simplification
 
@@ -164,9 +169,25 @@ release verification and scoring; it may not skip evidence labeling, invent
 support, or describe unchecked edits as verified.
 Directly observed hard failures are still reported, without a release decision.
 
-If the client supports skill invocation, activate the listed focused skills.
-Otherwise execute the same sequence using the contracts in
-[references/composition-map.md](references/composition-map.md).
+## Skill availability
+
+This skill may be installed alone. Before each step, check what is actually
+available and use the first level that applies:
+
+1. **Invoke** — the focused skill is installed and the client can invoke it:
+   activate it.
+2. **Read** — the client cannot invoke it, but its package is readable at
+   `../<skill-name>/SKILL.md` relative to this file's directory, not the working
+   directory: read that `SKILL.md` and use its bundled references, schemas, and
+   scripts from that package.
+3. **Limited** — neither is possible: follow only the limited contract for that
+   step in [references/composition-map.md](references/composition-map.md).
+
+At the limited level, do not produce category scores, a quality or slop-risk
+score, a verdict, or release readiness, and do not claim that a missing skill,
+script, schema validator, or renderer ran. Report which steps ran at which
+level, what was skipped, and how the missing skills would change the result.
+Suggest installing the missing skills; do not install or download them.
 
 ## Evidence labels
 
@@ -211,30 +232,17 @@ conclusion or a complete WCAG conformance determination.
 
 ## Deliverable
 
-Use [assets/full-report-template.md](assets/full-report-template.md).
+Use [assets/full-report-template.md](assets/full-report-template.md) only for
+a multi-area workflow, a release verification, or when the user asks for a full
+report. For a narrow request, report the findings, changes, checks, unknowns,
+and rollback that apply, in proportion to the request.
 
-Include:
-
-1. scope and supplied evidence;
-2. primary user, task, and decision contexts;
-3. observed signals;
-4. selected structure;
-5. content gaps and prohibited inventions;
-6. component contract, state coverage, ownership, and design-code parity when in
-   scope;
-7. affordance mapping, action hierarchy, visibility, grouping cues, and
-   design-system lifecycle when in scope;
-8. visual budget, nested-radius relationships, and justified exceptions;
-9. copy decisions with locale, `correct`/`suggest`/`keep`, evidence status,
-   evidence and voice basis, unresolved information, and multilingual or
-   runtime parity when in scope;
-10. motion decisions;
-11. accessibility findings;
-12. deletion plan ordered by impact and reversibility;
-13. actual diff or changed-file paths when edits were requested, separated from
-    proposals and deferred work;
-14. verification methods, results, and the artifact version inspected;
-15. unresolved unknowns and rollback instructions for applied changes.
+The template orders the sections and marks which apply only when in scope.
+Whatever the size, keep these separate: applied diffs or changed-file paths
+versus proposals and deferred work; copy decisions as `correct`, `suggest`, or
+`keep` with locale and evidence status; verification scope, methods, results,
+and the artifact version inspected; and unresolved unknowns with rollback
+instructions for applied changes.
 
 ## Completion rule
 

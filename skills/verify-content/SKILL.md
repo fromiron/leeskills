@@ -1,11 +1,11 @@
 ---
 name: verify-content
-description: Use this skill before designing or rewriting a website, interface, landing page, portfolio, case study, or product narrative when claims must stay grounded in supplied source material. Use it to build a content inventory, trace evidence, identify missing facts, and prevent invented customers, metrics, quotes, outcomes, capabilities, or sections. Do not use it to fabricate placeholder marketing content.
+description: Builds an evidence-backed content inventory so claims in a website, interface, landing page, portfolio, case study, or product narrative stay grounded in supplied sources. Use before designing or rewriting, or to check whether customers, metrics, quotes, outcomes, capabilities, prices, or dates are supported, missing, or contradictory. Not for rewording a claim that is already supported, and never for generating placeholder marketing content.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -66,10 +66,19 @@ Every factual statement must have one status:
 Verified facts require a source reference. Inferences require both supporting
 sources and a plain-language rationale.
 
+## Scope
+
+Build a full inventory when designing, restructuring, or rewriting a whole
+artifact. For a narrow change, such as one sentence, label, or section, extract
+only the claims the change adds, removes, or rewords, plus supplied claims that
+contradict them, and state that the inventory is scoped to that change. A
+scoped inventory does not establish that the rest of the artifact is grounded.
+
 ## Workflow
 
-1. Define the artifact type, primary user, primary task, and success condition.
-2. Extract atomic claims from every supplied source.
+1. Define the artifact type, primary user, primary task, success condition, and
+   whether the inventory is full or scoped to a change.
+2. Extract atomic claims from every supplied source within that scope.
 3. Give each claim a stable ID and one status.
 4. Record source location, owner if known, date, and confidence.
 5. Group usable content into identity, offer, task support, proof, constraints,

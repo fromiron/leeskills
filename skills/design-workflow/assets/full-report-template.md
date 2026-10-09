@@ -16,10 +16,12 @@ results; a review-only request does not authorize edits.
 
 - Artifact:
 - Request: review only / edits requested
+- Verification scope: targeted (changed surfaces only) / release
 - Before version:
 - Inspected version:
 - User:
 - Primary task:
+- Decision contexts:
 - Supplied evidence:
 - Not inspected:
 
@@ -40,6 +42,18 @@ results; a review-only request does not authorize edits.
 - Content sequence:
 - Rejected alternatives:
 - Responsive reflow:
+
+## Components and interaction
+
+Use only when reusable components, affordances, action hierarchy or
+visibility, grouping cues, or design-system lifecycle are in scope.
+
+| Component or decision context | Contract area | Evidence state | Status | Drift, unknown, or exception | Owner |
+|---|---|---|---|---|---|
+
+- Contract areas: anatomy, states, content, responsive, accessibility, tokens,
+  parity, affordance mapping, action hierarchy, action visibility, grouping
+  cues, system lifecycle
 
 ## Visual budget
 
@@ -95,7 +109,9 @@ unapplied recommendations as proposed or deferred.
 ## Verification
 
 Record the inspected artifact version and the checks actually run after the
-last edit. A suggested check is not a completed check.
+last edit. A suggested check is not a completed check. In targeted
+verification, list unaffected checks as out of scope; a targeted result is not
+a release verdict.
 
 | Check or command | Result | Evidence | Unverified conditions |
 |---|---|---|---|
@@ -109,6 +125,7 @@ last edit. A suggested check is not a completed check.
 - Keyboard/focus test:
 - Reduced-motion test:
 - Provenance test:
+- Out of scope (targeted only):
 - Nested-radius coherence test, when applicable:
 
 ## Unknowns

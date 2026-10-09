@@ -30,6 +30,39 @@
       "type": "string",
       "minLength": 1
     },
+    "scope": {
+      "type": "object",
+      "description": "Optional. Without scope the report is a release verification. Targeted verification covers the declared changed surfaces only and never establishes release readiness.",
+      "required": [
+        "operation",
+        "verification"
+      ],
+      "properties": {
+        "operation": {
+          "enum": [
+            "review",
+            "edit"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "targeted",
+            "release"
+          ]
+        },
+        "changed_surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "evidence": {
       "type": "array",
       "items": {
@@ -120,6 +153,11 @@
               "provenance",
               "assistive-technology",
               "nested-radius-coherence",
+              "affordance-mapping",
+              "action-hierarchy",
+              "action-visibility",
+              "grouping-cues",
+              "system-lifecycle",
               "custom"
             ]
           },
@@ -131,7 +169,8 @@
               "pass",
               "fail",
               "unknown",
-              "not-applicable"
+              "not-applicable",
+              "out-of-scope"
             ]
           },
           "evidence_state": {

@@ -106,5 +106,41 @@
     "language": "ja",
     "query": "このボタン一つのラベルだけを「送信」から「送る」に変更してください。",
     "should_trigger": false
+  },
+  {
+    "id": "en-negative-4",
+    "language": "en",
+    "query": "Add a reduced-motion fallback to this one carousel.",
+    "should_trigger": false
+  },
+  {
+    "id": "en-negative-5",
+    "language": "en",
+    "query": "Review the states of our Button component across the Figma library and the React code.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-4",
+    "language": "ko",
+    "query": "이 캐러셀 하나에만 동작 줄이기 대체 동작을 추가해 줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ko-negative-5",
+    "language": "ko",
+    "query": "Figma 라이브러리와 React 코드에서 Button 컴포넌트의 상태를 검토해 줘.",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-4",
+    "language": "ja",
+    "query": "このカルーセル1つだけに、モーションを減らす設定時の代替動作を追加してください。",
+    "should_trigger": false
+  },
+  {
+    "id": "ja-negative-5",
+    "language": "ja",
+    "query": "FigmaライブラリとReactコードでButtonコンポーネントの状態を確認してください。",
+    "should_trigger": false
   }
 ]

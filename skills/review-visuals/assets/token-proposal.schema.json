@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Design token proposal",
-  "description": "Evidence-grounded token proposal rendered by scripts/render_token_proposal.py. Values without evidence must be \"unknown\".",
+  "description": "Token proposal rendered by scripts/render_token_proposal.py. In normalize mode every stated value is observed and traced to evidence. In new-system mode a value may be a design hypothesis with a rationale. Values with neither must be \"unknown\".",
   "type": "object",
   "required": [
     "project",
@@ -34,6 +34,48 @@
     },
     "status": {
       "const": "proposed"
+    },
+    "mode": {
+      "enum": [
+        "normalize",
+        "new-system"
+      ],
+      "description": "normalize (default): consolidate an existing system from evidence. new-system: the user asked for a new system without existing tokens."
+    },
+    "approach": {
+      "enum": [
+        "auto",
+        "guided"
+      ],
+      "description": "auto (default): the AI analyzed the project or brief. guided: the user answered questions from assets/token-questions.json first."
+    },
+    "preferences": {
+      "type": "array",
+      "description": "Guided answers. Required and non-empty when approach is guided; not allowed otherwise.",
+      "items": {
+        "type": "object",
+        "required": [
+          "question",
+          "choice"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A core or follow-up question ID from assets/token-questions.json."
+          },
+          "choice": {
+            "type": "string",
+            "minLength": 1,
+            "description": "An option ID from the question bank, \"delegate\" when the user let the AI choose, or \"custom\" for a written answer."
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The written answer; only with choice \"custom\". A color is written as hex, rgb(), rgba(), or oklch()."
+          }
+        }
+      }
     },
     "prepared": {
       "type": "string",
@@ -145,6 +187,27 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          "basis": {
+            "enum": [
+              "observed",
+              "hypothesis"
+            ],
+            "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+          },
+          "based_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
           }
         }
       }
@@ -174,7 +237,7 @@
                   "value": {
                     "type": "string",
                     "minLength": 1,
-                    "description": "A CSS value traced to evidence, or \"unknown\"."
+                    "description": "A CSS color in hex, rgb(), rgba(), or oklch(), or \"unknown\". Contrast and the converted notations are computed for these formats only."
                   },
                   "group": {
                     "type": "string",
@@ -201,6 +264,27 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -337,6 +421,27 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -432,6 +537,27 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -527,6 +653,27 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -633,6 +780,27 @@
                       "type": "string",
                       "minLength": 1
                     }
+                  },
+                  "basis": {
+                    "enum": [
+                      "observed",
+                      "hypothesis"
+                    ],
+                    "description": "observed (default): traced to project or rendered evidence. hypothesis: a new-system design choice; requires rationale and is allowed only in new-system mode."
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }

@@ -8,7 +8,7 @@
 <h3>根拠のない主張、ありきたりなコピー、ユーザーのタスクに役立たないデザインを<br>見つけるための、インターフェースレビュー用 Agent Skills</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="検証ステータス" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="バージョン 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+<img alt="バージョン 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
 <img alt="オープンな Agent Skills 形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT ライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -53,6 +53,10 @@ npx skills add fromiron/leeskills --list
 npx skills add fromiron/leeskills --skill design-workflow
 ```
 
+`design-workflow` だけをインストールした場合は限定的なレビューになります。
+不足している専門スキルを示し、スコア・判定・トークンページの生成は行いません。
+ワークフロー全体を使うにはカタログ全体をインストールしてください。
+
 > [!TIP]
 > `anti-ai-slop` などの旧名称でインストールしている場合は、
 > [名称の移行手順](docs/skill-name-migration.md)に従ってください。ローカルの変更を
@@ -82,11 +86,11 @@ npx skills add fromiron/leeskills --skill design-workflow
 | **`verify-content`**<br>出典が裏付ける主張を確かめる | 出典付きのコンテンツ一覧と、空いたままの項目 |
 | **`plan-structure`**<br>コンテンツの順序とナビゲーションを決める | タスクを基準に選んだ構造と、不採用にした案 |
 | **`review-components`**<br>再利用する UI の仕様をそろえる | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
-| **`review-visuals`**<br>見た目のルールを整理する | ビジュアルの基準、レスポンシブ・文字組み・入れ子の角丸のチェック、必要に応じて検証済みの JSON から作る HTML のトークン提案ページ |
+| **`review-visuals`**<br>見た目のルールを整理する | ビジュアルの基準、レスポンシブ・文字組み・入れ子の角丸のチェック、依頼があれば AI による自動分析またはいくつかの質問への回答から作るトークン提案と、色を hex・rgb()・oklch() で併記する HTML ページ |
 | **`edit-copy`**<br>プロダクトのコピーを整える | 根拠があり、プロダクトの語り口と各言語に合うコピー |
 | **`review-motion`**<br>アニメーションやトランジションを見直す | 残す・減らす・置き換える・削る判断と、動きを抑える設定への対応 |
 | **`check-accessibility`**<br>アクセシビリティを保って簡素化する | 文書構造、キーボード、フォーカス、リフロー、コントラスト、状態の確認 |
-| **`verify-changes`**<br>修正後の成果物を確かめる | 削除後の影響、要素の増加、リフロー、出典、主要タスクの確認 |
+| **`verify-changes`**<br>修正後の成果物を確かめる | 小さな変更には変更範囲の確認、リリース判断には削除後の影響・要素の増加・リフロー・出典・主要タスクの全確認 |
 
 `verify-content` は何を言ってよいかを、`edit-copy` はどう言うかを決めます。
 カードやグラデーション、モーションを一律に禁止するものではありません。
@@ -102,7 +106,7 @@ npx skills add fromiron/leeskills --skill design-workflow
 | 新しいインターフェースやランディングページ | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → 修正 → `verify-changes` |
 | 既存のインターフェース | `audit-design` → 必要な個別スキル → 修正 → `verify-changes` |
 | デザインシステムやコンポーネント | `review-components` → `review-visuals` → `check-accessibility` → 修正 → `verify-changes` |
-| コピーのみ | `verify-content` → `edit-copy` → 修正 → `verify-changes` |
+| コピーのみ | `verify-content` → `edit-copy` → 修正 → 変更範囲の `verify-changes` |
 
 修正のステップは、変更を依頼した場合にだけ実行します。
 
@@ -191,8 +195,9 @@ skill-name/
   繰り返し確認できる項目は、任意の Python 3.9+ スクリプトが検査します。
   標準ライブラリだけで動き、対話やネットワーク接続を必要としません。
 - トリガーの評価ケースは英語、韓国語、日本語に対応し、似ていても起動すべきでない
-  例も含みます。評価ケースの網羅範囲を確かめるもので、実際のクライアントでの
-  起動率を測るものではありません。
+  例も含みます。[evals/](evals/README.md) にはカタログ全体のルーティングケースと
+  実行記録の形式があります。評価ケースの網羅範囲を確かめるもので、実際の
+  クライアントでの起動率を測るものではなく、記録済みの実行はまだありません。
 
 </details>
 

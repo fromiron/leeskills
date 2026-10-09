@@ -1,11 +1,11 @@
 ---
 name: review-motion
-description: Use this skill to review animations, transitions, parallax, scroll effects, reveals, carousels, and micro-interactions in a website or interface. Keep motion only when it communicates feedback, state, causality, spatial continuity, errors, success, or a user-requested transition. Use when simplifying motion or adding reduced-motion behavior. Do not retain motion merely to make a page feel active.
+description: Reviews animations, transitions, parallax, scroll effects, reveals, carousels, and micro-interactions in a website or interface and decides for each pattern whether to keep, reduce, replace, or remove it and how it behaves with reduced motion. Use when simplifying motion, checking a specific animation, or adding reduced-motion behavior. Not for static visual styling or a full accessibility audit.
 license: MIT
 compatibility: Agent Skills-compatible clients. Core workflow is instruction-only; optional Python 3.9+ scripts use the standard library and no network.
 metadata:
   author: leeskills contributors
-  version: "0.6.0"
+  version: "0.7.0"
   languages: "en, ko, ja"
 ---
 
@@ -125,5 +125,14 @@ Level AAA criterion; state the chosen conformance target separately.
 
 ## Completion
 
-Every motion pattern has a purpose, decision, static equivalent, and verified
-reduced-motion behavior—or is removed.
+Report which of these states was reached; each is separate:
+
+- **Review complete** — every motion pattern has a trigger, purpose, decision,
+  and static equivalent, and reduced-motion behavior is either verified or
+  recorded as `unknown`. A completed review with unknowns is not a pass for
+  the product.
+- **Changes complete** — requested edits are applied and the affected patterns
+  are rechecked on the changed artifact.
+- **Ready to pass the motion gates** — every retained pattern has verified
+  reduced-motion behavior, no hard gate fails, and removed patterns kept their
+  status or feedback.

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "leeskills client run record",
+  "description": "One attempt of a trigger, routing, or output eval in a real client. Record only what the client exposed; use \"unknown\" or null instead of estimates. A not-run record is never a pass.",
+  "type": "object",
+  "required": [
+    "eval_kind",
+    "eval_id",
+    "language",
+    "attempt",
+    "status",
+    "client",
+    "client_version",
+    "model",
+    "condition",
+    "invocation",
+    "skill_revision",
+    "installed_catalog",
+    "input_revision"
+  ],
+  "properties": {
+    "eval_kind": {"enum": ["trigger", "routing", "output"]},
+    "eval_id": {"type": "string", "minLength": 1, "description": "Trigger query ID, routing case ID, or output eval ID, unchanged from the fixture."},
+    "skill_name": {"type": "string", "description": "Owning skill for trigger and output evals."},
+    "language": {"enum": ["en", "ko", "ja"]},
+    "attempt": {"type": "integer", "minimum": 1},
+    "run_id": {"type": "string"},
+    "status": {"enum": ["executed", "not-run"]},
+    "not_run_reason": {"type": "string", "description": "Required when status is not-run: missing fixture, tool, permission, or environment."},
+    "client": {"type": "string", "minLength": 1},
+    "client_version": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1, "description": "Verifiable model identifier, or \"unknown\"."},
+    "condition": {"enum": ["no-skill", "baseline", "revised"]},
+    "invocation": {"enum": ["automatic", "explicit"], "description": "Explicit invocation measures output quality only, not discovery."},
+    "skill_revision": {"type": "string", "minLength": 1, "description": "Commit or saved patch of the skills under test."},
+    "installed_catalog": {"type": "string", "minLength": 1, "description": "For example full-catalog or design-workflow-only."},
+    "input_revision": {"type": "string", "minLength": 1, "description": "Revision or hash of the prompt and fixture files."},
+    "fresh_session": {"type": "boolean"},
+    "tools_available": {"type": "array", "items": {"type": "string"}},
+    "activated_skills": {"type": "array", "items": {"type": "string"}},
+    "resources_read": {"type": "array", "items": {"type": "string"}},
+    "observed_actions": {"type": "array", "items": {"type": "string"}, "description": "Terms from the routing forbidden-action vocabulary that actually occurred."},
+    "output_path": {"type": "string", "description": "Saved transcript or final answer."},
+    "diff_path": {"type": "string"},
+    "checks_run": {"type": "array", "items": {"type": "string"}},
+    "unverified": {"type": "array", "items": {"type": "string"}},
+    "tokens": {"type": ["integer", "null"], "minimum": 0},
+    "elapsed_seconds": {"type": ["number", "null"], "minimum": 0},
+    "review": {
+      "type": "object",
+      "description": "Human review dimensions from docs/evaluation.md, recorded separately.",
+      "properties": {
+        "useful_findings": {"type": "array", "items": {"type": "string"}},
+        "false_positives": {"type": "array", "items": {"type": "string"}},
+        "omissions": {"type": "array", "items": {"type": "string"}},
+        "unnecessary_edits": {"type": "array", "items": {"type": "string"}},
+        "identity_preserved": {"enum": ["yes", "no", "unknown"]},
+        "task_and_access_preserved": {"enum": ["yes", "no", "unknown"]},
+        "delivery_scope_respected": {"enum": ["yes", "no", "unknown"]}
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "en": {
+    "settings.saveSummary": "Your changes to <strong>{workspace}</strong> have been successfully saved and will be applied for {audience, select, team {your entire team} other {you}}.",
+    "settings.storage": "{count, plural, one {# file uses} other {# files use}} {storageUsed} of your storage.",
+    "settings.savedAt": "Last saved {savedAt, time, short}."
+  },
+  "ko": {
+    "settings.saveSummary": "<strong>{workspace}</strong>에 대한 변경 사항이 성공적으로 저장되었으며 {audience, select, team {팀 전체} other {나}}에게 적용됩니다.",
+    "settings.storage": "{count, plural, other {파일 #개가}} 저장 공간 {storageUsed}을(를) 사용합니다.",
+    "settings.savedAt": "마지막 저장: {savedAt, time, short}"
+  },
+  "ja": {
+    "settings.saveSummary": "<strong>{workspace}</strong>への変更は正常に保存され、{audience, select, team {チーム全体} other {あなた}}に適用されます。",
+    "settings.storage": "{count, plural, other {#件のファイルが}}ストレージを{storageUsed}使用しています。",
+    "settings.savedAt": "最終保存: {savedAt, time, short}"
+  }
+}

@@ -59,6 +59,37 @@
         "Checks affected by the latest edit are repeated or explicitly reported as unverified; earlier success is not reused as current evidence.",
         "The closeout includes outcomes, remaining unknowns, and a rollback method preserving unrelated edits."
       ]
+    },
+    {
+      "id": "targeted-button-copy",
+      "prompt": "I changed one button label from \"Submit\" to \"Save changes\" in evals/fixtures/button-page.html. Verify the change.",
+      "expected_output": "A targeted verification that checks meaning, accessible name, locale handling if any, and wrapping for the changed label, records unrelated baseline checks as out of scope, and does not state release readiness.",
+      "assertions": [
+        "The report declares the verification scope as targeted.",
+        "Checks unrelated to the label are recorded as out of scope, not as pass, unknown, or not applicable.",
+        "The output does not state release readiness or WCAG conformance.",
+        "The output does not propose or apply deletions beyond the requested change."
+      ]
+    },
+    {
+      "id": "targeted-css-radius",
+      "prompt": "I changed .card > .card-media in evals/fixtures/nested-radius.css to use a smaller radius. Verify just that change.",
+      "expected_output": "A targeted verification that repeats the nested-radius coherence check on the changed contour and checks the affected surface's reflow, without running the whole release set.",
+      "assertions": [
+        "The nested-radius-coherence check is repeated against the changed CSS.",
+        "Unaffected baseline checks are recorded as out of scope.",
+        "The output does not claim release readiness."
+      ]
+    },
+    {
+      "id": "release-full",
+      "prompt": "We're about to ship the redesigned settings page. Run the full release verification on the before and after versions.",
+      "expected_output": "A release-scope verification that includes every baseline check, classifies each as pass, fail, unknown, or not applicable, and blocks release on required failures or unknowns unless an accountable owner accepts the exact risk.",
+      "assertions": [
+        "Every baseline check appears in the report.",
+        "No check is recorded as out of scope in release verification.",
+        "Required unknowns block release unless explicitly accepted."
+      ]
     }
   ]
 }

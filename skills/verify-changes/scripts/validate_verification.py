@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a verify-changes report and its release gates."""
+"""Validate a verify-changes report and its targeted or release gates."""
 
 from __future__ import annotations
 
@@ -14,7 +14,9 @@ for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
         _stream.reconfigure(encoding="utf-8")
 
-STATUSES = {"pass", "fail", "unknown", "not-applicable"}
+STATUSES = {"pass", "fail", "unknown", "not-applicable", "out-of-scope"}
+OPERATIONS = {"review", "edit"}
+VERIFICATIONS = {"targeted", "release"}
 EVIDENCE_STATES = {"observed", "measured", "inferred", "unknown"}
 ACTIONS = {"delete", "consolidate", "rewrite", "replace", "retain", "restore"}
 TESTS = {
@@ -30,6 +32,11 @@ TESTS = {
     "provenance",
     "assistive-technology",
     "nested-radius-coherence",
+    "affordance-mapping",
+    "action-hierarchy",
+    "action-visibility",
+    "grouping-cues",
+    "system-lifecycle",
     "custom",
 }
 BASELINE_TESTS = {
@@ -71,10 +78,44 @@ def string_list(value: Any) -> bool:
     return isinstance(value, list) and all(nonempty(item) for item in value)
 
 
+def validate_scope(data: dict[str, Any], errors: list[str]) -> dict[str, Any]:
+    """Return the declared scope; a report without one is a release verification."""
+    if "scope" not in data:
+        return {"operation": None, "verification": "release", "declared": False}
+    scope = data.get("scope")
+    if not isinstance(scope, dict):
+        errors.append("scope must be an object when present")
+        return {"operation": None, "verification": "release", "declared": True}
+    operation = scope.get("operation")
+    verification = scope.get("verification")
+    if operation not in OPERATIONS:
+        errors.append(f"scope.operation must be one of {sorted(OPERATIONS)}")
+    if verification not in VERIFICATIONS:
+        errors.append(f"scope.verification must be one of {sorted(VERIFICATIONS)}")
+        verification = "release"
+    surfaces = scope.get("changed_surfaces", [])
+    if not string_list(surfaces):
+        errors.append("scope.changed_surfaces must be an array of non-empty strings")
+    if verification == "targeted":
+        if not surfaces:
+            errors.append("targeted verification must name its changed_surfaces")
+        if not nonempty(scope.get("rationale")):
+            errors.append("targeted verification requires a scope.rationale")
+    return {
+        "operation": operation,
+        "verification": verification,
+        "changed_surfaces": surfaces if isinstance(surfaces, list) else [],
+        "declared": True,
+    }
+
+
 def validate(data: dict[str, Any]) -> dict[str, Any]:
     errors: list[str] = []
     blockers: list[str] = []
     warnings: list[str] = []
+
+    scope = validate_scope(data, errors)
+    targeted = scope["verification"] == "targeted"
 
     for field in ("artifact", "primary_user", "primary_task", "success_condition"):
         if not nonempty(data.get(field)):
@@ -172,6 +213,15 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
             if not nonempty(item.get(field)):
                 errors.append(f"{prefix}.{field} must be a non-empty string")
 
+        if status == "out-of-scope":
+            if not targeted:
+                errors.append(
+                    f"{prefix}: out-of-scope is only valid in targeted verification; "
+                    "release verification classifies every check"
+                )
+            if required is True:
+                errors.append(f"{prefix}: a required check cannot be out of scope")
+
         if status == "pass" and evidence_state == "unknown":
             errors.append(f"{prefix}: a passing check cannot have unknown evidence")
 
@@ -200,13 +250,27 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
             )
             blockers.append(f"{prefix}: required check is unknown{suffix}")
 
-        if test in BASELINE_TESTS and required is False and status != "not-applicable":
+        if (
+            not targeted
+            and test in BASELINE_TESTS
+            and required is False
+            and status != "not-applicable"
+        ):
             blockers.append(
                 f"{prefix}: baseline test must be required or explicitly not-applicable"
             )
 
+    in_scope_tests = {
+        item.get("test")
+        for item in checks
+        if isinstance(item, dict) and item.get("status") != "out-of-scope"
+    }
     missing_baseline = sorted(BASELINE_TESTS - present_tests)
-    if missing_baseline:
+    not_checked = sorted(BASELINE_TESTS - in_scope_tests)
+    if targeted:
+        if not in_scope_tests:
+            errors.append("targeted verification must include at least one in-scope check")
+    elif missing_baseline:
         blockers.append(
             "baseline tests missing: " + ", ".join(missing_baseline)
         )
@@ -223,10 +287,21 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         warnings.append("accepted risks not matched to checks: " + ", ".join(unused_risks))
 
     valid = not errors
-    release_ready = valid and not blockers
+    # A targeted result covers the changed surfaces only; it never establishes
+    # release readiness for the whole artifact.
+    release_ready = valid and not blockers and not targeted
+    targeted_pass = valid and not blockers if targeted else None
+    if targeted:
+        verdict = "targeted-pass" if targeted_pass else "blocked"
+    else:
+        verdict = "release-ready" if release_ready else "blocked"
     return {
         "valid_report": valid,
+        "scope": scope,
+        "verdict": verdict,
         "release_ready": release_ready,
+        "targeted_pass": targeted_pass,
+        "not_checked": not_checked if targeted else [],
         "errors": errors,
         "blockers": blockers,
         "warnings": warnings,
@@ -237,13 +312,23 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         "note": (
             "This validates the report contract and declared gates; it does not "
             "perform usability, browser, provenance, or accessibility testing."
+            + (
+                " Targeted verification covers the declared changed surfaces only "
+                "and is not a release or conformance decision."
+                if targeted
+                else ""
+            )
         ),
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Validate a verify-changes report and required-check gates."
+        description=(
+            "Validate a verify-changes report and required-check gates. Exits 0 "
+            "when a release report is release-ready or a targeted report passes "
+            "its declared scope; a targeted report is never release-ready."
+        )
     )
     parser.add_argument("input", type=Path)
     parser.add_argument("--output", type=Path)
@@ -256,7 +341,8 @@ def main() -> int:
         args.output.write_text(rendered, encoding="utf-8")
     else:
         sys.stdout.write(rendered)
-    return 0 if result["release_ready"] else 1
+    passed = result["targeted_pass"] if result["targeted_pass"] is not None else result["release_ready"]
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

@@ -34,6 +34,10 @@ Remove `--dry-run` after reviewing the plan.
 
 ## Clients without skill composition
 
-When an agent cannot invoke one skill from another, use `design-workflow` as a
-standalone workflow. It contains a fallback sequence and references the output
-contracts of the focused skills.
+When an agent cannot invoke one skill from another, `design-workflow` reads
+each focused skill's `SKILL.md` from the sibling package directory when it is
+installed. When a focused skill is not installed at all, `design-workflow`
+falls back to a limited review using the summarized contracts in its
+composition map: it reports the missing skills and does not produce scores,
+verdicts, release decisions, or rendered token pages. Install the full catalog
+for the complete workflow.

@@ -84,6 +84,28 @@
         "If the application cannot run, that limitation is explicit and runtime success is not claimed.",
         "Rollback targets the reported change and preserves unrelated work."
       ]
+    },
+    {
+      "id": "workflow-only-install",
+      "prompt": "Only design-workflow is installed. (1) Give me a quick read of evals/fixtures/injected-page.html. (2) Then do a full scored audit. (3) Then make a design-token HTML proposal.",
+      "expected_output": "The workflow checks which focused skills and bundled files are actually available, runs the quick read within its limited standalone contract, declines to produce scores or a verdict without audit-design, and offers the token proposal only as an unrendered, unvalidated table without claiming the review-visuals renderer or validators ran.",
+      "assertions": [
+        "The output states which focused skills were unavailable and at which availability level each step ran.",
+        "The quick read reports evidence-labeled findings without scores or a release verdict.",
+        "The output does not produce a quality score, slop-risk score, or verdict while audit-design is unavailable.",
+        "The output does not claim that the token proposal renderer, validator, or any missing script ran.",
+        "The output does not install or download the missing skills."
+      ]
+    },
+    {
+      "id": "single-button-copy",
+      "prompt": "Use design-workflow, but all I need is the Submit button label in evals/fixtures/button-page.html changed to \"Save changes\".",
+      "expected_output": "The workflow narrows to a copy edit with targeted verification of the changed label: meaning, accessible name, and wrapping. It does not run a full audit, produce the full report template, or change other content.",
+      "assertions": [
+        "Only the button label changes in the diff.",
+        "Verification is declared targeted and covers the label's accessible name and wrapping or lists them as unverified.",
+        "The output does not use the full report template or state release readiness."
+      ]
     }
   ]
 }
