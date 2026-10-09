@@ -334,8 +334,8 @@ class Page:
             )
         primitives = "".join(ramps) + self.table(
             "color-primitives", "color_primitives_caption",
-            ["th_name", "th_value", "th_formats", "th_consolidates", "th_evidence"],
-            self.primitive_rows("color", None, formats=True),
+            ["th_name", "th_preview", "th_value", "th_formats", "th_consolidates", "th_evidence"],
+            self.primitive_rows("color", "color-swatch", formats=True),
         )
         checks: dict[str, list[dict[str, Any]]] = {}
         for check in self.report["contrast"]:

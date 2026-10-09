@@ -343,7 +343,7 @@ class CommandTests(unittest.TestCase):
 
     def test_token_proposal_renders_design_hypothesis_markers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            for language, label in (("en", "Design hypothesis"), ("ko", "설계 가설"), ("ja", "設計仮説")):
+            for language, label in (("en", "New proposal"), ("ko", "새 제안"), ("ja", "新しい提案")):
                 document = self.new_system_proposal()
                 document["language"] = language
                 source = Path(directory) / f"{language}.json"
@@ -490,6 +490,11 @@ class CommandTests(unittest.TestCase):
             html = output.read_text(encoding="utf-8")
         table = html.split('id="color-primitives-caption"', 1)[1].split("</table>", 1)[0]
         self.assertIn("색 표기", table)
+        # Every color row shows the color itself, not only its notations.
+        rows = table.split("<tbody>", 1)[1].split("</tr>")[:-1]
+        self.assertEqual(len(rows), len(document["foundations"]["color"]["primitives"]))
+        for row in rows:
+            self.assertIn('<span class="color-swatch" style="--token-value:', row)
         for notation in (
             "<code>#66666e</code>",
             "<code>rgb(102, 102, 110)</code>",
@@ -770,6 +775,9 @@ class CommandTests(unittest.TestCase):
         self.assertNotIn("box-shadow: 0", style)
         self.assertNotRegex(style, r"(?:https?:)?//[a-z]")
         self.assertIn("prefers-reduced-motion", style)
+        # A ramp with one step keeps all four corners rounded.
+        self.assertIn(".ramp-step:only-child::before { border-radius: var(--radius-control); }", style)
+        self.assertIn('class="color-swatch"', template)
         self.assertIn("@media print", style)
         self.assertIn("html:lang(ko) body { word-break: keep-all; }", style)
 

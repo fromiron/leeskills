@@ -474,6 +474,15 @@
       background: var(--token-value);
     }
 
+    .color-swatch {
+      display: block;
+      width: 40px;
+      height: 28px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: var(--radius-control);
+      background: var(--token-value);
+    }
+
     .pair {
       display: inline-grid;
       place-items: center;
@@ -521,6 +530,8 @@
       border-right: 1px solid rgb(0 0 0 / 0.08);
       border-radius: 0 var(--radius-control) var(--radius-control) 0;
     }
+
+    .ramp-step:only-child::before { border-radius: var(--radius-control); }
 
     .ramp-step.is-unknown::before {
       background: repeating-linear-gradient(135deg, var(--c-unknown-bg) 0 6px, var(--c-panel) 6px 12px);
@@ -793,9 +804,9 @@
             <div class="table-wrap" role="region" aria-labelledby="color-primitives-caption" tabindex="0">
               <table>
                 <caption id="color-primitives-caption" data-i18n="color_primitives_caption">Color primitives</caption>
-                <thead><tr><th scope="col" data-i18n="th_name">Name</th><th scope="col" data-i18n="th_value">Value</th><th scope="col" data-i18n="th_consolidates">Consolidates</th><th scope="col" data-i18n="th_evidence">Evidence</th></tr></thead>
+                <thead><tr><th scope="col" data-i18n="th_name">Name</th><th scope="col" data-i18n="th_preview">Preview</th><th scope="col" data-i18n="th_value">Value</th><th scope="col" data-i18n="th_consolidates">Consolidates</th><th scope="col" data-i18n="th_evidence">Evidence</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row"><code class="token">{{COLOR_PRIMITIVE_NAME}}</code></th><td class="value">{{COLOR_VALUE}}</td><td class="value">{{COLOR_CURRENT_VALUES}}</td><td class="evidence">{{COLOR_EVIDENCE}}</td></tr>
+                  <tr><th scope="row"><code class="token">{{COLOR_PRIMITIVE_NAME}}</code></th><td class="preview"><span class="color-swatch" style="--token-value: {{COLOR_VALUE}}" aria-hidden="true"></span></td><td class="value">{{COLOR_VALUE}}</td><td class="value">{{COLOR_CURRENT_VALUES}}</td><td class="evidence">{{COLOR_EVIDENCE}}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -984,7 +995,7 @@
     "approach_auto": "AI proposal",
     "approach_guided": "Guided by your answers",
     "choices_title": "Your choices",
-    "choices_intro": "Answers to the guided questions and the tokens each answer shaped. Values chosen from a direction are design hypotheses; answers left to the AI shape no listed token.",
+    "choices_intro": "Answers to the guided questions and the tokens each answer shaped. Values chosen from a direction are marked New proposal; answers left to the AI shape no listed token.",
     "choices_caption": "Guided answers",
     "th_question": "Question",
     "th_answer": "Answer",
@@ -1049,8 +1060,8 @@
     "line_height": "Line height",
     "letter_spacing": "Letter spacing",
     "unknown": "unknown",
-    "hypothesis": "Design hypothesis",
-    "boundary_text_new_system": "This is a new-system proposal. Values marked as design hypotheses were chosen from the stated requirements, content, brand, and platform constraints; they are not existing project values or measurements. Render and check them, and confirm open decisions with project owners before adoption.",
+    "hypothesis": "New proposal",
+    "boundary_text_new_system": "This is a new-system proposal. Values marked New proposal were newly chosen for this proposal from the stated requirements, content, brand, and platform constraints; they are not existing project values or measurements. Render and check them, and confirm open decisions with project owners before adoption.",
     "none": "None recorded",
     "status_proposed": "Proposed",
     "status_retained": "Retained",
@@ -1105,7 +1116,7 @@
     "approach_auto": "AI 자동 제안",
     "approach_guided": "질의 기반 제안",
     "choices_title": "선택한 방향",
-    "choices_intro": "질의에 답한 내용과 각 답변으로 정한 토큰입니다. 방향에서 고른 값은 설계 가설이며, AI에게 맡긴 항목에는 토큰을 연결하지 않습니다.",
+    "choices_intro": "질의에 답한 내용과 각 답변으로 정한 토큰입니다. 방향에서 고른 값은 '새 제안'으로 표시하며, AI에게 맡긴 항목에는 토큰을 연결하지 않습니다.",
     "choices_caption": "질의 답변",
     "th_question": "질문",
     "th_answer": "답변",
@@ -1170,8 +1181,8 @@
     "line_height": "행간",
     "letter_spacing": "자간",
     "unknown": "알 수 없음",
-    "hypothesis": "설계 가설",
-    "boundary_text_new_system": "신규 시스템 제안입니다. '설계 가설'로 표시한 값은 제시된 요구사항·콘텐츠·브랜드·플랫폼 제약에서 고른 값이며, 기존 프로젝트 값이나 측정 결과가 아닙니다. 렌더링해서 검사하고, 미확정 결정은 도입 전에 프로젝트 담당자와 확인해 주세요.",
+    "hypothesis": "새 제안",
+    "boundary_text_new_system": "신규 시스템 제안입니다. '새 제안'으로 표시한 값은 제시된 요구사항·콘텐츠·브랜드·플랫폼 제약에서 이번에 새로 고른 값이며, 기존 프로젝트 값이나 측정 결과가 아닙니다. 렌더링해서 검사하고, 미확정 결정은 도입 전에 프로젝트 담당자와 확인해 주세요.",
     "none": "기록 없음",
     "status_proposed": "제안",
     "status_retained": "유지",
@@ -1226,7 +1237,7 @@
     "approach_auto": "AI自動提案",
     "approach_guided": "質問による提案",
     "choices_title": "選んだ方向",
-    "choices_intro": "質問への回答と、各回答から決めたトークンです。方向から選んだ値は設計仮説で、AIに任せた項目にはトークンを結び付けません。",
+    "choices_intro": "質問への回答と、各回答から決めたトークンです。方向から選んだ値は「新しい提案」と示し、AIに任せた項目にはトークンを結び付けません。",
     "choices_caption": "質問への回答",
     "th_question": "質問",
     "th_answer": "回答",
@@ -1291,8 +1302,8 @@
     "line_height": "行間",
     "letter_spacing": "字間",
     "unknown": "不明",
-    "hypothesis": "設計仮説",
-    "boundary_text_new_system": "新規システムの提案です。「設計仮説」と示した値は、示された要件・コンテンツ・ブランド・プラットフォームの制約から選んだもので、既存のプロジェクトの値や測定結果ではありません。レンダリングして確認し、未確定の判断は導入前にプロジェクト担当者と確認してください。",
+    "hypothesis": "新しい提案",
+    "boundary_text_new_system": "新規システムの提案です。「新しい提案」と示した値は、示された要件・コンテンツ・ブランド・プラットフォームの制約から今回新しく選んだもので、既存のプロジェクトの値や測定結果ではありません。レンダリングして確認し、未確定の判断は導入前にプロジェクト担当者と確認してください。",
     "none": "記録なし",
     "status_proposed": "提案",
     "status_retained": "維持",

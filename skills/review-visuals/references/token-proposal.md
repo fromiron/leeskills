@@ -99,9 +99,10 @@ Prefer the data path, which keeps the page consistent and checkable:
    ```
 
 4. Open the page at a wide viewport and at about 375 CSS px. Confirm that
-   previews draw the proposed values, each color lists its hex, `rgb()`, and
-   `oklch()` notations, unknown values show the unknown marker, design
-   hypotheses show the hypothesis marker, the page does not scroll
+   previews draw the proposed values, each color row shows a swatch and lists
+   its hex, `rgb()`, and `oklch()` notations, unknown values show the unknown
+   marker, design hypotheses show the "New proposal" marker (새 제안,
+   新しい提案), the page does not scroll
    horizontally, and tables scroll only inside their own regions. Fix the
    data, not the generated markup, then render again.
 5. Check the final file and report the output path, unknown values, design
@@ -121,7 +122,7 @@ The page must keep: the status badge and `data-proposal-status="proposed"`;
 previews drawn from the proposed values (color ramps and pairs, type
 specimens, spacing bars, radius corners, container frames); one column per
 mapping context; the unknown marker instead of guessed values; the
-design-hypothesis marker on new-system values; the changes and
+"New proposal" marker on design hypotheses; the changes and
 decisions sections; semantic headings, table captions, keyboard-scrollable
 table regions, visible focus, reflow, reduced-motion behavior, and print
 readability; and no network requests. The template's own chrome follows the
