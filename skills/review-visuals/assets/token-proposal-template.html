@@ -649,7 +649,8 @@
 
       .nav { margin: 0 calc(-1 * var(--space-4)); padding: 0 var(--space-4); overflow-x: auto; }
       .nav-group { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-      .nav ul { display: flex; gap: var(--space-4); }
+      /* Size the list to its links so the end padding stays inside the scroll area. */
+      .nav ul { display: flex; gap: var(--space-4); width: max-content; padding-inline-end: var(--space-4); }
       .nav a { padding: var(--space-2) 0 var(--space-3); white-space: nowrap; }
       .nav a::before { display: none; }
       .nav a[aria-current="location"] { box-shadow: inset 0 -2px 0 var(--c-accent); }
@@ -1321,19 +1322,74 @@
       const links = new Map(
         [...document.querySelectorAll('.nav a[href^="#"]')].map((link) => [link.hash.slice(1), link]),
       );
-      if (!("IntersectionObserver" in window) || links.size === 0) return;
-      const observer = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          for (const link of links.values()) link.removeAttribute("aria-current");
-          const active = links.get(entry.target.id);
-          if (active) active.setAttribute("aria-current", "location");
+      const sections = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+      if (sections.length === 0) return;
+      const nav = document.querySelector(".nav");
+      // On narrow screens the navigation scrolls sideways; keep the marked link
+      // visible by moving only the navigation, never the page.
+      const reveal = (link) => {
+        if (!nav || nav.scrollWidth <= nav.clientWidth) return;
+        const box = nav.getBoundingClientRect();
+        const item = link.getBoundingClientRect();
+        const gutter = 16;
+        if (item.left < box.left + gutter) nav.scrollLeft -= box.left + gutter - item.left;
+        else if (item.right > box.right - gutter) nav.scrollLeft += item.right - (box.right - gutter);
+      };
+      const mark = (id) => {
+        for (const [key, link] of links) {
+          if (key === id) {
+            if (!link.hasAttribute("aria-current")) reveal(link);
+            link.setAttribute("aria-current", "location");
+          } else {
+            link.removeAttribute("aria-current");
+          }
         }
-      }, { rootMargin: "-15% 0px -75% 0px" });
-      for (const id of links.keys()) {
-        const section = document.getElementById(id);
-        if (section) observer.observe(section);
+      };
+      const sectionInView = () => {
+        // Short final sections never reach the top of the viewport, so the
+        // end of the page selects the last section.
+        const root = document.documentElement;
+        if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) {
+          return sections[sections.length - 1].id;
+        }
+        const line = window.innerHeight * 0.25;
+        let current = sections[0];
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= line) current = section;
+        }
+        return current.id;
+      };
+      // A navigation jump keeps its target marked until the reader scrolls;
+      // otherwise a short section reached at the page end would mark another.
+      let pinned = false;
+      let frame = 0;
+      const follow = () => {
+        if (pinned || frame) return;
+        frame = window.requestAnimationFrame(() => {
+          frame = 0;
+          mark(sectionInView());
+        });
+      };
+      const pin = () => {
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        if (!links.has(id)) return;
+        pinned = true;
+        mark(id);
+      };
+      const release = () => {
+        pinned = false;
+      };
+      for (const link of links.values()) {
+        link.addEventListener("click", () => window.setTimeout(pin));
       }
+      window.addEventListener("hashchange", pin);
+      for (const type of ["wheel", "touchstart", "keydown", "mousedown"]) {
+        window.addEventListener(type, release, { passive: true });
+      }
+      window.addEventListener("scroll", follow, { passive: true });
+      window.addEventListener("resize", follow, { passive: true });
+      if (links.has(decodeURIComponent(window.location.hash.slice(1)))) pin();
+      else mark(sectionInView());
     })();
   </script>
 </body>
