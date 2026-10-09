@@ -8,7 +8,7 @@
 <h3>Review interface work for unsupported claims, generic copy,<br>and design that does not help the user's task.</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="Validation status" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="Version 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+<img alt="Version 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
 <img alt="Open Agent Skills format" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -87,11 +87,11 @@ ask for them. Review-only requests leave artifact files unchanged.
 | **`verify-content`**<br>Check which claims the sources support | A source-traced content inventory with gaps left visible |
 | **`plan-structure`**<br>Choose content order and navigation | A task-based structure, with rejected options recorded |
 | **`review-components`**<br>Define a reusable UI contract | Anatomy, states, behavior, accessibility, ownership, and design-code parity |
-| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and an optional HTML token proposal page rendered from validated JSON |
+| **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, when you ask for one, an HTML token proposal page rendered from validated JSON |
 | **`edit-copy`**<br>Edit product copy | Specific, supported copy in the product's voice for each locale |
 | **`review-motion`**<br>Review animation and transitions | Keep, reduce, replace, or remove decisions, with reduced-motion support |
 | **`check-accessibility`**<br>Simplify without losing access | Semantics, keyboard, focus, reflow, contrast, and status checks |
-| **`verify-changes`**<br>Check the finished work | Deletion, growth, reflow, provenance, and primary-task checks |
+| **`verify-changes`**<br>Check the finished work | Targeted checks for a narrow change, or the full deletion, growth, reflow, provenance, and primary-task set for a release decision |
 
 `verify-content` decides what may be claimed; `edit-copy` decides how to say
 it. Cards, gradients, and motion are not banned. They stay when they help the
@@ -107,7 +107,7 @@ task and there is a reason for them.
 | New interface or landing page | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → edits → `verify-changes` |
 | Existing interface | `audit-design` → focused skills as needed → edits → `verify-changes` |
 | Design system or component | `review-components` → `review-visuals` → `check-accessibility` → edits → `verify-changes` |
-| Copy only | `verify-content` → `edit-copy` → edits → `verify-changes` |
+| Copy only | `verify-content` → `edit-copy` → edits → targeted `verify-changes` |
 
 The edit step runs only when you ask for changes.
 
@@ -195,8 +195,9 @@ skill-name/
   file structure, are optional Python 3.9+ scripts that use only the standard
   library, run non-interactively, and make no network requests.
 - Trigger fixtures cover English, Korean, and Japanese, including near-miss
-  negatives. They check fixture coverage, not real activation rates in a
-  client.
+  negatives, and [evals/](evals/README.md) holds full-catalog routing cases and
+  a run-record format. They check fixture coverage, not real activation rates
+  in a client; no client runs are recorded yet.
 
 </details>
 

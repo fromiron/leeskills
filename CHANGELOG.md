@@ -2,7 +2,65 @@
 
 All notable changes are documented here.
 
-## [Unreleased]
+## [0.7.0] - 2026-10-09
+
+Changes from the v0.6.0 best-practice review
+([tracking issue](https://github.com/fromiron/leeskills/issues/12)). The
+effect of these instruction and description changes on real clients is not yet
+measured; the new routing and run-record evals exist to measure it.
+
+### Evaluation ([#6](https://github.com/fromiron/leeskills/issues/6))
+
+- `evaluate_trigger_results.py` requires three attempts per query by default
+  and reports `insufficient` otherwise, lists individual query failures, and
+  supports `critical` queries and run metadata without estimating missing
+  values.
+- Added `evals/catalog-routing.json` with full-catalog boundary cases, a
+  run-record schema, static fixtures, `evaluate_routing_results.py`, and new
+  output eval cases. Existing eval IDs and prompts are unchanged. No client
+  runs are recorded yet.
+
+### Partial installs ([#7](https://github.com/fromiron/leeskills/issues/7))
+
+- `design-workflow` checks each focused skill: invoke it, read its sibling
+  package relative to the installed workflow, or run a limited
+  composition-map contract that produces no scores, verdicts, release
+  decisions, or rendered token pages and never claims a missing tool ran.
+- Documented the limited standalone scope in the READMEs, adapters, and docs.
+
+### Verification scope ([#8](https://github.com/fromiron/leeskills/issues/8))
+
+- `verify-changes` separates operation (`review`/`edit`) from verification
+  (`targeted`/`release`). Targeted reports record unaffected checks as
+  `out-of-scope` and are never release-ready; reports without `scope` keep the
+  release behavior.
+- Added the five conditional check IDs that `verify-changes` documented but
+  its schema and validator rejected.
+- Scoped `verify-content` inventories and `plan-structure` growth and
+  alternative tests to the size of the change, and separated review, change,
+  and gate completion in `review-motion`.
+
+### Token proposals ([#9](https://github.com/fromiron/leeskills/issues/9))
+
+- `review-visuals` separates normalizing an existing system, proposing a new
+  system, verifying a rendered proposal, and building proposal files. Files
+  are built only on request.
+- The proposal schema accepts `mode: new-system` and per-value
+  `basis: hypothesis` with a required rationale; the renderer marks design
+  hypotheses in English, Korean, and Japanese. Existing safety checks are
+  unchanged.
+
+### Conditional references ([#10](https://github.com/fromiron/leeskills/issues/10))
+
+- Moved the token proposal procedure and the interaction-governance and
+  design-system lifecycle procedures into conditional references. Hard gates
+  and the delivery convention stay in each `SKILL.md`.
+
+### Descriptions ([#11](https://github.com/fromiron/leeskills/issues/11))
+
+- Rewrote the ten descriptions around role, use conditions, and adjacent
+  exclusions without renaming skills, and added near-miss negative trigger
+  queries with new IDs.
 
 ### README
 

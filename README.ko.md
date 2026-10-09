@@ -8,7 +8,7 @@
 <h3>근거 없는 주장, 뻔한 카피, 사용자의 작업에 도움이 되지 않는 디자인을<br>찾아내는 인터페이스 검토용 Agent Skills</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="검증 상태" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="버전 0.6.0" src="https://img.shields.io/badge/version-0.6.0-007FA8?style=flat-square">
+<img alt="버전 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
 <img alt="공개 Agent Skills 형식" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT 라이선스" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -84,11 +84,11 @@ npx skills add fromiron/leeskills --skill design-workflow
 | **`verify-content`**<br>출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
 | **`plan-structure`**<br>콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
 | **`review-components`**<br>재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
-| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 필요할 때 검증한 JSON으로 만드는 HTML 토큰 제안 페이지 |
+| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 검증한 JSON으로 만드는 HTML 토큰 제안 페이지 |
 | **`edit-copy`**<br>제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
 | **`review-motion`**<br>애니메이션과 전환 검토 | 유지·축소·대체·삭제 판단과 모션 감소 대응 |
 | **`check-accessibility`**<br>접근성을 지키며 단순화 | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |
-| **`verify-changes`**<br>수정한 결과 확인 | 삭제, 확장, 리플로, 출처, 핵심 작업 검사 |
+| **`verify-changes`**<br>수정한 결과 확인 | 좁은 변경에는 변경 범위 검사, 릴리스 판단에는 삭제·확장·리플로·출처·핵심 작업 전체 검사 |
 
 `verify-content`는 무엇을 말해도 되는지, `edit-copy`는 어떻게 말할지를
 정합니다. 카드나 그라디언트, 모션 자체를 금지하지는 않습니다. 사용자 작업에
@@ -104,7 +104,7 @@ npx skills add fromiron/leeskills --skill design-workflow
 | 새 인터페이스나 랜딩 페이지 | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → 수정 → `verify-changes` |
 | 기존 인터페이스 | `audit-design` → 필요한 집중 스킬 → 수정 → `verify-changes` |
 | 디자인 시스템이나 컴포넌트 | `review-components` → `review-visuals` → `check-accessibility` → 수정 → `verify-changes` |
-| 카피만 | `verify-content` → `edit-copy` → 수정 → `verify-changes` |
+| 카피만 | `verify-content` → `edit-copy` → 수정 → 변경 범위 `verify-changes` |
 
 수정 단계는 변경을 요청한 경우에만 실행합니다.
 
@@ -192,8 +192,9 @@ skill-name/
   수 있는 항목은 선택형 Python 3.9+ 스크립트가 검사합니다. 표준 라이브러리만
   쓰고, 비대화형으로 실행되며, 네트워크에 연결하지 않습니다.
 - 트리거 평가 항목은 영어·한국어·일본어 예시와, 비슷해 보여도 호출되면 안 되는
-  예시를 함께 담습니다. 평가 항목이 다루는 범위를 확인할 뿐, 실제 클라이언트의
-  호출률을 측정하지는 않습니다.
+  예시를 함께 담습니다. [evals/](evals/README.md)에는 전체 카탈로그 라우팅 사례와
+  실행 기록 형식이 있습니다. 평가 항목이 다루는 범위를 확인할 뿐, 실제 클라이언트의
+  호출률을 측정하지는 않으며 아직 기록된 실행은 없습니다.
 
 </details>
 
