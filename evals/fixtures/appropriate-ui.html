@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice draft</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 0; padding: 24px; }
+    .saved { opacity: 0; transition: opacity 150ms ease-out; }
+    .saved.is-visible { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .saved { transition: none; }
+    }
+    button { font: inherit; padding: 10px 16px; border-radius: 6px; }
+    button:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Invoice INV-2041</h1>
+    <p>Draft. Customers do not see changes until you send the invoice.</p>
+    <button type="button" id="save">Save draft</button>
+    <p class="saved" id="saved" role="status">Draft saved at 14:32.</p>
+  </main>
+</body>
+</html>

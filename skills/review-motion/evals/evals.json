@@ -27,6 +27,16 @@
         "The output does not recommend tuning the effect as the only fix.",
         "An equivalent user-controlled path is required."
       ]
+    },
+    {
+      "id": "appropriate-motion-keep",
+      "prompt": "Review the save confirmation transition in evals/fixtures/appropriate-ui.html.",
+      "expected_output": "The motion is kept because it communicates a state change, is short, has a static status equivalent, and has a reduced-motion path; no change is proposed.",
+      "assertions": [
+        "The decision for the save confirmation is keep.",
+        "The output does not propose removing or redesigning the motion.",
+        "Behavior that was not exercised at runtime is reported as unknown."
+      ]
     }
   ]
 }

@@ -680,7 +680,167 @@ class CommandTests(unittest.TestCase):
                 str(result_path),
             )
         self.assertTrue(result["pass"])
+        self.assertEqual(result["status"], "pass")
         self.assertEqual(set(result["languages"]), {"en", "ko", "ja"})
+        self.assertEqual(result["insufficient_attempts"], [])
+
+    def trigger_measurements(self, attempts: int) -> tuple[Path, dict[str, object]]:
+        queries_path = ROOT / "skills" / "design-workflow" / "evals" / "trigger_queries.json"
+        queries = json.loads(queries_path.read_text(encoding="utf-8"))
+        return queries_path, {
+            "client": "example-agent",
+            "skill_name": "design-workflow",
+            "results": [
+                {
+                    "id": item["id"],
+                    "attempts": attempts,
+                    "triggered": attempts if item["should_trigger"] else 0,
+                }
+                for item in queries
+            ],
+        }
+
+    def test_trigger_results_with_too_few_attempts_are_insufficient(self) -> None:
+        queries_path, measurements = self.trigger_measurements(1)
+        with tempfile.TemporaryDirectory() as directory:
+            result_path = Path(directory) / "results.json"
+            result_path.write_text(json.dumps(measurements), encoding="utf-8")
+            result = self.run_json(
+                "scripts/evaluate_trigger_results.py",
+                str(queries_path),
+                str(result_path),
+                expected=1,
+            )
+        self.assertFalse(result["pass"])
+        self.assertEqual(result["status"], "insufficient")
+        self.assertEqual(result["languages"]["en"]["status"], "insufficient")
+
+    def test_trigger_results_report_individual_and_critical_failures(self) -> None:
+        queries_path, measurements = self.trigger_measurements(3)
+        queries = json.loads(queries_path.read_text(encoding="utf-8"))
+        # One missed positive keeps the English average above the threshold.
+        missed = "en-positive-1"
+        for item in measurements["results"]:
+            if item["id"] == missed:
+                item["triggered"] = 0
+        with tempfile.TemporaryDirectory() as directory:
+            result_path = Path(directory) / "results.json"
+            result_path.write_text(json.dumps(measurements), encoding="utf-8")
+            averaged = self.run_json(
+                "scripts/evaluate_trigger_results.py", str(queries_path), str(result_path)
+            )
+            self.assertEqual(averaged["status"], "pass")
+            self.assertEqual([item["id"] for item in averaged["failures"]], [missed])
+
+            for item in queries:
+                if item["id"] == missed:
+                    item["critical"] = True
+            critical_path = Path(directory) / "queries.json"
+            critical_path.write_text(json.dumps(queries), encoding="utf-8")
+            critical = self.run_json(
+                "scripts/evaluate_trigger_results.py",
+                str(critical_path),
+                str(result_path),
+                expected=1,
+            )
+        self.assertEqual(critical["status"], "fail")
+        self.assertTrue(critical["failures"][0]["critical"])
+
+    def routing_record(
+        self, case_id: str, language: str, attempt: int, **fields: object
+    ) -> dict[str, object]:
+        record: dict[str, object] = {
+            "eval_kind": "routing",
+            "eval_id": case_id,
+            "language": language,
+            "attempt": attempt,
+            "status": "executed",
+        }
+        record.update(fields)
+        return record
+
+    def test_catalog_routing_cases_reference_catalog_skills(self) -> None:
+        manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+        names = {item["name"] for item in manifest["skills"]}
+        document = json.loads(
+            (ROOT / "evals" / "catalog-routing.json").read_text(encoding="utf-8")
+        )
+        ids = {case["id"] for case in document["cases"]}
+        self.assertTrue(
+            {
+                "single-button-copy",
+                "screenshot-quick-pass",
+                "radius-only-no-html",
+                "new-system-no-tokens",
+                "workflow-only-install",
+                "no-python-no-browser",
+                "already-appropriate-keep",
+                "locale-runtime-edit",
+                "instructions-in-artifact",
+                "install-dir-differs",
+            }.issubset(ids)
+        )
+        for case in document["cases"]:
+            self.assertEqual(set(case["queries"]), {"en", "ko", "ja"})
+            self.assertTrue(set(case["primary_skills"]) <= names)
+            self.assertTrue(set(case["allowed_secondary"]) <= names)
+
+    def test_routing_results_separate_not_run_forbidden_and_extra_skills(self) -> None:
+        cases_path = ROOT / "evals" / "catalog-routing.json"
+        document = json.loads(cases_path.read_text(encoding="utf-8"))
+        single = {"cases": [c for c in document["cases"] if c["id"] == "radius-only-no-html"]}
+        clean = [
+            self.routing_record(
+                "radius-only-no-html", language, attempt, activated_skills=["review-visuals"]
+            )
+            for language in ("en", "ko", "ja")
+            for attempt in (1, 2, 3)
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            cases_file = Path(directory) / "cases.json"
+            cases_file.write_text(json.dumps(single), encoding="utf-8")
+            results_file = Path(directory) / "results.json"
+
+            def run(records: list[dict[str, object]], expected: int) -> dict[str, object]:
+                results_file.write_text(
+                    json.dumps({"client": "example-agent", "records": records}),
+                    encoding="utf-8",
+                )
+                return self.run_json(
+                    "scripts/evaluate_routing_results.py",
+                    str(cases_file),
+                    str(results_file),
+                    expected=expected,
+                )
+
+            self.assertEqual(run(clean, 0)["status"], "pass")
+
+            not_run = [r for r in clean if r["language"] != "ja"] + [
+                self.routing_record(
+                    "radius-only-no-html", "ja", 1, status="not-run",
+                    not_run_reason="fixture unavailable",
+                )
+            ]
+            result = run(not_run, 1)
+            self.assertEqual(result["status"], "not-run")
+            self.assertEqual(
+                result["cases"]["radius-only-no-html"]["languages"]["ja"]["status"], "not-run"
+            )
+
+            forbidden = [dict(r) for r in clean]
+            forbidden[0]["observed_actions"] = ["create-html"]
+            result = run(forbidden, 1)
+            self.assertEqual(result["status"], "fail")
+            self.assertEqual(
+                result["cases"]["radius-only-no-html"]["languages"]["en"][
+                    "forbidden_actions_observed"
+                ],
+                ["create-html"],
+            )
+
+            extra = [dict(r) for r in clean]
+            extra[0]["activated_skills"] = ["review-visuals", "design-workflow"]
+            self.assertEqual(run(extra, 1)["status"], "review")
 
     def test_edit_copy_integrates_voice_and_locale_review(self) -> None:
         skill_dir = ROOT / "skills" / "edit-copy"

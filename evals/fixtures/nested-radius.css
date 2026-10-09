@@ -1,0 +1,21 @@
+/* Fixture: one shared nested contour and one independent pill. */
+:root {
+  --radius-card: 16px;
+  --radius-pill: 999px;
+}
+
+.card {
+  border-radius: var(--radius-card);
+  padding: 12px;
+}
+
+/* Shared contour: same radius as the parent despite 12px padding. */
+.card > .card-media {
+  border-radius: var(--radius-card);
+}
+
+/* Independent pill inside the card. */
+.card .tag {
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+}

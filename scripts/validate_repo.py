@@ -228,6 +228,71 @@ def validate_evals(skill_dir: Path, skill_name: str, errors: list[str]) -> None:
         errors.append(str(exc))
 
 
+def validate_catalog_routing(root: Path, skill_names: set[str], errors: list[str]) -> None:
+    path = root / "evals" / "catalog-routing.json"
+    try:
+        document = load_json(path)
+    except ValueError as exc:
+        errors.append(str(exc))
+        return
+    if not isinstance(document, dict):
+        errors.append(f"{path}: top-level value must be an object")
+        return
+    vocabulary = document.get("forbidden_action_vocabulary")
+    if not isinstance(vocabulary, dict) or not vocabulary:
+        errors.append(f"{path}: forbidden_action_vocabulary must be a non-empty object")
+        vocabulary = {}
+    cases = document.get("cases")
+    if not isinstance(cases, list) or not cases:
+        errors.append(f"{path}: cases must be a non-empty array")
+        return
+    ids: set[str] = set()
+    for index, case in enumerate(cases):
+        prefix = f"{path}:cases[{index}]"
+        if not isinstance(case, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        case_id = case.get("id")
+        if not isinstance(case_id, str) or not NAME_RE.fullmatch(case_id):
+            errors.append(f"{prefix}: id must be lowercase hyphen-case")
+        elif case_id in ids:
+            errors.append(f"{prefix}: duplicate id {case_id!r}")
+        else:
+            ids.add(case_id)
+        queries = case.get("queries")
+        if not isinstance(queries, dict) or set(queries) != TRIGGER_LANGUAGES or any(
+            not isinstance(value, str) or not value.strip() for value in queries.values()
+        ):
+            errors.append(f"{prefix}: queries must contain non-empty en, ko, and ja prompts")
+        for field in ("primary_skills", "allowed_secondary"):
+            values = case.get(field)
+            if not isinstance(values, list) or any(not isinstance(item, str) for item in values):
+                errors.append(f"{prefix}: {field} must be an array of skill names")
+                continue
+            unknown = sorted(set(values) - skill_names)
+            if unknown:
+                errors.append(f"{prefix}: {field} names unknown skills: {', '.join(unknown)}")
+        if not case.get("primary_skills"):
+            errors.append(f"{prefix}: primary_skills must not be empty")
+        actions = case.get("forbidden_actions")
+        if not isinstance(actions, list) or any(not isinstance(item, str) for item in actions):
+            errors.append(f"{prefix}: forbidden_actions must be an array of strings")
+        else:
+            undefined = sorted(set(actions) - set(vocabulary))
+            if undefined:
+                errors.append(
+                    f"{prefix}: forbidden_actions not in vocabulary: {', '.join(undefined)}"
+                )
+        fixtures = case.get("fixtures")
+        if not isinstance(fixtures, list) or any(not isinstance(item, str) for item in fixtures):
+            errors.append(f"{prefix}: fixtures must be an array of repository paths")
+        else:
+            for fixture in fixtures:
+                target = (root / fixture).resolve()
+                if not is_within(target, root) or not target.is_file():
+                    errors.append(f"{prefix}: missing fixture {fixture}")
+
+
 def validate_repository(root: Path, run_help: bool = True) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -338,6 +403,9 @@ def validate_repository(root: Path, run_help: bool = True) -> dict[str, Any]:
 
         validate_evals(skill_dir, name, errors)
     checks.append("skill metadata and eval fixtures")
+
+    validate_catalog_routing(root, set(manifest_names), errors)
+    checks.append("catalog routing cases")
 
     entrypoint = manifest.get("entrypoint")
     if not isinstance(entrypoint, str) or not (root / entrypoint).is_file():
