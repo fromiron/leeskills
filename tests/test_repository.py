@@ -599,7 +599,9 @@ class CommandTests(unittest.TestCase):
             "--output",
             str(output),
         )
-        return output.read_text(encoding="utf-8")
+        # Only the rendered body; the embedded string catalog holds every label.
+        html = output.read_text(encoding="utf-8")
+        return html.split("<!-- shell:start -->", 1)[1].split("<!-- shell:end -->", 1)[0]
 
     def test_token_proposal_markers_mark_only_exceptions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
