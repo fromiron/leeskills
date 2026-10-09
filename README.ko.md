@@ -14,7 +14,7 @@
 
 [English](README.md) · **한국어** · [日本語](README.ja.md)
 
-[빠르게 시작하기](#빠르게-시작하기) · [동작 방식](#동작-방식) · [스킬 목록](#스킬-목록) · [받게 되는 결과](#받게-되는-결과) · [문서](#문서)
+[빠르게 시작하기](#빠르게-시작하기) · [실제 결과물](#실제-결과물) · [동작 방식](#동작-방식) · [스킬 목록](#스킬-목록) · [받게 되는 결과](#받게-되는-결과) · [문서](#문서)
 
 </div>
 
@@ -60,6 +60,70 @@ npx skills add fromiron/leeskills --skill design-workflow
 > 따르세요. 직접 수정한 내용을 보존하고, 구이름과 새 이름이 함께 등록되지 않게
 > 하는 절차입니다.
 
+## 실제 결과물
+
+아래 스크린샷은 모두 [`examples/`](examples/README.md)의 예시 데이터를 번들
+스크립트로 실제 렌더링한 페이지입니다. 꾸며 낸 목업은 없습니다.
+
+### 토큰 제안 방식 고르기
+
+디자인 토큰을 제안하기 전에 에이전트가 한 번 묻습니다. 프로젝트를 스스로
+분석할지, 몇 가지를 먼저 물어볼지. 질문은 하나의 질문 은행에서 평문으로
+나오므로 Claude Code, Codex 등 어떤 클라이언트에서도 똑같이 묻습니다.
+
+```text
+1. 디자인 토큰 제안을 어떻게 진행할까요?
+   A. AI 자동 제안: 프로젝트를 분석해 바로 제안
+   B. 질의 기반 제안: 짧은 질문 4개에 먼저 답하기
+
+나 › B
+
+1. 화면의 주된 색 계열은 무엇이 좋을까요?
+   A. 파랑·남색
+   B. 초록·청록
+   C. 따뜻한 색(빨강·주황)
+   D. AI에게 맡기기
+   직접 입력: 다른 색 계열, 무채색, 또는 기존 브랜드 색
+   (예: #0f766e, rgb(15, 118, 110), oklch(51.1% 0.086 186.4))
+… 화면 테마, 글꼴 스타일, 모서리 질문이 이어집니다 …
+
+나 › 1 oklch(52% 0.17 255)  2C  3D  4B
+```
+
+### 한 페이지로 검토하는 제안서
+
+<img src=".github/assets/showcase/token-proposal-overview-ko.png" width="100%" alt="토큰 제안 페이지 상단. 제안 방식 '질의 기반 제안'과, 질문·답변·반영한 토큰을 보여 주는 '선택한 방향' 표">
+
+<sub>**답변이 어디에 쓰였는지 보입니다.** 답변마다 반영한 토큰이 나옵니다. 'AI에게 맡기기'에는 토큰을 연결하지 않으므로, AI가 고른 값이 사용자의 선택처럼 보이지 않습니다.</sub>
+
+<img src=".github/assets/showcase/token-proposal-primitives-ko.png" width="100%" alt="컬러 프리미티브 표. 미리보기 견본, 값, hex·rgb()·oklch() 표기, 근거가 있고 AI가 고른 값에는 '새로 정한 값' 태그가 붙음">
+
+<sub>**색을 보고, 쓰는 표기 그대로 복사합니다.** 색마다 견본과 hex, `rgb()`, `oklch()` 표기가 나옵니다. AI가 고른 값에는 *새로 정한 값* 태그가 붙고, 사용자가 준 브랜드 색은 출처가 그대로 남습니다.</sub>
+
+<img src=".github/assets/showcase/token-proposal-semantic-ko.png" width="100%" alt="시맨틱 컬러 표. light·dark 매핑과 테마별 대비 결과, 정하지 않은 어두운 화면 값은 '알 수 없음'">
+
+<sub>**테마마다 따로 재는 대비, 빈칸은 빈칸대로.** 밝은 화면과 어두운 화면을 따로 검사합니다. 아직 정하지 않은 어두운 화면 값은 채우지 않고 *알 수 없음*으로 남깁니다.</sub>
+
+같은 페이지를 직접 렌더링해 보세요.
+
+```bash
+python skills/review-visuals/scripts/render_token_proposal.py skills/review-visuals/assets/token-proposal-guided-example.json --output token-proposal.html
+```
+
+### 범위를 아는 검증
+
+버튼 문구 하나를 바꾸면 변경 범위만 검증합니다. 바뀐 부분은 통과할 수
+있지만, 그것으로 제품 전체를 릴리스 가능하다고 판정하지는 않습니다. 아래는
+번들 검증기가 이 경우에 낸 출력 일부입니다.
+
+```json
+{
+  "verdict": "targeted-pass",
+  "release_ready": false,
+  "not_checked": ["deletion", "glance-hierarchy", "growth", "keyboard-focus", "provenance", "reduced-motion", "substitution"]
+}
+```
+
 ## 동작 방식
 
 화면 전체를 볼 때는 `design-workflow`로 시작하세요. 결과물에 필요한 단계만 골라
@@ -84,7 +148,7 @@ npx skills add fromiron/leeskills --skill design-workflow
 | **`verify-content`**<br>출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
 | **`plan-structure`**<br>콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
 | **`review-components`**<br>재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
-| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 AI 자동 분석이나 몇 가지 질문에 대한 답으로 만든 토큰 제안과, 색을 hex·rgb()·oklch()로 함께 보여 주는 HTML 페이지 |
+| **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 AI 분석이나 질문에 대한 답으로 만드는 [토큰 제안 페이지](#실제-결과물) |
 | **`edit-copy`**<br>제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
 | **`review-motion`**<br>애니메이션과 전환 검토 | 유지·축소·대체·삭제 판단과 모션 감소 대응 |
 | **`check-accessibility`**<br>접근성을 지키며 단순화 | 문서 구조, 키보드, 포커스, 리플로, 대비, 상태 검사 |

@@ -2,6 +2,16 @@
 
 All notable changes are documented here.
 
+## [Unreleased]
+
+### README
+
+- Added a "See it in action" section in English, Korean, and Japanese with
+  real screenshots of a rendered guided token proposal, the shared question
+  flow, and a targeted verification result.
+- Added English and Japanese copies of the guided token proposal example in
+  `examples/` as the source of the screenshots.
+
 ## [0.7.0] - 2026-10-09
 
 Changes from the v0.6.0 best-practice review

@@ -1,0 +1,362 @@
+{
+  "project": "サンプル運動記録アプリ",
+  "language": "ja",
+  "title": "運動記録アプリのデザイントークン提案",
+  "summary": "既存のトークンがない新しいアプリです。ユーザーが質問で選んだ方向(ブランドカラー、明るい画面と暗い画面、少し丸い角)を反映し、フォントはAIに任せました。このファイルは構造を示すサンプルデータで、実際のプロジェクトの測定値ではありません。",
+  "status": "proposed",
+  "mode": "new-system",
+  "approach": "guided",
+  "preferences": [
+    {
+      "question": "color-family",
+      "choice": "custom",
+      "detail": "oklch(52% 0.17 255)"
+    },
+    {
+      "question": "theme",
+      "choice": "both"
+    },
+    {
+      "question": "type-style",
+      "choice": "delegate"
+    },
+    {
+      "question": "corner-style",
+      "choice": "subtle"
+    }
+  ],
+  "prepared": "サンプルデータ",
+  "evidence_basis": [
+    "質問への回答4件(例)",
+    "製品要件: 運動中に片手で記録する(例)"
+  ],
+  "specimen_text": "今日は3セット記録しました",
+  "naming": {
+    "primitive": {
+      "separator": "-",
+      "parts": [
+        {
+          "text": "gray",
+          "label": "色の系統"
+        },
+        {
+          "text": "900",
+          "label": "段階"
+        }
+      ]
+    },
+    "semantic": {
+      "separator": "-",
+      "parts": [
+        {
+          "text": "text",
+          "label": "分類"
+        },
+        {
+          "text": "primary",
+          "label": "役割"
+        }
+      ]
+    }
+  },
+  "breakpoints": [],
+  "foundations": {
+    "color": {
+      "primitives": [
+        {
+          "name": "blue-60",
+          "group": "blue",
+          "step": "60",
+          "value": "oklch(52% 0.17 255)",
+          "current_values": [],
+          "evidence": [
+            "ユーザーの回答(色の系統): ブランドカラー oklch(52% 0.17 255)"
+          ],
+          "based_on": [
+            "color-family"
+          ]
+        },
+        {
+          "name": "blue-40",
+          "group": "blue",
+          "step": "40",
+          "value": "oklch(72% 0.12 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "暗い画面でもブランドと同じ色相(255)を保ち、明度を上げてコントラストを確保します。",
+          "based_on": [
+            "color-family",
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-0",
+          "group": "gray",
+          "step": "0",
+          "value": "oklch(100% 0 0)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "明るい画面の標準の背景です。",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-100",
+          "group": "gray",
+          "step": "100",
+          "value": "oklch(96% 0.005 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "暗い画面の本文の文字色です。純白よりまぶしくないよう、ブランドの色相へごくわずかに寄せました。",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "gray-600",
+          "group": "gray",
+          "step": "600",
+          "value": "oklch(48% 0.015 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "明るい画面の補助の文字色です。白い背景で4.5:1以上を目指します。"
+        },
+        {
+          "name": "gray-900",
+          "group": "gray",
+          "step": "900",
+          "value": "oklch(24% 0.015 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "明るい画面の本文の文字色です。"
+        },
+        {
+          "name": "gray-950",
+          "group": "gray",
+          "step": "950",
+          "value": "oklch(17% 0.012 255)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "暗い画面の標準の背景です。純黒よりにじみが少なくなります。",
+          "based_on": [
+            "theme"
+          ]
+        },
+        {
+          "name": "red-60",
+          "group": "red",
+          "step": "60",
+          "value": "rgb(196, 33, 58)",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "エラー状態の色です。ブランドカラーと区別できるよう、アクセントの予算とは別にします。"
+        }
+      ],
+      "semantic": [
+        {
+          "name": "surface-page",
+          "role": "ページの背景",
+          "references": {
+            "light": "gray-0",
+            "dark": "gray-950"
+          },
+          "status": "proposed"
+        },
+        {
+          "name": "text-primary",
+          "role": "本文と記録の数字",
+          "references": {
+            "light": "gray-900",
+            "dark": "gray-100"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "text-secondary",
+          "role": "補足と単位",
+          "references": {
+            "light": "gray-600",
+            "dark": "unknown"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "action-primary",
+          "role": "主なボタンとリンクの文字",
+          "references": {
+            "light": "blue-60",
+            "dark": "blue-40"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        },
+        {
+          "name": "status-negative",
+          "role": "入力エラー",
+          "references": {
+            "light": "red-60",
+            "dark": "unknown"
+          },
+          "status": "proposed",
+          "contrast": {
+            "against": "surface-page",
+            "minimum": 4.5
+          }
+        }
+      ]
+    },
+    "typography": {
+      "primitives": [
+        {
+          "name": "type-body",
+          "value": {
+            "font_family": "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif",
+            "font_size": "1rem",
+            "font_weight": "400",
+            "line_height": "1.6",
+            "letter_spacing": "unknown"
+          },
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "フォントはAIに任せた項目です。Webフォントなしで日本語と英語をすぐ表示できるようシステムフォントを選び、字間はレンダリングで確かめるまで決めていません。"
+        }
+      ],
+      "semantic": [
+        {
+          "name": "text-body",
+          "role": "本文と記録リスト",
+          "references": {
+            "default": "type-body"
+          },
+          "status": "proposed"
+        }
+      ]
+    },
+    "spacing": {
+      "primitives": [
+        {
+          "name": "space-2",
+          "value": "0.5rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "記録リストの数字と単位の間隔です。"
+        },
+        {
+          "name": "space-4",
+          "value": "1rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "関連する項目の間隔です。"
+        },
+        {
+          "name": "space-6",
+          "value": "1.5rem",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "片手での操作を考えた区画の間隔です。"
+        }
+      ],
+      "semantic": [
+        {
+          "name": "content-gap",
+          "role": "関連する項目の間",
+          "references": {
+            "default": "space-2"
+          },
+          "status": "proposed"
+        },
+        {
+          "name": "section-gap",
+          "role": "区画の間",
+          "references": {
+            "default": "space-6"
+          },
+          "status": "proposed"
+        }
+      ]
+    },
+    "radius": {
+      "primitives": [
+        {
+          "name": "radius-4",
+          "value": "4px",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "「少し丸く」の回答に合わせ、入力欄とボタンに小さな半径を使います。",
+          "based_on": [
+            "corner-style"
+          ]
+        },
+        {
+          "name": "radius-8",
+          "value": "8px",
+          "current_values": [],
+          "evidence": [],
+          "basis": "hypothesis",
+          "rationale": "記録カードの外側の半径です。内側の要素は4pxの余白で入り、4pxの半径と同心になります。",
+          "based_on": [
+            "corner-style"
+          ]
+        }
+      ],
+      "semantic": [
+        {
+          "name": "control-corner",
+          "role": "入力欄とボタン",
+          "references": {
+            "default": "radius-4"
+          },
+          "relationship": "independent",
+          "status": "proposed"
+        },
+        {
+          "name": "card-corner",
+          "role": "記録カード",
+          "references": {
+            "default": "radius-8"
+          },
+          "relationship": "shared-contour",
+          "status": "proposed"
+        }
+      ]
+    }
+  },
+  "changes": [],
+  "decisions": {
+    "proposed": [
+      "ブランドカラーは主なアクションだけに使い、暗い画面では同じ色相の明るい段階を使います。"
+    ],
+    "retained": [],
+    "rejected": [
+      "すべてのボタンをピル型にする案: 「少し丸く」の回答と合いません。"
+    ],
+    "open": [
+      "暗い画面の補助の文字色とエラー色は、レンダリングしてコントラストを確かめてから決めます。",
+      "字間は実際の文章をレンダリングしてから決めます。"
+    ]
+  }
+}
