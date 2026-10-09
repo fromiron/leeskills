@@ -253,7 +253,13 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         proposal = result["proposal"]
         self.assertIn("text-secondary@dark", proposal["unknown_values"])
-        self.assertTrue(all(item["status"] == "pass" for item in proposal["contrast"]))
+        statuses = {(item["token"], item["context"]): item["status"] for item in proposal["contrast"]}
+        self.assertNotIn("fail", statuses.values())
+        # The unmapped dark value leaves only that context's contrast unknown.
+        self.assertEqual(
+            [key for key, status in statuses.items() if status == "unknown"],
+            [("text-secondary", "dark")],
+        )
 
     def test_token_proposal_rejects_unsupported_or_unsafe_values(self) -> None:
         script = "skills/review-visuals/scripts/validate_token_proposal.py"
@@ -460,7 +466,9 @@ class CommandTests(unittest.TestCase):
         translucent = self.token_proposal()
         translucent["foundations"]["color"]["primitives"][0]["value"] = "rgba(255, 255, 255, 0.6)"
         result = self.run_json_document(script, translucent)["proposal"]
-        self.assertIn("text-primary contrast", result["unknown_values"])
+        # Contrast is checked per context; only the light surface became translucent.
+        self.assertIn("text-primary contrast@light", result["unknown_values"])
+        self.assertNotIn("text-primary contrast@dark", result["unknown_values"])
         self.assertTrue(any("translucent background" in item for item in result["warnings"]))
 
         wide = self.token_proposal()
@@ -490,6 +498,124 @@ class CommandTests(unittest.TestCase):
         ):
             self.assertIn(notation, table)
         self.assertIn("sRGB로 변환", table)
+
+    def guided_proposal(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT / "skills/review-visuals/assets/token-proposal-guided-example.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_token_proposal_checks_contrast_in_each_context(self) -> None:
+        result = self.run_json(
+            "skills/review-visuals/scripts/validate_token_proposal.py",
+            "skills/review-visuals/assets/token-proposal-example.json",
+        )["proposal"]
+        contexts = {(item["token"], item["context"]): item["status"] for item in result["contrast"]}
+        self.assertEqual(contexts[("text-primary", "light")], "pass")
+        self.assertEqual(contexts[("text-primary", "dark")], "pass")
+        self.assertEqual(contexts[("text-secondary", "dark")], "unknown")
+
+        document = self.token_proposal()
+        # A dark surface that fails only in the dark context is still caught.
+        document["foundations"]["color"]["primitives"][4]["value"] = "#e6e6e6"
+        failed = self.run_json_document(
+            "skills/review-visuals/scripts/validate_token_proposal.py", document, expected=1
+        )["proposal"]
+        self.assertTrue(any("(dark)" in error and "below the declared" in error for error in failed["errors"]))
+
+    def test_guided_proposal_records_and_traces_answers(self) -> None:
+        script = "skills/review-visuals/scripts/validate_token_proposal.py"
+        result = self.run_json(script, "skills/review-visuals/assets/token-proposal-guided-example.json")["proposal"]
+        self.assertTrue(result["valid"], msg=result["errors"])
+        self.assertEqual(result["approach"], "guided")
+        self.assertEqual(result["choices"]["corner-style"]["shaped"], ["radius-4", "radius-8"])
+        self.assertEqual(result["choices"]["type-style"]["shaped"], [])
+        self.assertIn("blue-60", result["choices"]["color-family"]["shaped"])
+        self.assertNotIn("blue-60", result["hypothesis_values"])
+
+        cases = []
+        missing = self.guided_proposal()
+        del missing["preferences"]
+        cases.append((missing, "must record the user's answers"))
+
+        auto = self.guided_proposal()
+        auto["approach"] = "auto"
+        cases.append((auto, 'set "approach": "guided"'))
+
+        unknown_question = self.guided_proposal()
+        unknown_question["preferences"][0]["question"] = "mood"
+        cases.append((unknown_question, "question ID from assets/token-questions.json"))
+
+        unknown_choice = self.guided_proposal()
+        unknown_choice["preferences"][3]["choice"] = "pill"
+        cases.append((unknown_choice, "choice must be one of"))
+
+        no_detail = self.guided_proposal()
+        del no_detail["preferences"][0]["detail"]
+        cases.append((no_detail, "needs its text in detail"))
+
+        bad_color = self.guided_proposal()
+        bad_color["preferences"][0]["detail"] = "hsl(220 60% 50%)"
+        cases.append((bad_color, "hex, rgb(), rgba(), or oklch()"))
+
+        delegated = self.guided_proposal()
+        delegated["foundations"]["typography"]["primitives"][0]["based_on"] = ["type-style"]
+        cases.append((delegated, "let the AI choose"))
+
+        unanswered = self.guided_proposal()
+        unanswered["preferences"] = [item for item in unanswered["preferences"] if item["question"] != "corner-style"]
+        cases.append((unanswered, "has no recorded answer"))
+
+        light_only = self.guided_proposal()
+        light_only["preferences"][1]["choice"] = "light"
+        cases.append((light_only, "remove that mapping instead of filling it"))
+
+        missing_dark = self.guided_proposal()
+        del missing_dark["foundations"]["color"]["semantic"][1]["references"]["dark"]
+        cases.append((missing_dark, "needs a dark mapping"))
+
+        for document, message in cases:
+            result = self.run_json_document(script, document, expected=1)
+            self.assertIn(message, "\n".join(result["proposal"]["errors"]))
+
+        named_hue = self.guided_proposal()
+        named_hue["preferences"][0]["detail"] = "보라"
+        named_hue["foundations"]["color"]["primitives"][0].update(
+            basis="hypothesis", rationale="보라 계열 답변에서 고른 색입니다.", evidence=[]
+        )
+        self.assertTrue(self.run_json_document(script, named_hue)["proposal"]["valid"])
+
+    def test_guided_proposal_page_shows_choices_and_approach(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            for language, title, approach in (
+                ("ko", "선택한 방향", "질의 기반 제안"),
+                ("en", "Your choices", "Guided by your answers"),
+                ("ja", "選んだ方向", "質問による提案"),
+            ):
+                document = self.guided_proposal()
+                document["language"] = language
+                source = Path(directory) / f"{language}.json"
+                output = Path(directory) / f"{language}.html"
+                source.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+                self.run_json(
+                    "skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output)
+                )
+                html = output.read_text(encoding="utf-8")
+                self.assertIn(f'<h2 id="choices-title">{title}</h2>', html)
+                self.assertIn(approach, html)
+                bank = self.question_bank()
+                prompts = {q["id"]: q["prompt"][language] for q in bank["questions"]}
+                self.assertIn(prompts["corner-style"], html)
+                self.assertIn("oklch(52% 0.17 255)", html)
+
+            source = Path(directory) / "auto.json"
+            output = Path(directory) / "auto.html"
+            source.write_text(json.dumps(self.token_proposal(), ensure_ascii=False), encoding="utf-8")
+            self.run_json("skills/review-visuals/scripts/render_token_proposal.py", str(source), "--output", str(output))
+            html = output.read_text(encoding="utf-8")
+            self.assertNotIn('id="choices-title"', html)
+            self.assertIn("AI 자동 제안", html)
 
     def question_bank(self) -> dict[str, object]:
         return json.loads(

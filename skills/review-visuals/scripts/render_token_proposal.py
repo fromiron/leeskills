@@ -25,8 +25,8 @@ from validate_token_proposal import (  # noqa: E402
     TYPE_FIELDS,
     UNKNOWN,
     die,
+    load_question_bank,
     read_json,
-    resolve_color,
     validate,
     validate_html,
 )
@@ -51,10 +51,19 @@ SECTION_KEYS = {
 class Page:
     """Small helpers that turn proposal data into escaped markup."""
 
-    def __init__(self, data: dict[str, Any], strings: dict[str, str], report: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        data: dict[str, Any],
+        strings: dict[str, str],
+        report: dict[str, Any],
+        questions: dict[str, dict[str, Any]] | None = None,
+    ) -> None:
         self.data = data
         self.s = strings
         self.report = report
+        self.questions = questions or {}
+        language = data["language"].lower().split("-")[0]
+        self.question_language = language if language in ("en", "ko", "ja") else "en"
         self.foundations = data["foundations"]
         self.primitives: dict[str, Any] = {}
         self.semantic: dict[str, dict[str, Any]] = {}
@@ -99,6 +108,44 @@ class Page:
         parts = [marker, escape(item.get("rationale", ""))]
         parts += [escape(entry) for entry in item.get("evidence") or []]
         return "<br>".join(parts)
+
+    def choices(self) -> str:
+        """The user's guided answers and the tokens each answer shaped."""
+        if not self.report.get("choices"):
+            return ""
+        language = self.question_language
+        rows = []
+        for question_id, answer in self.report["choices"].items():
+            question = self.questions[question_id]
+            if answer["choice"] == "custom":
+                reply = f'{self.t("choice_custom")}: {escape(answer["detail"])}'
+            else:
+                option = next(item for item in question["options"] if item["id"] == answer["choice"])
+                reply = escape(option["label"][language])
+            shaped = ", ".join(f'<code class="token">{escape(name)}</code>' for name in answer["shaped"])
+            if not shaped:
+                shaped = '<span class="muted-small">—</span>'
+            rows.append(
+                f'<tr><th scope="row">{escape(question["prompt"][language])}</th><td>{reply}</td>'
+                f'<td>{shaped}</td></tr>'
+            )
+        table = self.table("choices", "choices_caption", ["th_question", "th_answer", "th_shaped"], rows)
+        return (
+            f'<div class="sub"><h2 id="choices-title">{self.t("choices_title")}</h2>'
+            f'<p>{self.t("choices_intro")}</p>{table}</div>'
+        )
+
+    def contrast_check(self, check: dict[str, Any], show_context: bool) -> str:
+        context = f' · {escape(check["context"])}' if show_context else ""
+        against = f'<p class="muted-small">{escape(check["against"])}{context}</p>'
+        if check["status"] == "unknown":
+            return f'<div class="contrast-check">{self.unknown()}{against}</div>'
+        verdict = self.t("contrast_pass") if check["status"] == "pass" else self.t("contrast_fail")
+        pair = self.style(token_fg=check["foreground"], token_bg=check["background"])
+        return (
+            f'<div class="contrast-check"><span class="pair" style="{pair}" aria-hidden="true">Aa 가 あ</span>'
+            f'<p class="value">{check["ratio"]}:1 · ≥ {check["minimum"]} {verdict}</p>{against}</div>'
+        )
 
     def listing(self, items: list[str] | None) -> str:
         if not items:
@@ -290,29 +337,18 @@ class Page:
             ["th_name", "th_value", "th_formats", "th_consolidates", "th_evidence"],
             self.primitive_rows("color", None, formats=True),
         )
-        contrast = {item["token"]: item for item in self.report["contrast"]}
-        color_primitives = {
-            item["name"]: item.get("value") for item in block.get("primitives", [])
-        }
-        color_semantic = {item["name"]: item for item in block.get("semantic", [])}
+        checks: dict[str, list[dict[str, Any]]] = {}
+        for check in self.report["contrast"]:
+            checks.setdefault(check["token"], []).append(check)
         items = block.get("semantic", [])
         columns = self.context_columns(items)
         rows = []
         for item in items:
-            check = contrast.get(item["name"])
+            token_checks = checks.get(item["name"], [])
             cell = '<span class="muted-small">—</span>'
-            if check:
-                if check["status"] == "unknown":
-                    cell = self.unknown()
-                else:
-                    foreground = resolve_color(item["name"], color_primitives, color_semantic)
-                    background = resolve_color(check["against"], color_primitives, color_semantic)
-                    verdict = self.t("contrast_pass") if check["status"] == "pass" else self.t("contrast_fail")
-                    cell = (
-                        f'<span class="pair" style="{self.style(token_fg=foreground, token_bg=background)}" aria-hidden="true">Aa 가 あ</span>'
-                        f'<p class="value">{check["ratio"]}:1 · ≥ {check["minimum"]} {verdict}</p>'
-                        f'<p class="muted-small">{escape(check["against"])}</p>'
-                    )
+            if token_checks:
+                show_context = len(token_checks) > 1
+                cell = "".join(self.contrast_check(check, show_context) for check in token_checks)
             refs = self.ref_cells(item, columns, swatch=True)
             rows.append(
                 f'<tr><th scope="row"><code class="token">{escape(item["name"])}</code></th>{refs}'
@@ -464,9 +500,11 @@ class Page:
           <dl class="meta">
             <div><dt>{self.t("meta_basis")}</dt><dd>{basis}</dd></div>
             <div><dt>{self.t("meta_prepared")}</dt><dd>{escape(data["prepared"])}</dd></div>
+            <div><dt>{self.t("meta_approach")}</dt><dd>{self.t("approach_" + self.report["approach"])}</dd></div>
             <div><dt>{self.t("meta_status")}</dt><dd>{self.t("status_value")}</dd></div>
           </dl>
           <div class="notice"><strong>{self.t("boundary_title")}</strong><p>{self.t(boundary)}</p></div>
+          {self.choices()}
         </header>
         {"".join(sections)}
         <footer class="doc-footer">{self.t("footer")}</footer>
@@ -483,7 +521,8 @@ def render(data: dict[str, Any], template: str, report: dict[str, Any]) -> str:
     catalog = json.loads(match.group(1))
     language = data["language"].lower().split("-")[0]
     strings = catalog.get(language, catalog["en"])
-    page = Page(data, strings, report)
+    questions = {question["id"]: question for question in load_question_bank()["questions"]}
+    page = Page(data, strings, report, questions)
     html = SHELL.sub(lambda _: page.shell(), template, count=1)
     html = html.replace("{{DOCUMENT_LANGUAGE}}", escape(data["language"], quote=True), 1)
     html = html.replace("{{DOCUMENT_TITLE}}", escape(data["title"]), 1)

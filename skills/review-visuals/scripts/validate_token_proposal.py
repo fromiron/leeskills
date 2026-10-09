@@ -40,6 +40,12 @@ QUESTION_STAGES = ("approach", "core", "follow-up")
 # text works everywhere.
 MAX_OPTIONS = 4
 DELEGATE = "delegate"
+CUSTOM = "custom"
+APPROACHES = ("auto", "guided")
+THEME_CONTEXTS = {"light": ("light",), "dark": ("dark",), "both": ("light", "dark")}
+COLOR_QUESTIONS = {"color-family", "brand-color-value"}
+# A written answer that starts like a color notation must parse as a supported color.
+COLOR_ANSWER = re.compile(r"^\s*(?:#|(?:rgba?|oklch|oklab|hsla?|hwb|lab|lch|color)\()", re.I)
 LAYOUT_DIAGRAMS = ("content-width", "page-padding")
 TOKEN_NAME = re.compile(r"^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$")
 PLACEHOLDER = re.compile(r"\{\{[A-Z0-9_]+\}\}")
@@ -348,6 +354,26 @@ def contrast_ratio(foreground: str, background: str) -> float | None:
     return round((lighter + 0.05) / (darker + 0.05), 2)
 
 
+def color_value(target: Any, primitives: dict[str, Any]) -> str | None:
+    """The CSS color of a primitive name, or None when it is unknown or unsupported."""
+    value = primitives.get(target) if isinstance(target, str) else None
+    return value if parse_color(value) is not None else None
+
+
+def context_target(token: str, context: str, semantic: dict[str, Any]) -> Any:
+    """The primitive a color token uses in a context; a primitive is used everywhere."""
+    if token not in semantic:
+        return token
+    references = semantic[token].get("references")
+    if not isinstance(references, dict) or not references:
+        return None
+    if context in references:
+        return references[context]
+    if "default" in references:
+        return references["default"]
+    return next(iter(references.values())) if context == "default" else None
+
+
 def resolve_color(name: str, primitives: dict[str, Any], semantic: dict[str, Any]) -> str | None:
     """Return the CSS color of a primitive or a semantic token's default mapping."""
     if name in semantic:
@@ -360,6 +386,58 @@ def resolve_color(name: str, primitives: dict[str, Any], semantic: dict[str, Any
     return None
 
 
+def check_preferences(preferences: Any, approach: str, errors: list[str]) -> dict[str, dict[str, Any]]:
+    """Check recorded guided answers against the question bank."""
+    if preferences is None:
+        if approach == "guided":
+            errors.append("a guided proposal must record the user's answers in preferences")
+        return {}
+    if not isinstance(preferences, list):
+        errors.append("preferences must be an array")
+        return {}
+    if approach != "guided" and preferences:
+        errors.append('preferences record guided answers; set "approach": "guided"')
+    if approach == "guided" and not preferences:
+        errors.append("a guided proposal must record the user's answers in preferences")
+    bank = {
+        question["id"]: question
+        for question in load_question_bank()["questions"]
+        if question["stage"] != "approach"
+    }
+    choices: dict[str, dict[str, Any]] = {}
+    for index, item in enumerate(preferences):
+        prefix = f"preferences[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix} must be an object")
+            continue
+        question = bank.get(item.get("question"))
+        if question is None:
+            errors.append(f"{prefix}.question must be a question ID from assets/token-questions.json")
+            continue
+        question_id = question["id"]
+        if question_id in choices:
+            errors.append(f"{prefix}: duplicate answer for {question_id!r}")
+            continue
+        allowed = [option["id"] for option in question["options"]]
+        if question.get("custom") is not None:
+            allowed.append(CUSTOM)
+        choice = item.get("choice")
+        if choice not in allowed:
+            errors.append(f"{prefix}.choice must be one of {allowed}")
+            continue
+        detail = item.get("detail")
+        if choice == CUSTOM:
+            if not non_empty_string(detail):
+                errors.append(f"{prefix}: a written answer needs its text in detail")
+                continue
+            if question_id in COLOR_QUESTIONS and COLOR_ANSWER.match(detail) and parse_color(detail) is None:
+                errors.append(f"{prefix}.detail: write a color as hex, rgb(), rgba(), or oklch()")
+        elif detail is not None:
+            errors.append(f"{prefix}.detail is only for a written answer (choice {CUSTOM!r})")
+        choices[question_id] = {"choice": choice, "detail": detail if choice == CUSTOM else None, "shaped": []}
+    return choices
+
+
 def check_basis(
     item: dict[str, Any],
     prefix: str,
@@ -368,8 +446,11 @@ def check_basis(
     mode: str,
     errors: list[str],
     hypotheses: list[str],
+    citations: list[tuple[str, str, Any]],
 ) -> None:
     """Observed values need evidence; design hypotheses need a rationale."""
+    if "based_on" in item:
+        citations.append((prefix, label, item["based_on"]))
     basis = item.get("basis", "observed")
     if basis not in BASES:
         errors.append(f"{prefix}.basis must be one of {list(BASES)}")
@@ -403,6 +484,12 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
     if mode not in MODES:
         errors.append(f"mode must be one of {list(MODES)}")
         mode = "normalize"
+    approach = data.get("approach", "auto")
+    if approach not in APPROACHES:
+        errors.append(f"approach must be one of {list(APPROACHES)}")
+        approach = "auto"
+    choices = check_preferences(data.get("preferences"), approach, errors)
+    citations: list[tuple[str, str, Any]] = []
 
     for field in ("project", "language", "title", "summary", "prepared"):
         if not non_empty_string(data.get(field)):
@@ -434,7 +521,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"{prefix}: a stated min_width requires evidence")
         else:
             check_basis(
-                item, prefix, f"{item['name']}.min_width", True, mode, errors, hypotheses
+                item, prefix, f"{item['name']}.min_width", True, mode, errors, hypotheses, citations
             )
 
     foundations = data.get("foundations")
@@ -519,7 +606,7 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
                                 f"{name}: the oklch() value is outside sRGB; hex, rgb(), and "
                                 "contrast use the color mapped into sRGB"
                             )
-            check_basis(item, prefix, name, stated, mode, errors, hypotheses)
+            check_basis(item, prefix, name, stated, mode, errors, hypotheses, citations)
             current_values = item.get("current_values", [])
             if not string_list(current_values):
                 errors.append(f"{prefix}.current_values must be an array of strings")
@@ -598,28 +685,69 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(minimum, (int, float)) or minimum <= 1:
             errors.append(f"{prefix}.contrast.minimum must be a number greater than 1")
             continue
-        foreground = resolve_color(name, color_primitives, color_semantic)
-        background = resolve_color(against, color_primitives, color_semantic) if isinstance(against, str) else None
         if not isinstance(against, str) or (against not in color_primitives and against not in color_semantic):
             errors.append(f"{prefix}.contrast.against must name a color token")
             continue
-        if foreground is None or background is None:
-            contrast.append({"token": name, "against": against, "ratio": None, "minimum": minimum, "status": "unknown"})
-            unknown_values.append(f"{name} contrast")
+        # Check each context the token maps, such as light and dark, on its own.
+        contexts = list(references) or ["default"]
+        for context in contexts:
+            single = len(contexts) == 1
+            suffix = "" if single else f" ({context})"
+            foreground = color_value(references.get(context), color_primitives)
+            background = color_value(context_target(against, context, color_semantic), color_primitives)
+            entry = {
+                "token": name, "against": against, "context": context, "ratio": None,
+                "minimum": minimum, "status": "unknown", "foreground": foreground, "background": background,
+            }
+            ratio = contrast_ratio(foreground, background) if foreground and background else None
+            if ratio is None:
+                if foreground and background:
+                    warnings.append(f"{name} on {against}{suffix}: contrast against a translucent background is unknown")
+                contrast.append(entry)
+                unknown_values.append(f"{name} contrast" + ("" if single else f"@{context}"))
+                continue
+            passed = ratio >= minimum
+            entry.update(ratio=ratio, status="pass" if passed else "fail")
+            contrast.append(entry)
+            if not passed:
+                errors.append(f"{name} on {against}{suffix}: contrast {ratio}:1 is below the declared {minimum}:1")
+
+    theme = choices.get("theme", {}).get("choice")
+    if theme in THEME_CONTEXTS:
+        required = set(THEME_CONTEXTS[theme])
+        excluded = {"light", "dark"} - required
+        for item in color_semantic.values():
+            references = item.get("references")
+            if not isinstance(references, dict):
+                continue
+            missing = sorted(required - set(references))
+            if missing:
+                errors.append(
+                    f"{item['_prefix']}: the theme answer ({theme}) needs a {' and '.join(missing)} "
+                    "mapping; use 'unknown' until a value is derived"
+                )
+            filled = sorted(excluded & set(references))
+            if filled:
+                errors.append(
+                    f"{item['_prefix']}: the theme answer ({theme}) does not include "
+                    f"{' or '.join(filled)}; remove that mapping instead of filling it"
+                )
+
+    for prefix, label, cited in citations:
+        if not isinstance(cited, list) or not cited or not all(isinstance(entry, str) for entry in cited):
+            errors.append(f"{prefix}.based_on must be a non-empty array of question IDs")
             continue
-        ratio = contrast_ratio(foreground, background)
-        if ratio is None:
-            warnings.append(f"{name} on {against}: contrast against a translucent background is unknown")
-            contrast.append({"token": name, "against": against, "ratio": None, "minimum": minimum, "status": "unknown"})
-            unknown_values.append(f"{name} contrast")
-            continue
-        passed = ratio >= minimum
-        contrast.append({
-            "token": name, "against": against, "ratio": ratio, "minimum": minimum,
-            "status": "pass" if passed else "fail",
-        })
-        if not passed:
-            errors.append(f"{name} on {against}: contrast {ratio}:1 is below the declared {minimum}:1")
+        for question_id in cited:
+            answer = choices.get(question_id)
+            if answer is None:
+                errors.append(f"{prefix}.based_on names {question_id!r}, which has no recorded answer")
+            elif answer["choice"] == DELEGATE:
+                errors.append(
+                    f"{prefix}.based_on cites {question_id!r}, but the user let the AI choose; "
+                    "explain the value in its rationale instead"
+                )
+            else:
+                answer["shaped"].append(label)
 
     naming = data.get("naming", {})
     if not isinstance(naming, dict):
@@ -685,6 +813,8 @@ def validate(data: dict[str, Any]) -> dict[str, Any]:
         "hypothesis_values": sorted(set(hypotheses)),
         "contrast": contrast,
         "color_formats": formats,
+        "approach": approach,
+        "choices": choices,
     }
 
 

@@ -76,7 +76,9 @@ Prefer the data path, which keeps the page consistent and checkable:
    [assets/token-proposal-example.json](../assets/token-proposal-example.json)
    shows every field of a normalize proposal, and
    [assets/token-proposal-new-system-example.json](../assets/token-proposal-new-system-example.json)
-   shows design hypotheses in a new-system proposal. Set `language` to the
+   shows design hypotheses in a new-system proposal, and
+   [assets/token-proposal-guided-example.json](../assets/token-proposal-guided-example.json)
+   shows a guided proposal with recorded answers. Set `language` to the
    reader's language (`en`, `ko`, or `ja` chrome is bundled) and write titles,
    roles, and notes in that language.
 2. Validate it. The validator rejects observed values without evidence,

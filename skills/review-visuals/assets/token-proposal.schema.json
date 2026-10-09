@@ -42,6 +42,41 @@
       ],
       "description": "normalize (default): consolidate an existing system from evidence. new-system: the user asked for a new system without existing tokens."
     },
+    "approach": {
+      "enum": [
+        "auto",
+        "guided"
+      ],
+      "description": "auto (default): the AI analyzed the project or brief. guided: the user answered questions from assets/token-questions.json first."
+    },
+    "preferences": {
+      "type": "array",
+      "description": "Guided answers. Required and non-empty when approach is guided; not allowed otherwise.",
+      "items": {
+        "type": "object",
+        "required": [
+          "question",
+          "choice"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A core or follow-up question ID from assets/token-questions.json."
+          },
+          "choice": {
+            "type": "string",
+            "minLength": 1,
+            "description": "An option ID from the question bank, \"delegate\" when the user let the AI choose, or \"custom\" for a written answer."
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The written answer; only with choice \"custom\". A color is written as hex, rgb(), rgba(), or oklch()."
+          }
+        }
+      }
+    },
     "prepared": {
       "type": "string",
       "minLength": 1
@@ -164,6 +199,15 @@
             "type": "string",
             "minLength": 1,
             "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+          },
+          "based_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
           }
         }
       }
@@ -232,6 +276,15 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -380,6 +433,15 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -487,6 +549,15 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -594,6 +665,15 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }
@@ -712,6 +792,15 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Why a hypothesis value was chosen, tied to stated requirements, content, brand, or platform constraints."
+                  },
+                  "based_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "description": "Question IDs whose recorded answers shaped this value. A delegated answer cannot be cited."
                   }
                 }
               }

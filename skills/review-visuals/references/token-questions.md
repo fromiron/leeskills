@@ -43,7 +43,9 @@ language.
 
 ## Record the answers
 
-Record the approach and each answer in the proposal:
+Record the approach and each answer in the proposal.
+[assets/token-proposal-guided-example.json](../assets/token-proposal-guided-example.json)
+shows a complete guided proposal.
 
 ```json
 "approach": "guided",
