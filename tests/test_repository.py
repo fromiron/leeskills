@@ -85,7 +85,7 @@ class CommandTests(unittest.TestCase):
         result = self.run_json("scripts/validate_repo.py")
         self.assertTrue(result["valid"])
         self.assertEqual(result["name"], "leeskills")
-        self.assertEqual(result["skill_count"], 10)
+        self.assertEqual(result["skill_count"], 11)
         self.assertEqual(result["errors"], [])
 
     def test_project_package_name_is_leeskills(self) -> None:
@@ -239,7 +239,8 @@ class CommandTests(unittest.TestCase):
             start = text.index("## Delivery\n")
             end = text.index("\n## ", start + 1)
             blocks[skill.parent.name] = text[start:end]
-        self.assertEqual(len(blocks), 10)
+        manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(blocks), sorted(entry["name"] for entry in manifest["skills"]))
         self.assertEqual(len(set(blocks.values())), 1, msg="Delivery sections drifted apart")
 
     def token_proposal(self) -> dict[str, object]:
@@ -1735,8 +1736,8 @@ class CommandTests(unittest.TestCase):
     def test_repo_installer_new_catalog_preserves_custom_legacy_copy(self) -> None:
         expected_names = {
             "design-workflow", "audit-design", "verify-content", "plan-structure",
-            "review-components", "review-visuals", "edit-copy", "review-motion",
-            "check-accessibility", "verify-changes",
+            "map-flows", "review-components", "review-visuals", "edit-copy",
+            "review-motion", "check-accessibility", "verify-changes",
         }
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / ".agents" / "skills"

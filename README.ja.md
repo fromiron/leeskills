@@ -8,7 +8,7 @@
 <h3>根拠のない主張、ありきたりなコピー、ユーザーのタスクに役立たないデザインを<br>見つけるための、インターフェースレビュー用 Agent Skills</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="検証ステータス" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="バージョン 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
+<img alt="バージョン 0.8.0" src="https://img.shields.io/badge/version-0.8.0-007FA8?style=flat-square">
 <img alt="オープンな Agent Skills 形式" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT ライセンス" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -20,10 +20,10 @@
 
 <br>
 
-leeskills は、コーディングやデザインを行うエージェントに10個のレビュー用スキルを
+leeskills は、コーディングやデザインを行うエージェントに11個のレビュー用スキルを
 追加します。レビュー範囲を決めるワークフロースキルが1つと、コンテンツ、情報設計、
-コンポーネント、ビジュアル、コピー、モーション、アクセシビリティ、仕上げの確認を
-担当する個別スキルが9つです。英語、韓国語、日本語に対応しています。
+ユーザーフロー、コンポーネント、ビジュアル、コピー、モーション、アクセシビリティ、
+仕上げの確認を担当する個別スキルが10個です。英語、韓国語、日本語に対応しています。
 
 > [!NOTE]
 > スキルが判断するのは、目の前にある成果物だけです。誰が作ったか、AI を使ったかは
@@ -128,6 +128,33 @@ python skills/review-visuals/scripts/render_token_proposal.py examples/token-pro
 }
 ```
 
+### ジャーニーをマップにして、何が確認済みかを見る
+
+`map-flows` は、ユーザーが複数の画面を通ってゴールに着くまでを1つのマップで
+管理します。マップは、設計したことと製品について分かっていることを分けて
+記録します。実行記録が実際に行ったステップだけを確認済みと数えます。下の画面は、
+同梱のフィクスチャアプリを実際のブラウザーでポインターとキーボードの両方で
+たどった結果です。
+
+<img src=".github/assets/showcase/flow-map-overview-ja.png" width="100%" alt="'Log a workout' のフローマップページ。実行記録4件、遷移19件中7件を実行で確認、根拠のバー、「ゴールに到達できない」「復旧できない失敗」などの項目と、それぞれを引き継ぐスキルを表示">
+
+<sub>**どこまで分かっているかがひと目で分かります。** バーは、実行で確認したステップ、コードで見ただけのステップ、根拠のないステップを分けて示します。各項目には判断を担当するスキルが書かれています。</sub>
+
+<img src=".github/assets/showcase/flow-map-diagram-ja.png" width="100%" alt="状態カードで描いたフローマップ。各行は操作で、遷移先、条件、実行確認・確認のみ・根拠なし・ブロック · キーボードなどの状態表示が付き、番号付きの行が経路を示す">
+
+<sub>**カードは状態、行は操作です。** 右側の線は先へ進み、左側の線は戻ります。状態は色だけでなく、言葉と線の種類で示します。この例では、キーボードで「Add set」に到達できませんでした。</sub>
+
+同じページを自分で作ることも、2つのリビジョンを比べることもできます。
+
+```bash
+python skills/map-flows/scripts/render_flow.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json --language ja --output flow-map.html
+python skills/map-flows/scripts/compare_flows.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json
+```
+
+比較でリグレッションとして報告するのは、できていたことができなくなった場合
+だけです。記録を破棄する前に確認が入って経路が長くなった、といった変化は、
+判断が必要な変更として別に示します。
+
 ## 仕組み
 
 画面全体を見直すなら `design-workflow` から始めてください。成果物に必要な
@@ -136,12 +163,12 @@ python skills/review-visuals/scripts/render_token_proposal.py examples/token-pro
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/workflow-ja-dark.svg">
-  <img src=".github/assets/workflow-ja-light.svg" width="100%" alt="design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。">
+  <img src=".github/assets/workflow-ja-light.svg" width="100%" alt="design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、画面をまたぐジャーニーなら map-flows、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。">
 </picture>
 
 点線のステップは必要なときだけ実行します。既存の成果物なら `audit-design`、
-再利用コンポーネントが対象なら `review-components`、修正を依頼した場合は修正の
-ステップが入ります。レビューのみの場合、成果物のファイルは変更しません。
+画面をまたぐジャーニーなら `map-flows`、再利用コンポーネントが対象なら
+`review-components`、修正を依頼した場合は修正のステップが入ります。レビューのみの場合、成果物のファイルは変更しません。
 
 ## スキル一覧
 
@@ -151,6 +178,7 @@ python skills/review-visuals/scripts/render_token_proposal.py examples/token-pro
 | **`audit-design`**<br>既存の成果物を診断する | 確認できた問題、リスクスコア、整理の順番 |
 | **`verify-content`**<br>出典が裏付ける主張を確かめる | 出典付きのコンテンツ一覧と、空いたままの項目 |
 | **`plan-structure`**<br>コンテンツの順序とナビゲーションを決める | タスクを基準に選んだ構造と、不採用にした案 |
+| **`map-flows`**<br>画面をまたぐジャーニーをマップにする | 設計と製品の根拠を分けたフローマップ、経路・復旧・行き止まり・リグレッションの分析、依頼があれば[レンダリングしたマップ](#実際の出力) |
 | **`review-components`**<br>再利用する UI の仕様をそろえる | 構造、状態、動作、アクセシビリティ、担当範囲、デザインとコードの差分 |
 | **`review-visuals`**<br>見た目のルールを整理する | ビジュアルの基準、レスポンシブ・文字組み・入れ子の角丸のチェック、依頼があれば AI の分析または質問への回答から作る[トークン提案ページ](#実際の出力) |
 | **`edit-copy`**<br>プロダクトのコピーを整える | 根拠があり、プロダクトの語り口と各言語に合うコピー |
@@ -171,6 +199,7 @@ python skills/review-visuals/scripts/render_token_proposal.py examples/token-pro
 |---|---|
 | 新しいインターフェースやランディングページ | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → 修正 → `verify-changes` |
 | 既存のインターフェース | `audit-design` → 必要な個別スキル → 修正 → `verify-changes` |
+| オンボーディングや購入などのジャーニー | `map-flows` → 見つかった項目に応じて `review-components` や `check-accessibility` → 修正 → `map-flows` で比較 → `verify-changes` |
 | デザインシステムやコンポーネント | `review-components` → `review-visuals` → `check-accessibility` → 修正 → `verify-changes` |
 | コピーのみ | `verify-content` → `edit-copy` → 修正 → 変更範囲の `verify-changes` |
 

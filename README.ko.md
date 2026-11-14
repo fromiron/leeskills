@@ -8,7 +8,7 @@
 <h3>근거 없는 주장, 뻔한 카피, 사용자의 작업에 도움이 되지 않는 디자인을<br>찾아내는 인터페이스 검토용 Agent Skills</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="검증 상태" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="버전 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
+<img alt="버전 0.8.0" src="https://img.shields.io/badge/version-0.8.0-007FA8?style=flat-square">
 <img alt="공개 Agent Skills 형식" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT 라이선스" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -20,9 +20,9 @@
 
 <br>
 
-leeskills는 코딩·디자인 에이전트에 검토용 스킬 10개를 더합니다. 검토 범위를
-정하는 워크플로 스킬 1개와, 콘텐츠·정보 구조·컴포넌트·시각 체계·카피·모션·
-접근성·최종 검증을 맡는 집중 스킬 9개입니다. 영어, 한국어, 일본어를 지원합니다.
+leeskills는 코딩·디자인 에이전트에 검토용 스킬 11개를 더합니다. 검토 범위를
+정하는 워크플로 스킬 1개와, 콘텐츠·정보 구조·사용자 플로우·컴포넌트·시각 체계·
+카피·모션·접근성·최종 검증을 맡는 집중 스킬 10개입니다. 영어, 한국어, 일본어를 지원합니다.
 
 > [!NOTE]
 > 스킬은 눈앞의 결과물만 판단합니다. 누가 만들었는지, AI를 썼는지는 추측하지
@@ -124,6 +124,32 @@ python skills/review-visuals/scripts/render_token_proposal.py skills/review-visu
 }
 ```
 
+### 여정을 지도로 그리고, 무엇이 확인됐는지 보기
+
+`map-flows`는 사용자가 여러 화면을 거쳐 목표에 이르는 과정을 지도 하나로
+관리합니다. 지도는 설계한 것과 제품에 대해 아는 것을 따로 기록합니다. 실행
+기록이 실제로 수행한 단계만 확인된 것으로 셉니다. 아래 화면은 함께 들어 있는
+픽스처 앱을 실제 브라우저에서 포인터와 키보드로 걸어 본 결과입니다.
+
+<img src=".github/assets/showcase/flow-map-overview-ko.png" width="100%" alt="'Log a workout' 플로우 맵 페이지. 실행 기록 4건, 전이 19개 중 7개 실행 확인, 근거 막대, 그리고 '목표에 도달할 수 없음', '복구할 수 없는 실패' 같은 항목과 각 항목을 넘겨받을 스킬이 표시됨">
+
+<sub>**얼마나 아는지 한눈에.** 막대는 실행으로 확인한 단계, 코드에서 보기만 한 단계, 근거가 없는 단계를 나눠 보여 줍니다. 각 항목에는 판단을 맡을 스킬이 적혀 있습니다.</sub>
+
+<img src=".github/assets/showcase/flow-map-diagram-ko.png" width="100%" alt="상태 카드로 그린 플로우 맵. 각 줄은 동작이며 도착 상태, 조건, 그리고 실행 확인·확인만·근거 없음·막힘 · 키보드 같은 상태 문구가 붙어 있고, 번호가 붙은 줄이 경로를 나타냄">
+
+<sub>**카드는 상태, 줄은 동작입니다.** 오른쪽 선은 앞으로, 왼쪽 선은 되돌아갑니다. 상태는 색만이 아니라 문구와 선 모양으로 표시합니다. 이 예에서는 키보드로 "Add set"에 도달하지 못했습니다.</sub>
+
+같은 페이지를 직접 만들거나, 두 리비전을 비교해 보세요.
+
+```bash
+python skills/map-flows/scripts/render_flow.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json --language ko --output flow-map.html
+python skills/map-flows/scripts/compare_flows.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json
+```
+
+비교는 되던 것이 안 되게 된 경우만 회귀로 보고합니다. 운동 기록을 버리기 전에
+확인 단계가 생겨 경로가 길어진 것 같은 변화는 직접 판단할 변경으로 따로
+적습니다.
+
 ## 동작 방식
 
 화면 전체를 볼 때는 `design-workflow`로 시작하세요. 결과물에 필요한 단계만 골라
@@ -132,12 +158,12 @@ python skills/review-visuals/scripts/render_token_proposal.py skills/review-visu
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/workflow-ko-dark.svg">
-  <img src=".github/assets/workflow-ko-light.svg" width="100%" alt="design-workflow가 요청을 세 단계로 연결합니다. 기존 결과물이면 audit-design, verify-content, plan-structure, review-components·review-visuals·edit-copy·review-motion, 그다음 check-accessibility, 요청받은 수정, verify-changes 순서입니다.">
+  <img src=".github/assets/workflow-ko-light.svg" width="100%" alt="design-workflow가 요청을 세 단계로 연결합니다. 기존 결과물이면 audit-design, verify-content, plan-structure, 여러 화면에 걸친 여정이면 map-flows, review-components·review-visuals·edit-copy·review-motion, 그다음 check-accessibility, 요청받은 수정, verify-changes 순서입니다.">
 </picture>
 
-점선 단계는 필요할 때만 실행합니다. 기존 결과물이면 `audit-design`, 재사용
-컴포넌트가 범위에 있으면 `review-components`, 수정을 요청했으면 수정 단계가
-들어갑니다. 검토만 요청하면 결과물 파일은 바꾸지 않습니다.
+점선 단계는 필요할 때만 실행합니다. 기존 결과물이면 `audit-design`, 여러 화면에
+걸친 여정이면 `map-flows`, 재사용 컴포넌트가 범위에 있으면
+`review-components`, 수정을 요청했으면 수정 단계가 들어갑니다. 검토만 요청하면 결과물 파일은 바꾸지 않습니다.
 
 ## 스킬 목록
 
@@ -147,6 +173,7 @@ python skills/review-visuals/scripts/render_token_proposal.py skills/review-visu
 | **`audit-design`**<br>기존 결과물 진단 | 확인한 문제, 위험 점수, 정리 순서 |
 | **`verify-content`**<br>출처가 뒷받침하는 주장 확인 | 출처가 연결된 콘텐츠 목록과 비어 있는 항목 |
 | **`plan-structure`**<br>콘텐츠 순서와 탐색 구조 결정 | 사용자 작업 기준의 구조와 제외한 대안 |
+| **`map-flows`**<br>여러 화면에 걸친 여정을 지도로 정리 | 설계와 제품 근거를 구분한 플로우 맵, 경로·복구·막다른 상태·회귀 분석, 요청하면 [렌더링한 지도](#실제-결과물) |
 | **`review-components`**<br>재사용 UI 규칙 정리 | 구조, 상태, 동작, 접근성, 담당 범위, 디자인과 코드의 차이 |
 | **`review-visuals`**<br>시각 체계 정리 | 시각 규칙, 반응형·타이포그래피·중첩 모서리 반경 검사, 요청하면 AI 분석이나 질문에 대한 답으로 만드는 [토큰 제안 페이지](#실제-결과물) |
 | **`edit-copy`**<br>제품 문구 다듬기 | 근거가 있고 제품 말투와 각 언어에 맞는 문구 |
@@ -167,6 +194,7 @@ python skills/review-visuals/scripts/render_token_proposal.py skills/review-visu
 |---|---|
 | 새 인터페이스나 랜딩 페이지 | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → 수정 → `verify-changes` |
 | 기존 인터페이스 | `audit-design` → 필요한 집중 스킬 → 수정 → `verify-changes` |
+| 온보딩·결제 같은 여정 | `map-flows` → 나온 항목에 따라 `review-components`나 `check-accessibility` → 수정 → `map-flows`로 비교 → `verify-changes` |
 | 디자인 시스템이나 컴포넌트 | `review-components` → `review-visuals` → `check-accessibility` → 수정 → `verify-changes` |
 | 카피만 | `verify-content` → `edit-copy` → 수정 → 변경 범위 `verify-changes` |
 

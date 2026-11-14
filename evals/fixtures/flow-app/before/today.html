@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today · Workout log fixture</title>
+  <link rel="stylesheet" href="../app.css">
+  <script src="../shared.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Today</h1>
+    <p class="alert" id="discarded-notice" role="status" hidden>Workout discarded.</p>
+    <p class="muted">No workout logged yet today.</p>
+    <div class="row"><a class="button primary" id="start-workout" href="workout.html">Start workout</a></div>
+  </main>
+  <script>
+    if (new URLSearchParams(location.search).get("discarded") === "1") {
+      document.getElementById("discarded-notice").hidden = false;
+    }
+  </script>
+</body>
+</html>

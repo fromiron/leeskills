@@ -15,5 +15,11 @@ or usability evidence.
   screenshots in `.github/assets/showcase/` are rendered from these three files
   with `render_token_proposal.py`.
 
+A complete flow map store, with runs recorded by a real browser and a before
+and after to compare, lives in
+[`evals/fixtures/flow-app/`](../evals/fixtures/flow-app/README.md). The flow
+map screenshots in the READMEs are rendered from its `before/` store with
+`render_flow.py`.
+
 Canonical schemas and richer examples remain inside each skill's `assets/`
 directory so the skill can be distributed independently.

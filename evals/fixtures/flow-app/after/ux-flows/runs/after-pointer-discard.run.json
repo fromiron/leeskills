@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "run": "after-pointer-discard",
+  "map": "log-workout",
+  "journey": "discard-workout",
+  "scenario": "default",
+  "recorded_at": "2026-11-14",
+  "revision": "flow-app-after",
+  "method": "browser-automation",
+  "tool": "Playwright 1.63.0 (Chromium 153.0.8010.12)",
+  "environment": {
+    "target": "evals/fixtures/flow-app/after/workout.html opened from a file URL",
+    "viewport": "390x844",
+    "input": "pointer",
+    "locale": "en"
+  },
+  "steps": [
+    {
+      "transition": "workout.more",
+      "result": "reached",
+      "landed": "more-menu",
+      "evidence": "activated #more by pointer; afterwards the More menu is open with: Discard workout, Close."
+    },
+    {
+      "transition": "more.discard-confirm",
+      "result": "reached",
+      "landed": "discard-confirm",
+      "evidence": "activated #more-menu #discard by pointer; afterwards workout.html shows the dialog “Discard this workout?”."
+    },
+    {
+      "transition": "discard-confirm.discard",
+      "result": "reached",
+      "landed": "discarded",
+      "evidence": "activated #confirm-discard by pointer; afterwards today.html shows the notice “Workout discarded.”."
+    }
+  ],
+  "outcome": "success",
+  "success_evidence": "The run ended where today.html shows the notice “Workout discarded.”.",
+  "limitations": [
+    "A static fixture opened from a file URL; no server, account, or real network is involved."
+  ]
+}

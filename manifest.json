@@ -1,6 +1,6 @@
 {
   "name": "leeskills",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "format": "Agent Skills",
   "license": "MIT",
   "maturity": "beta",
@@ -30,6 +30,11 @@
     {
       "name": "plan-structure",
       "path": "skills/plan-structure",
+      "role": "focused"
+    },
+    {
+      "name": "map-flows",
+      "path": "skills/map-flows",
       "role": "focused"
     },
     {

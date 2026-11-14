@@ -1,0 +1,40 @@
+/* Shared styles for the flow-app fixture. Plain on purpose: the fixture exists
+   to be walked, not admired. */
+:root {
+  color-scheme: light dark;
+  --ink: #1f2128;
+  --muted: #5d606b;
+  --line: #d5d7de;
+  --ground: #ffffff;
+  --well: #f3f4f7;
+  --accent: #2f4fd0;
+  --alert: #a3261d;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #eceef2; --muted: #a3a7b3; --line: #3a3d47; --ground: #17181c; --well: #22242a; --accent: #8fa4ff; --alert: #ff9b90; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px 16px 96px; font: 16px/1.5 system-ui, sans-serif; color: var(--ink); background: var(--ground); }
+main { max-width: 480px; margin: 0 auto; display: grid; gap: 16px; }
+h1 { margin: 0; font-size: 1.5rem; line-height: 1.25; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button, .button, a.button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--ground); color: var(--ink); font: inherit; text-decoration: none; cursor: pointer; }
+button.primary, .button.primary { border-color: var(--accent); background: var(--accent); color: var(--ground); }
+button:disabled { color: var(--muted); cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+ul.sets { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+ul.sets li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.menu { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--well); }
+dialog { width: min(92vw, 420px); padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--ground); color: var(--ink); }
+dialog form, dialog .stack { display: grid; gap: 12px; }
+.stack { display: grid; gap: 16px; }
+[hidden] { display: none !important; }
+label { display: grid; gap: 4px; }
+input, select { min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--ground); color: var(--ink); font: inherit; }
+.error { color: var(--alert); }
+.alert { padding: 12px 16px; border: 1px solid var(--alert); border-radius: 6px; }
+.fixture-control { position: fixed; inset: auto 0 0 0; padding: 8px 16px; border-top: 1px dashed var(--line); background: var(--well); font-size: 0.8125rem; }
+.fixture-control .row { max-width: 480px; margin: 0 auto; justify-content: space-between; }
+.fixture-control button { min-height: 32px; padding: 0 10px; }

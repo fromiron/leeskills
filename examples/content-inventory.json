@@ -56,5 +56,14 @@
   "prohibited_generation": [
     "Do not publish the placeholder conversion metric.",
     "Do not name the confidential client."
+  ],
+  "safe_claims": [
+    "F-001"
+  ],
+  "allowed_placeholders": [
+    "F-002"
+  ],
+  "questions": [
+    "Which approved contact address should the portfolio publish?"
   ]
 }

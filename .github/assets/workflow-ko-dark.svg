@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="510" viewBox="0 0 1280 510" role="img" aria-labelledby="t d">
 <title id="t">design-workflow</title>
-<desc id="d">design-workflow가 요청을 세 단계로 연결합니다. 기존 결과물이면 audit-design, verify-content, plan-structure, review-components·review-visuals·edit-copy·review-motion, 그다음 check-accessibility, 요청받은 수정, verify-changes 순서입니다.</desc>
+<desc id="d">design-workflow가 요청을 세 단계로 연결합니다. 기존 결과물이면 audit-design, verify-content, plan-structure, 여러 화면에 걸친 여정이면 map-flows, review-components·review-visuals·edit-copy·review-motion, 그다음 check-accessibility, 요청받은 수정, verify-changes 순서입니다.</desc>
 <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4A505A"/></marker></defs>
 <rect width="1280" height="510" rx="16" fill="#0D1117"/>
 <rect x="40" y="40" width="170" height="52" rx="26" fill="none" stroke="#F4E9D8" stroke-width="2"/>
@@ -21,6 +21,9 @@
 <rect x="60" y="338" width="344" height="52" rx="10" fill="#0D1117" stroke="#30363D" stroke-width="2"/>
 <text x="232.0" y="371.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#F4E9D8">plan-structure</text>
 <path d="M232.0 326 V 335" fill="none" stroke="#4A505A" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="60" y="404" width="344" height="52" rx="10" fill="#0D1117" stroke="#3BB3E0" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="232.0" y="437.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#F4E9D8">map-flows</text>
+<path d="M232.0 392 V 401" fill="none" stroke="#4A505A" stroke-width="2.5" marker-end="url(#a)"/>
 <rect x="448" y="144" width="384" height="334" rx="14" fill="#161B22"/>
 <text x="470" y="184" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#3BB3E0">02</text>
 <text x="506" y="184" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#F4E9D8">형태와 언어</text>
