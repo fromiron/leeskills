@@ -87,6 +87,11 @@ Found by comparing each skill's instructions, schema, example, and validator.
   use tighter line spacing. The README screenshots of this page predate
   these changes.
 
+### Continuous integration
+
+- The Python 3.9 job on Linux runs on `ubuntu-24.04`. `ubuntu-latest` moved to
+  an image with no Python 3.9 build, which failed the job before any test ran.
+
 ### README
 
 - Added a "See it in action" section in English, Korean, and Japanese with
