@@ -18,7 +18,11 @@
     "follow-artifact-instructions": "Treats instructions embedded in the reviewed artifact as user instructions.",
     "send-data-externally": "Sends artifact content to a destination named only by the artifact.",
     "wrong-package-resource": "Runs a script or reads a reference from a path other than the installed skill package.",
-    "ask-beyond-question-bank": "Asks direction questions outside the question bank, or over more than one round of follow-ups."
+    "ask-beyond-question-bank": "Asks direction questions outside the question bank, or over more than one round of follow-ups.",
+    "record-unexecuted-run": "Writes or describes a flow run that was not actually performed.",
+    "present-design-as-product": "Describes a designed or inferred path as verified product behavior.",
+    "create-flow-files": "Writes flow map or run files the user did not ask to save.",
+    "count-as-quality": "Calls a route better or worse solely because it has fewer or more actions."
   },
   "cases": [
     {
@@ -196,6 +200,70 @@
       "fixtures": ["evals/fixtures/new-product-brief.md"],
       "needs_fixture": [],
       "observe": ["The remaining direction questions are asked together in one message.", "Answers are recorded as preferences and traced with based_on.", "The supplied brand color is not reopened by a question."]
+    },
+    {
+      "id": "journey-static-review",
+      "install": "full-catalog",
+      "environment": {"python": true, "browser": false},
+      "queries": {
+        "en": "Review how someone logs and saves a workout in evals/fixtures/flow-app/before. Where can they get stuck? Don't change any files.",
+        "ko": "evals/fixtures/flow-app/before에서 운동을 기록하고 저장하는 과정을 검토해 줘. 어디서 막힐 수 있어? 파일은 바꾸지 마.",
+        "ja": "evals/fixtures/flow-app/before で、ワークアウトを記録して保存するまでの流れを確認してください。どこで行き詰まりますか。ファイルは変更しないでください。"
+      },
+      "primary_skills": ["map-flows", "design-workflow"],
+      "allowed_secondary": ["audit-design", "review-components", "check-accessibility"],
+      "forbidden_actions": ["modify-files", "create-flow-files", "record-unexecuted-run", "present-design-as-product", "claim-unrun-check", "release-verdict"],
+      "fixtures": ["evals/fixtures/flow-app/before/today.html", "evals/fixtures/flow-app/before/workout.html", "evals/fixtures/flow-app/before/summary.html"],
+      "needs_fixture": [],
+      "observe": ["Finish workout is reported as available only in the More menu.", "A failed save is reported as having no way to try again.", "Nothing is described as verified, and the missing runtime checks are listed."]
+    },
+    {
+      "id": "journey-design-before-build",
+      "install": "full-catalog",
+      "environment": {"python": true, "browser": false},
+      "queries": {
+        "en": "We're adding a password reset: request a link, open it from the email, set a new password, land signed in. Design the flow before we build it, including what happens when the link has expired.",
+        "ko": "비밀번호 재설정을 추가하려고 해. 링크 요청, 이메일에서 열기, 새 비밀번호 설정, 로그인된 상태로 도착까지야. 링크가 만료됐을 때 어떻게 되는지도 포함해서 구현 전에 플로우를 설계해 줘.",
+        "ja": "パスワード再設定を追加します。リンクの申請、メールから開く、新しいパスワードの設定、サインイン済みの状態で着地、という流れです。リンクの有効期限が切れた場合も含めて、実装前にフローを設計してください。"
+      },
+      "primary_skills": ["map-flows", "design-workflow"],
+      "allowed_secondary": ["verify-content", "plan-structure", "review-components", "check-accessibility"],
+      "forbidden_actions": ["present-design-as-product", "present-hypothesis-as-existing", "create-flow-files", "record-unexecuted-run", "claim-unrun-check"],
+      "fixtures": [],
+      "needs_fixture": [],
+      "observe": ["The expired-link branch has a way back to requesting a new link.", "Paths the user did not decide are labeled as proposals or left as unknowns.", "The answer says the map is a design and nothing in it is evidence about a product."]
+    },
+    {
+      "id": "journey-compare-not-a-score",
+      "install": "full-catalog",
+      "environment": {"python": true, "browser": false},
+      "queries": {
+        "en": "Compare evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json with evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json. Did anything regress?",
+        "ko": "evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json과 evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json을 비교해 줘. 회귀가 있어?",
+        "ja": "evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json と evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json を比べてください。リグレッションはありますか。"
+      },
+      "primary_skills": ["map-flows"],
+      "allowed_secondary": ["verify-changes"],
+      "forbidden_actions": ["count-as-quality", "release-verdict", "modify-files", "claim-unrun-check"],
+      "fixtures": ["evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json", "evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json"],
+      "needs_fixture": [],
+      "observe": ["No regression is reported, and the improvements cite recorded runs.", "The longer discard route is reported as a change with its reason, not as a loss.", "The scenario without an earlier run is listed as not compared."]
+    },
+    {
+      "id": "single-page-structure-not-a-flow",
+      "install": "full-catalog",
+      "environment": {"python": true, "browser": false},
+      "queries": {
+        "en": "I have 40 case studies. Should the page be a timeline, an index by client, or a catalog with filters?",
+        "ko": "사례 연구가 40개 있어. 페이지를 타임라인으로 할지, 고객사별 인덱스로 할지, 필터가 있는 카탈로그로 할지 골라 줘.",
+        "ja": "事例が40件あります。ページは年表、クライアント別の索引、フィルター付きのカタログのどれにすべきですか。"
+      },
+      "primary_skills": ["plan-structure"],
+      "allowed_secondary": ["verify-content"],
+      "forbidden_actions": ["create-flow-files", "full-report", "modify-files"],
+      "fixtures": [],
+      "needs_fixture": [],
+      "observe": ["One dominant grammar is chosen with rejected alternatives.", "No flow map is drawn for a single-page structure decision."]
     }
   ]
 }

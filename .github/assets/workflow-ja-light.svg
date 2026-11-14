@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="510" viewBox="0 0 1280 510" role="img" aria-labelledby="t d">
 <title id="t">design-workflow</title>
-<desc id="d">design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。</desc>
+<desc id="d">design-workflow が依頼を3つの段階につなぎます。既存の成果物なら audit-design、verify-content、plan-structure、画面をまたぐジャーニーなら map-flows、review-components・review-visuals・edit-copy・review-motion、続いて check-accessibility、依頼された修正、verify-changes の順です。</desc>
 <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#B9B1A5"/></marker></defs>
 <rect width="1280" height="510" rx="16" fill="#F7F4EE"/>
 <rect x="40" y="40" width="170" height="52" rx="26" fill="none" stroke="#151515" stroke-width="2"/>
@@ -21,6 +21,9 @@
 <rect x="60" y="338" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#D8D0C4" stroke-width="2"/>
 <text x="232.0" y="371.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">plan-structure</text>
 <path d="M232.0 326 V 335" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="60" y="404" width="344" height="52" rx="10" fill="#FFFFFF" stroke="#007FA8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="232.0" y="437.6" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#151515">map-flows</text>
+<path d="M232.0 392 V 401" fill="none" stroke="#B9B1A5" stroke-width="2.5" marker-end="url(#a)"/>
 <rect x="448" y="144" width="384" height="334" rx="14" fill="#EFEAE1"/>
 <text x="470" y="184" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#007FA8">02</text>
 <text x="506" y="184" font-family="ui-sans-serif, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Noto Sans CJK JP', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#151515">形と言葉</text>

@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "run": "before-pointer-offline",
+  "map": "log-workout",
+  "journey": "log-workout",
+  "scenario": "offline-at-save",
+  "recorded_at": "2026-11-14",
+  "revision": "flow-app-before",
+  "method": "browser-automation",
+  "tool": "Playwright 1.63.0 (Chromium 153.0.8010.12)",
+  "environment": {
+    "target": "evals/fixtures/flow-app/before/today.html opened from a file URL",
+    "viewport": "390x844",
+    "input": "pointer",
+    "locale": "en"
+  },
+  "steps": [
+    {
+      "transition": "today.start",
+      "result": "reached",
+      "landed": "workout",
+      "evidence": "activated #start-workout by pointer; afterwards workout.html shows “Active workout” with 0 logged set(s)."
+    },
+    {
+      "transition": "workout.add-set",
+      "result": "reached",
+      "landed": "set-form",
+      "evidence": "activated #add-set by pointer; afterwards workout.html shows the dialog “Add set”."
+    },
+    {
+      "transition": "set-form.save",
+      "result": "reached",
+      "landed": "workout",
+      "evidence": "chose “Bench press” in #exercise by pointer, typed “60” in #weight by pointer, typed “8” in #reps by pointer, activated #save-set by pointer; afterwards workout.html shows “Active workout” with 1 logged set(s)."
+    },
+    {
+      "transition": "workout.more",
+      "result": "reached",
+      "landed": "more-menu",
+      "evidence": "activated #more by pointer; afterwards the More menu is open with: Finish workout, Discard workout, Close."
+    },
+    {
+      "transition": "more.finish-offline",
+      "result": "reached",
+      "landed": "save-failed",
+      "evidence": "activated #more-menu #finish by pointer; afterwards workout.html shows “Couldn't save your workout.” with the controls: Discard workout."
+    },
+    {
+      "transition": "save-failed.reconnect",
+      "result": "reached",
+      "landed": "save-failed",
+      "evidence": "switched the fixture's connection control to online; afterwards workout.html shows “Couldn't save your workout.” with the controls: Discard workout."
+    },
+    {
+      "transition": "save-failed.retry",
+      "result": "blocked",
+      "landed": "save-failed",
+      "evidence": "Could not perform the action: no visible control matches #retry. Afterwards workout.html shows “Couldn't save your workout.” with the controls: Discard workout."
+    }
+  ],
+  "outcome": "blocked",
+  "limitations": [
+    "A static fixture opened from a file URL; no server, account, or real network is involved.",
+    "The lost connection is simulated with the fixture's connection control."
+  ]
+}

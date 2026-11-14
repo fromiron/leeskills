@@ -40,7 +40,7 @@ Agent Skills format. The client should initially expose only each skill's
 
 For clients without native discovery, `manifest.json` provides an index.
 
-Installing all ten packages does not mean loading all ten instruction bodies.
+Installing every package does not mean loading every instruction body.
 The [Agent Skills specification](https://agentskills.io/specification) describes
 progressive disclosure: names and descriptions support discovery; selected
 instructions and resources are loaded as needed. Measure the actual target

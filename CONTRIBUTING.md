@@ -13,8 +13,10 @@ need, or a cited source.
 - Put detailed material in `references/`.
 - Prefer instructions over code.
 - Use scripts only for deterministic checks.
-- Use Python standard library only unless a dependency is essential and pinned.
-- Add at least one positive, one near-miss negative, and one edge-case eval.
+- Use the Python standard library only; scripts take no third-party packages.
+- Add at least two positive and two near-miss negative trigger prompts for
+  each of English, Korean, and Japanese, and output evals that include an
+  edge case.
 - Never infer AI authorship from visual style alone.
 - Mark observations, calculations, inferences, and unknowns separately.
 - Do not weaken accessibility to achieve visual simplicity.

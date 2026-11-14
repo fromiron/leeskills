@@ -4,6 +4,89 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-14
+
+The effect of this release on real clients is not measured. No client run is
+recorded for the new skill's trigger, routing, or output evals.
+
+### User flow maps
+
+- Added `map-flows`, a focused skill that keeps one graph of states and
+  actions per product area and analyzes how a person reaches a goal across
+  screens. It has three modes: design a flow before it is built, inspect an
+  existing one, and compare two revisions.
+- A transition records design intent (`approved`, `proposed`, or `none`)
+  apart from evidence about the product. A map may hold `observed`,
+  `inferred`, or `unknown` evidence; `measured` exists only in a run file that
+  records the action, the conditions, and what was seen.
+- Conditions and effects over boolean facts make reachability computable per
+  scenario, such as a guest, a declined card, or a lost connection. Each
+  scenario is analyzed twice: on the design, and on the transitions that have
+  evidence.
+- `validate_flow.py`, `analyze_flow.py`, `compare_flows.py`, and
+  `render_flow.py` use the standard library only. The analysis reports the
+  shortest route with its user actions, inputs, and screens, the steps no
+  route can avoid, dead ends, and whether each failure can recover. The
+  comparison names a regression only where something that worked stopped
+  working; a change in effort or route is listed for a person to judge.
+- `render_flow.py` writes a self-contained page in English, Korean, or
+  Japanese with light and dark themes, or a Mermaid flowchart. Status is
+  carried by words and line styles, not color alone.
+- The map and its runs may be kept in the project, by default under
+  `ux-flows/`, so a later session reads the journey instead of rediscovering
+  it. Files are written only on request, runs are append-only, and a baseline
+  changes only after approval.
+- Added `evals/fixtures/flow-app/`: a three-screen app in a before and an
+  after variant, each with a flow map and runs recorded with a real browser
+  by pointer and by keyboard, and the script that records them.
+
+### Workflow integration
+
+- `design-workflow` adds `map-flows` after `plan-structure` for a journey
+  across screens, a "Journey or flow request" sequence, a limited contract in
+  the composition map, and a release gate for a critical journey that no
+  recorded run completes.
+- `verify-changes` accepts the conditional check `journey-paths` and defines
+  its test. `plan-structure`, `review-components`, `check-accessibility`, and
+  `audit-design` state what they hand to or take from the flow map.
+- The workflow diagrams and the READMEs in three languages show the new step,
+  with screenshots rendered from the fixture.
+
+### Fixes to existing skills
+
+Found by comparing each skill's instructions, schema, example, and validator.
+
+- `examples/content-inventory.json` lacked three required fields and failed
+  its own validator.
+- The composition map and the full report template listed a nine-test release
+  set with a retired "five-second" test; they now list the ten baseline tests.
+  The composition map's `review-visuals` handoff no longer carries a
+  `token_proposal` object that the visual-budget contract does not have.
+- `verify-changes` documents `scope.changed_surfaces` and `scope.rationale`,
+  which its validator requires for targeted verification, the test ids
+  including `custom`, and the `out-of-scope` status in its procedure and
+  template. Its wording on accepted risks now matches the validator: an
+  accepted risk does not clear a blocker.
+- `audit-design` states that the half-credit cap for unknown evidence applies
+  to every category, as its scorer enforces, lists the reflow gate that
+  `design-workflow` already had, and names `check-accessibility` instead of a
+  retired skill name.
+- `verify-content` says that safe claims and allowed placeholders are fact
+  ids. `edit-copy` names the decision field consistently and lists the
+  evidence status values. `review-motion` says where an unknown reduced-motion
+  behavior is recorded. `review-visuals` no longer states two different
+  typeface limits.
+- `lint_copy.py` now flags "#1"; the pattern could not match it after a
+  space.
+- Schema titles that still carried retired skill names were renamed.
+
+### Token proposal page
+
+- A color value no longer wraps in the middle of its notation, the decision
+  groups sit two by two instead of three and one, and short labelled values
+  use tighter line spacing. The README screenshots of this page predate
+  these changes.
+
 ### README
 
 - Added a "See it in action" section in English, Korean, and Japanese with

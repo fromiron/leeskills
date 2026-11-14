@@ -1,6 +1,7 @@
 # Skill name migration
 
-The unreleased update renames the entry skill and all nine focused skills.
+The 0.7.0 update renamed the entry skill and the nine focused skills that
+existed then. `map-flows`, added in 0.8.0, is new and has no earlier name.
 The repository and package remain `leeskills`. These are replacements, not
 additional skills or aliases.
 
@@ -60,7 +61,7 @@ that an absent target means there was no installation.
    python scripts/install.py --client codex --scope repo --skill verify-content
    ```
 
-   Omit `--skill` to install all ten. Use the other client or target options
+   Omit `--skill` to install the full catalog. Use the other client or target options
    documented in [Integration](integration.md) when appropriate. This installer
    leaves old-name paths untouched. `--force` replaces a selected new-name
    destination; it neither migrates old names nor merges user modifications.

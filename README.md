@@ -8,7 +8,7 @@
 <h3>Review interface work for unsupported claims, generic copy,<br>and design that does not help the user's task.</h3>
 
 <a href="https://github.com/fromiron/leeskills/actions/workflows/validate.yml"><img alt="Validation status" src="https://github.com/fromiron/leeskills/actions/workflows/validate.yml/badge.svg"></a>
-<img alt="Version 0.7.0" src="https://img.shields.io/badge/version-0.7.0-007FA8?style=flat-square">
+<img alt="Version 0.8.0" src="https://img.shields.io/badge/version-0.8.0-007FA8?style=flat-square">
 <img alt="Open Agent Skills format" src="https://img.shields.io/badge/format-Agent_Skills-111111?style=flat-square">
 <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-F4E9D8?style=flat-square"></a>
 
@@ -20,10 +20,10 @@
 
 <br>
 
-leeskills gives a coding or design agent ten review skills: one workflow skill
-that plans the review, and nine focused skills for content, information
-structure, components, visual systems, copy, motion, accessibility, and final
-verification. They work in English, Korean, and Japanese.
+leeskills gives a coding or design agent eleven review skills: one workflow
+skill that plans the review, and ten focused skills for content, information
+structure, user flows, components, visual systems, copy, motion,
+accessibility, and final verification. They work in English, Korean, and Japanese.
 
 > [!NOTE]
 > The skills judge the artifact in front of them. They do not guess who made it
@@ -128,6 +128,33 @@ validator's output for that case, trimmed:
 }
 ```
 
+### Map a journey and see what is verified
+
+`map-flows` keeps one map of how a person reaches a goal across screens. The
+map keeps two things apart: what was designed, and what is known about the
+product. A step counts as verified only when a recorded run performed it. The
+pages below come from the bundled fixture app, walked with a real browser by
+pointer and by keyboard.
+
+<img src=".github/assets/showcase/flow-map-overview-en.png" width="100%" alt="Flow map page for 'Log a workout': 4 recorded runs, 7 of 19 transitions verified by a run, an evidence bar, and findings such as 'Goal not reachable' and 'Failure without recovery' with the skill each one is handed to">
+
+<sub>**How much is known, at a glance.** The bar separates steps a run verified from steps only seen in code and steps with no evidence. Each finding names the skill that judges it.</sub>
+
+<img src=".github/assets/showcase/flow-map-diagram-en.png" width="100%" alt="Flow map drawn as state cards: each row is an action with its destination, condition, and a status word such as VERIFIED, SEEN, NO EVIDENCE, or BLOCKED · KEYBOARD; numbered rows mark the route">
+
+<sub>**Each card is a state; each row is an action.** Wires on the right move forward and wires on the left go back. Status is written in words and line styles, not color alone. Here the keyboard run could not reach "Add set".</sub>
+
+Render the same page yourself, or compare two revisions:
+
+```bash
+python skills/map-flows/scripts/render_flow.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json --output flow-map.html
+python skills/map-flows/scripts/compare_flows.py evals/fixtures/flow-app/before/ux-flows/log-workout.flow.json evals/fixtures/flow-app/after/ux-flows/log-workout.flow.json
+```
+
+The comparison reports a regression only where something that worked stopped
+working. A longer route, such as a new confirmation before discarding a
+workout, is listed as a change for you to judge.
+
 ## How it works
 
 Start with `design-workflow` for a broad review. It picks only the steps the
@@ -136,12 +163,12 @@ single focused skill when the job is narrow.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/workflow-en-dark.svg">
-  <img src=".github/assets/workflow-en-light.svg" width="100%" alt="design-workflow routes a request through three stages: audit-design for an existing artifact, verify-content, and plan-structure; review-components, review-visuals, edit-copy, and review-motion; then check-accessibility, requested edits, and verify-changes.">
+  <img src=".github/assets/workflow-en-light.svg" width="100%" alt="design-workflow routes a request through three stages: audit-design for an existing artifact, verify-content, plan-structure, and map-flows for a journey across screens; review-components, review-visuals, edit-copy, and review-motion; then check-accessibility, requested edits, and verify-changes.">
 </picture>
 
 Dashed steps run only when needed: `audit-design` for an existing artifact,
-`review-components` when reusable components are in scope, and edits when you
-ask for them. Review-only requests leave artifact files unchanged.
+`map-flows` for a journey across screens, `review-components` when reusable
+components are in scope, and edits when you ask for them. Review-only requests leave artifact files unchanged.
 
 ## Skills
 
@@ -151,6 +178,7 @@ ask for them. Review-only requests leave artifact files unchanged.
 | **`audit-design`**<br>Diagnose an existing artifact | Observed problems, risk scores, and a cleanup order |
 | **`verify-content`**<br>Check which claims the sources support | A source-traced content inventory with gaps left visible |
 | **`plan-structure`**<br>Choose content order and navigation | A task-based structure, with rejected options recorded |
+| **`map-flows`**<br>Map a journey across screens | A flow map that separates the design from product evidence; routes, recovery, dead ends, and regressions; and, on request, a [rendered map](#see-it-in-action) |
 | **`review-components`**<br>Define a reusable UI contract | Anatomy, states, behavior, accessibility, ownership, and design-code parity |
 | **`review-visuals`**<br>Tighten the visual system | A visual budget; responsive, typography, and nested-radius checks; and, on request, a [token proposal page](#see-it-in-action) built by AI analysis or from your answers |
 | **`edit-copy`**<br>Edit product copy | Specific, supported copy in the product's voice for each locale |
@@ -171,6 +199,7 @@ task and there is a reason for them.
 |---|---|
 | New interface or landing page | `verify-content` → `plan-structure` → `review-visuals` → `edit-copy` → `review-motion` → `check-accessibility` → edits → `verify-changes` |
 | Existing interface | `audit-design` → focused skills as needed → edits → `verify-changes` |
+| Journey such as onboarding or checkout | `map-flows` → `review-components` or `check-accessibility` for its findings → edits → `map-flows` to compare → `verify-changes` |
 | Design system or component | `review-components` → `review-visuals` → `check-accessibility` → edits → `verify-changes` |
 | Copy only | `verify-content` → `edit-copy` → edits → targeted `verify-changes` |
 

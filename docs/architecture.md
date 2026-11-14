@@ -17,13 +17,15 @@ or renderers, and it reports which steps ran at which availability level.
 ```text
 design-workflow selects only the relevant steps:
 
-verify-content → plan-structure → review-components (when relevant)
+verify-content → plan-structure → map-flows (for a journey across screens)
+→ review-components (when relevant)
 → review-visuals → edit-copy / review-motion / check-accessibility
 → change plan → requested edits → verify-changes
 ```
 
 `audit-design` can run before the graph for an existing artifact and can
-run again after remediation to compare results.
+run again after remediation to compare results. `map-flows` can run again
+after edits to compare the changed journey with its earlier map and runs.
 
 Review-only requests leave artifact files unchanged. If verification or a
 comparison leads to another requested edit, repeat affected checks against the
@@ -52,7 +54,9 @@ The skills exchange small JSON artifacts where deterministic structure helps:
 
 - `content-inventory.json`
 - `structure-decision.json`
-- `visual-budget.json`
+- `<name>.flow.json` and `runs/<name>.run.json`
+- `component-contract.json` and `interaction-governance.json`
+- `visual-budget.json` and `token-proposal.json`
 - `motion-inventory.json`
 - `accessibility-report.json`
 - `verification.json`
@@ -60,6 +64,26 @@ The skills exchange small JSON artifacts where deterministic structure helps:
 
 JSON schemas are bundled as assets. Markdown output remains appropriate for
 human review.
+
+## Project knowledge
+
+Most handoffs live for one session. The flow map is the exception: it may be
+kept in the project so the next session reads how a journey works instead of
+rediscovering it. Three rules keep that knowledge trustworthy:
+
+- **Design and product stay separate.** Each transition records an intent
+  (`approved`, `proposed`, or `none`) apart from its evidence, and the
+  analysis runs once on the design and once on the transitions that have
+  evidence.
+- **Verification is earned, not written.** A map may say `observed`,
+  `inferred`, or `unknown`. `measured` exists only in a run file that records
+  the action, the conditions, and what was seen, so a path is verified by
+  executing it.
+- **Evidence carries its revision.** Runs are append-only and name the
+  product revision, input method, and viewport, so a later session can tell
+  what is stale and compare like with like.
+
+Files are written only on request; a review leaves the project unchanged.
 
 ## Progressive disclosure
 

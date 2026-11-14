@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "run": "before-keyboard-default",
+  "map": "log-workout",
+  "journey": "log-workout",
+  "scenario": "default",
+  "recorded_at": "2026-11-14",
+  "revision": "flow-app-before",
+  "method": "browser-automation",
+  "tool": "Playwright 1.63.0 (Chromium 153.0.8010.12)",
+  "environment": {
+    "target": "evals/fixtures/flow-app/before/today.html opened from a file URL",
+    "viewport": "390x844",
+    "input": "keyboard",
+    "locale": "en"
+  },
+  "steps": [
+    {
+      "transition": "today.start",
+      "result": "reached",
+      "landed": "workout",
+      "evidence": "activated #start-workout by Tab and keyboard; afterwards workout.html shows “Active workout” with 0 logged set(s)."
+    },
+    {
+      "transition": "workout.add-set",
+      "result": "blocked",
+      "landed": "workout",
+      "evidence": "Could not perform the action: Tab did not reach #add-set in 30 presses. Afterwards workout.html shows “Active workout” with 0 logged set(s)."
+    }
+  ],
+  "outcome": "blocked",
+  "limitations": [
+    "A static fixture opened from a file URL; no server, account, or real network is involved.",
+    "Keyboard input means Tab, typing, and Enter in Chromium; no screen reader was used."
+  ]
+}

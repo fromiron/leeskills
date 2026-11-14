@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Active workout · Workout log fixture</title>
+  <link rel="stylesheet" href="../app.css">
+  <script src="../shared.js"></script>
+</head>
+<body>
+  <!-- Variant "before". Planted defects, listed in ../README.md:
+       1. "Add set" is a div with a click handler: pointer only.
+       2. "Finish workout" exists only inside the More menu.
+       3. "Discard workout" discards without confirmation.
+       4. A failed save offers no way to try again. -->
+  <main>
+    <h1>Active workout</h1>
+    <div id="workout-view" class="stack">
+      <ul class="sets" id="sets" aria-label="Logged sets"></ul>
+      <p class="muted" id="empty">No sets yet.</p>
+      <div class="row">
+        <div class="button primary" id="add-set">Add set</div>
+        <button type="button" id="more" aria-expanded="false" aria-controls="more-menu">More</button>
+      </div>
+      <div class="menu" id="more-menu" hidden>
+        <button type="button" id="finish" disabled>Finish workout</button>
+        <button type="button" id="discard">Discard workout</button>
+        <button type="button" id="close-more">Close</button>
+      </div>
+    </div>
+    <div id="failed-view" class="stack" hidden>
+      <p class="alert" role="alert">Couldn't save your workout.</p>
+      <div class="row"><button type="button" id="failed-discard">Discard workout</button></div>
+    </div>
+  </main>
+
+  <dialog id="set-form" aria-labelledby="set-form-title">
+    <form method="dialog" novalidate>
+      <h2 id="set-form-title" style="margin: 0; font-size: 1.125rem;">Add set</h2>
+      <label>Exercise
+        <select id="exercise"><option>Squat</option><option>Bench press</option><option>Deadlift</option></select>
+      </label>
+      <label>Weight (kg) <input id="weight" inputmode="decimal"></label>
+      <label>Reps <input id="reps" inputmode="numeric" aria-describedby="reps-error"></label>
+      <p class="error" id="reps-error" hidden>Enter the number of reps.</p>
+      <div class="row">
+        <button type="submit" class="primary" id="save-set">Save set</button>
+        <button type="button" id="cancel-set">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const paint = () => {
+      renderSets($("sets"));
+      const count = store.sets().length;
+      $("empty").hidden = count > 0;
+      $("finish").disabled = count === 0;
+    };
+    const closeMore = () => { $("more-menu").hidden = true; $("more").setAttribute("aria-expanded", "false"); };
+    const discard = () => { store.clear(); location.href = "today.html?discarded=1"; };
+
+    $("add-set").addEventListener("click", () => {
+      $("reps-error").hidden = true;
+      $("weight").value = ""; $("reps").value = "";
+      $("set-form").showModal();
+    });
+    $("cancel-set").addEventListener("click", () => $("set-form").close());
+    $("set-form").querySelector("form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!$("reps").value.trim()) { $("reps-error").hidden = false; $("reps").focus(); return; }
+      store.addSet({ exercise: $("exercise").value, weight: $("weight").value || "0", reps: $("reps").value });
+      $("set-form").close();
+      paint();
+    });
+    $("more").addEventListener("click", () => {
+      const open = $("more-menu").hidden;
+      $("more-menu").hidden = !open;
+      $("more").setAttribute("aria-expanded", String(open));
+    });
+    $("close-more").addEventListener("click", closeMore);
+    $("finish").addEventListener("click", () => {
+      if (store.offline()) { closeMore(); $("workout-view").hidden = true; $("failed-view").hidden = false; return; }
+      location.href = "summary.html";
+    });
+    $("discard").addEventListener("click", discard);
+    $("failed-discard").addEventListener("click", discard);
+    paint();
+  </script>
+</body>
+</html>

@@ -9,6 +9,7 @@ the whole catalog and is not installed with any skill.
 | [catalog-routing.json](catalog-routing.json) | Full-catalog routing and boundary cases with acceptable primary skills, allowed secondary skills, and forbidden actions |
 | [run-record.schema.json](run-record.schema.json) | Shape of one recorded client attempt |
 | [fixtures/](fixtures/) | Small static inputs referenced by routing and output evals |
+| [fixtures/flow-app/](fixtures/flow-app/README.md) | A three-screen app in a before and an after variant, each with a flow map and runs recorded by a real browser |
 | [runs/](runs/README.md) | Recording procedure; no runs are recorded yet |
 
 See [docs/evaluation.md](../docs/evaluation.md) for the method.

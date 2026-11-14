@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "run": "after-pointer-offline",
+  "map": "log-workout",
+  "journey": "log-workout",
+  "scenario": "offline-at-save",
+  "recorded_at": "2026-11-14",
+  "revision": "flow-app-after",
+  "method": "browser-automation",
+  "tool": "Playwright 1.63.0 (Chromium 153.0.8010.12)",
+  "environment": {
+    "target": "evals/fixtures/flow-app/after/today.html opened from a file URL",
+    "viewport": "390x844",
+    "input": "pointer",
+    "locale": "en"
+  },
+  "steps": [
+    {
+      "transition": "today.start",
+      "result": "reached",
+      "landed": "workout",
+      "evidence": "activated #start-workout by pointer; afterwards workout.html shows “Active workout” with 0 logged set(s)."
+    },
+    {
+      "transition": "workout.add-set",
+      "result": "reached",
+      "landed": "set-form",
+      "evidence": "activated #add-set by pointer; afterwards workout.html shows the dialog “Add set”."
+    },
+    {
+      "transition": "set-form.save",
+      "result": "reached",
+      "landed": "workout",
+      "evidence": "chose “Bench press” in #exercise by pointer, typed “60” in #weight by pointer, typed “8” in #reps by pointer, activated #save-set by pointer; afterwards workout.html shows “Active workout” with 1 logged set(s)."
+    },
+    {
+      "transition": "workout.finish-offline",
+      "result": "reached",
+      "landed": "save-failed",
+      "evidence": "activated #workout-view > .row #finish by pointer; afterwards workout.html shows “Couldn't save your workout. Your sets are still on this device.” with the controls: Try again, Discard workout."
+    },
+    {
+      "transition": "save-failed.reconnect",
+      "result": "reached",
+      "landed": "save-failed",
+      "evidence": "switched the fixture's connection control to online; afterwards workout.html shows “Couldn't save your workout. Your sets are still on this device.” with the controls: Try again, Discard workout."
+    },
+    {
+      "transition": "save-failed.retry",
+      "result": "reached",
+      "landed": "summary",
+      "evidence": "activated #retry by pointer; afterwards summary.html shows the heading “Workout saved” and 1 logged set(s): Bench press: 60 kg × 8."
+    }
+  ],
+  "outcome": "success",
+  "success_evidence": "The run ended where summary.html shows the heading “Workout saved” and 1 logged set(s): Bench press: 60 kg × 8.",
+  "limitations": [
+    "A static fixture opened from a file URL; no server, account, or real network is involved.",
+    "The lost connection is simulated with the fixture's connection control."
+  ]
+}
